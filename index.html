@@ -389,14 +389,22 @@ $npm install
 <p>Enter passphrase (empty for no passphrase): [Type a passphrase]<br>Enter same passphrase again: [Type passphrase again]<br>这个时候不写密码也可以<br>密钥创建成功后，输入</p>
 <pre><code>clip &lt; ~/.ssh/id_rsa.pub
 </code></pre><p>复制你的公钥到剪切板<br>接着，需要在github的设置界面添加你的公钥<br>title：只要自己能区分是哪台电脑的公钥就行<br>key：刚才复制的公钥<br>然后保存</p>
-<p>到blog文件夹根目录找到_config.yml<br>配置文件的最后<br>deploy:<br>  type:<br>改为:<br>deploy:<br>  type: git<br>  repository: <a href="http://github.com/yourname/username.github.io.git" target="_blank" rel="external">http://github.com/yourname/username.github.io.git</a><br>  branch: master<br>这里的repository地址就是github项目页面的https地址<br>保存后，控制台输入</p>
+<p>到blog文件夹根目录找到_config.yml<br>配置文件的最后</p>
+<pre><code>deploy:
+  type:
+</code></pre><p>改为:</p>
+<pre><code>deploy:  
+  type: git
+  repository: http://github.com/yourname/username.github.io.git
+  branch: master
+</code></pre><p>这里的repository地址就是github项目页面的https地址<br>保存后，控制台输入</p>
 <pre><code>$ hexo g
 
 $ hexo d
 </code></pre><p>这里才过坑，报一个错误<br>ERROR Deployer not found: git<br>找不到hexo的git插件，这时我们需要安装这个插件<br>控制台输入</p>
 <pre><code>$ npm install hexo-deployer-git --save
 </code></pre><p>部署成功后就可以通过username.github.io访问了</p>
-<p>Hexo有很多主题可供下载，可以去官网挑选，根据主题的文档进行配置<a href="https://hexo.io/themes/" target="_blank" rel="external">官网主题</a><br>我选择了一个start最多的主题NexT，内置3种外观，而且配置文档十分详细<a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="external">NexT官网</a><br>到此，第一篇文章结束了，我的博客之旅从此开始~</p>
+<p>Hexo有很多主题可供下载，可以去官网挑选，需要根据该主题的文档进行配置<a href="https://hexo.io/themes/" target="_blank" rel="external">官网主题</a>，同时还有很多博客管理插件，可供下载<a href="https://hexo.io/plugins/" target="_blank" rel="external">官网插件</a><br>我选择了一个star最多的主题NexT，它内置3种外观，而且配置文档十分详细<a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="external">NexT官网</a><br>到此，第一篇文章结束了，我的博客之旅从此开始~</p>
 
           
         
