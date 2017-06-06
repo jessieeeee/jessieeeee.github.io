@@ -54,11 +54,17 @@
   
 
   
+    
+      
+    
+
+    
+  
 
   
     
     
-    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=PingFang SC:300,300italic,400,400italic,700,700italic|consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
   
 
 
@@ -87,23 +93,23 @@
 
 
 
-<meta name="description" content="封装自己的SearchView google在Android support v7包中提供了SearchView，开放的方法很少，导致SearchView自定义比较麻烦。但是SearchView往往是业务中常用的控件，其实实现也很简单，可以自己动手打造一个易扩展，可自定义的SearchView，来满足以后项目中的需求，下面就记录一下封装SearchView的详细过程。  最终效果gif:    这">
+<meta name="description" content="google在Android support v7包中提供了SearchView，开放的方法很少，导致SearchView自定义比较麻烦。但是SearchView往往是业务中常用的控件，其实实现也很简单，可以自己动手打造一个易扩展，可自定义的SearchView，来满足以后项目中的需求，下面就记录一下封装SearchView的详细过程。  最终效果gif:    这是封装好的lib库，上图 封装">
 <meta name="keywords" content="custom view">
 <meta property="og:type" content="article">
 <meta property="og:title" content="封装自己的searchview">
 <meta property="og:url" content="http://yoursite.com/2017/06/06/封装自己的searchview/index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
-<meta property="og:description" content="封装自己的SearchView google在Android support v7包中提供了SearchView，开放的方法很少，导致SearchView自定义比较麻烦。但是SearchView往往是业务中常用的控件，其实实现也很简单，可以自己动手打造一个易扩展，可自定义的SearchView，来满足以后项目中的需求，下面就记录一下封装SearchView的详细过程。  最终效果gif:    这">
+<meta property="og:description" content="google在Android support v7包中提供了SearchView，开放的方法很少，导致SearchView自定义比较麻烦。但是SearchView往往是业务中常用的控件，其实实现也很简单，可以自己动手打造一个易扩展，可自定义的SearchView，来满足以后项目中的需求，下面就记录一下封装SearchView的详细过程。  最终效果gif:    这是封装好的lib库，上图 封装">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/blog3.gif">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview1.png">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview2.png">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/blog1.gif">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview3.png">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/blog2.gif">
-<meta property="og:updated_time" content="2017-06-06T05:35:53.876Z">
+<meta property="og:updated_time" content="2017-06-06T07:45:28.142Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="封装自己的searchview">
-<meta name="twitter:description" content="封装自己的SearchView google在Android support v7包中提供了SearchView，开放的方法很少，导致SearchView自定义比较麻烦。但是SearchView往往是业务中常用的控件，其实实现也很简单，可以自己动手打造一个易扩展，可自定义的SearchView，来满足以后项目中的需求，下面就记录一下封装SearchView的详细过程。  最终效果gif:    这">
+<meta name="twitter:description" content="google在Android support v7包中提供了SearchView，开放的方法很少，导致SearchView自定义比较麻烦。但是SearchView往往是业务中常用的控件，其实实现也很简单，可以自己动手打造一个易扩展，可自定义的SearchView，来满足以后项目中的需求，下面就记录一下封装SearchView的详细过程。  最终效果gif:    这是封装好的lib库，上图 封装">
 <meta name="twitter:image" content="http://oqujmbgen.bkt.clouddn.com/blog3.gif">
 
 
@@ -148,6 +154,16 @@
 
 
 
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e889f842193ec7fdc8e475d42bc50dee";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -245,6 +261,16 @@
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
           </a>
         </li>
       
@@ -349,17 +375,6 @@
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/06/06/封装自己的searchview/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/06/06/封装自己的searchview/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -382,624 +397,56 @@
       
 
       
-        <h1 id="封装自己的SearchView"><a href="#封装自己的SearchView" class="headerlink" title="封装自己的SearchView"></a>封装自己的SearchView</h1><hr>
+        <hr>
 <p>google在Android support v7包中提供了SearchView，开放的方法很少，导致SearchView自定义比较麻烦。但是SearchView往往是业务中常用的控件，其实实现也很简单，可以自己动手打造一个易扩展，可自定义的SearchView，来满足以后项目中的需求，下面就记录一下封装SearchView的详细过程。</p>
 <hr>
 <p>最终效果gif:</p>
 <ul>
 <li><img src="http://oqujmbgen.bkt.clouddn.com/blog3.gif" alt="效果gif"></li>
 </ul>
-<p>这是封装好的lib库，上图<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview1.png" alt="封装好的lib库截图"><br>新建一个项目，具体过程不描述了，新建一个module，选择android libiary，填写好相关信息后finish。<br>继承LinearLayout实现View.OnKeyListener接口，这里主要是对实现软键盘搜索键的监听。</p>
-<pre><code>@Override
- public void setOnKeyListener(OnKeyListener l) {
-     et.setOnKeyListener(l);
- }
-</code></pre><p>并向外暴露接口</p>
-<pre><code>public interface searchEvent{
-      void onSearch();
-      void back();
-  }
-</code></pre><p>注册方法<br>       //实现搜索和返回接口<br>        public SearchView setSearchEvent(SearchView.searchEvent searchEvent) {<br>            this.searchEvent = searchEvent;<br>            return this;<br>        }</p>
-<p>执行回调并隐藏软键盘</p>
-<pre><code>@Override
-public boolean onKey(View v, int keyCode, KeyEvent event) {
-    if (event != null
-            &amp;&amp; (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_ENVELOPE)
-            &amp;&amp; event.getRepeatCount() == 0
-            &amp;&amp; event.getAction() == KeyEvent.ACTION_UP) {
-        searchEvent.onSearch();
-        InputMethodUtils.hideKeyBoard(et);
-        return true;
-    }
-    return false;
-}
-</code></pre><p>首先我们要自定义searchview的布局，布局文件如下：</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;LinearLayout android:id=&quot;@+id/lay_content_search&quot;
-              xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-              android:layout_width=&quot;match_parent&quot;
-              android:layout_height=&quot;50dp&quot;
-              android:background=&quot;@color/default_blue&quot;
-              android:orientation=&quot;horizontal&quot;
-              android:gravity=&quot;center_vertical&quot;
-              android:paddingBottom=&quot;5dp&quot;
-              android:paddingTop=&quot;5dp&quot;&gt;
-
-&lt;ImageView
-    android:id=&quot;@+id/iv_back&quot;
-    android:padding=&quot;10dp&quot;
-    android:layout_marginLeft=&quot;4dp&quot;
-    android:layout_width=&quot;30dp&quot;
-    android:scaleType=&quot;centerCrop&quot;
-    android:layout_height=&quot;match_parent&quot;
-    android:layout_centerVertical=&quot;true&quot;
-    android:src=&quot;@drawable/ic_title_back_white&quot;
-    /&gt;
-
-&lt;RelativeLayout
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;30dp&quot;
-    android:layout_weight=&quot;1&quot;
-    android:layout_marginLeft=&quot;10dp&quot;
-    android:layout_marginRight=&quot;6dp&quot;
-    android:background=&quot;@drawable/mask_round_rim_circle_gray&quot;&gt;
-
-    &lt;ImageView
-        android:id=&quot;@+id/iv_tag&quot;
-        android:layout_width=&quot;20dp&quot;
-        android:layout_height=&quot;20dp&quot;
-        android:layout_alignParentLeft=&quot;true&quot;
-        android:layout_centerVertical=&quot;true&quot;
-        android:layout_marginLeft=&quot;8dp&quot;
-        android:scaleType=&quot;centerCrop&quot;
-        android:src=&quot;@drawable/ic_content_search&quot;/&gt;
-
-    &lt;AutoCompleteTextView
-        android:id=&quot;@+id/et_content_search&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot;
-        android:layout_centerHorizontal=&quot;true&quot;
-        android:layout_centerVertical=&quot;true&quot;
-        android:layout_marginLeft=&quot;5dp&quot;
-        android:layout_toRightOf=&quot;@+id/iv_tag&quot;
-        android:background=&quot;@null&quot;
-        android:ems=&quot;10&quot;
-        android:hint=&quot;@string/hint_input_search&quot;
-        android:imeOptions=&quot;actionSearch&quot;
-        android:textCursorDrawable=&quot;@drawable/cursor_blue&quot;
-        android:inputType=&quot;text&quot;
-        android:maxLines=&quot;1&quot;
-        android:textColor=&quot;@color/default_blue&quot;
-        android:textColorHint=&quot;@color/default_et_hint&quot;
-        android:textSize=&quot;13sp&quot;&gt;
-
-        &lt;requestFocus/&gt;
-    &lt;/AutoCompleteTextView&gt;
-
-    &lt;ImageView
-        android:id=&quot;@+id/iv_del_content&quot;
-        android:layout_width=&quot;30dp&quot;
-        android:layout_height=&quot;match_parent&quot;
-        android:layout_alignParentRight=&quot;true&quot;
-        android:layout_centerVertical=&quot;true&quot;
-        android:scaleType=&quot;centerCrop&quot;
-        android:src=&quot;@drawable/sl_del_content&quot;
-        android:visibility=&quot;gone&quot;
-        /&gt;
-
-&lt;/RelativeLayout&gt;
-
-&lt;Button
-    android:id=&quot;@+id/btn_content_search&quot;
-    android:layout_width=&quot;60dp&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    android:background=&quot;@null&quot;
-    android:text=&quot;@string/text_search&quot;
-    android:textSize=&quot;14sp&quot;
-    android:textColor=&quot;@color/white&quot;
-    /&gt;
-</code></pre><p><br>效果如图：<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview2.png" alt="布局效果图"><br>这里的输入框用的是AutoCompleteTextView，它是继承EditTextView的，可以实现搜索文字补全的功能， android:imeOptions=”actionSearch”这句是把软键盘上的回车键改为搜索。<br>接着我们可以通过一些方法对ui和搜索间隔时长进行自定义：</p>
-<pre><code>//设置间隔时间
-public SearchView setIntervalTime(int intervalTime){
-    this.intervalTime=intervalTime;
-    return this;
-}
-
-//设置背景颜色
-public SearchView setBackGroundColor(int color){
-    layContentSearch.setBackgroundColor(color);
-    return this;
-}
-
-//设置返回按钮
-public SearchView setBackIcon(int resId){
-    iback.setImageResource(resId);
-    return this;
-}
-
-//设置搜索图标
-public SearchView setTagIcon(int resId){
-    ivTag.setImageResource(resId);
-    return this;
-}
-
-//设置删除图标
-public SearchView setDelIcon(int resId){
-    ib.setImageResource(resId);
-    return this;
-}
-
-//设置搜索文本
-public SearchView setSearchText(String text){
-    search.setText(text);
-    return this;
-}
-
-//设置搜索文本颜色
-public SearchView setSearchTextColor(int color){
-    search.setTextColor(color);
-    return this;
-}
-
-//设置搜索文本背景图片
-public SearchView setSearchBackground(int resId){
-    search.setBackgroundResource(resId);
-    return this;
-}
-
-//设置搜索文本背景颜色
-public SearchView setSearchBackgroundColor(int color){
-    search.setBackgroundColor(color);
-    return this;
-}
-
-//设置搜索框提示文本
-public SearchView setSearchHintText(String hintText){
-    search.setHint(hintText);
-    return this;
-}
-
-//设置搜索框提示文本颜色
-public SearchView setSearchHintTextColor(int color){
-    search.setHintTextColor(color);
-    return this;
-}
-</code></pre><p>为了方便我们在xml中直接进行自定义，可以新建一些自定义的属性：</p>
-<pre><code>  &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;resources&gt;
-
-    &lt;!--searchview属性自定义--&gt;
-    &lt;declare-styleable name=&quot;SearchView&quot;&gt;
-        &lt;attr name=&quot;intervalTime&quot; format=&quot;integer&quot;/&gt;
-        &lt;attr name=&quot;backgroundColor&quot; format=&quot;color&quot;/&gt;
-        &lt;attr name=&quot;backIcon&quot; format=&quot;reference&quot;/&gt;
-        &lt;attr name=&quot;tagIcon&quot; format=&quot;reference&quot;/&gt;
-        &lt;attr name=&quot;delIcon&quot; format=&quot;reference&quot;/&gt;
-        &lt;attr name=&quot;searchText&quot; format=&quot;string&quot;/&gt;
-        &lt;attr name=&quot;searchTextColor&quot; format=&quot;color&quot;/&gt;
-        &lt;attr name=&quot;searchBackground&quot; format=&quot;reference&quot;/&gt;
-        &lt;attr name=&quot;searchBackgroundColor&quot; format=&quot;color&quot;/&gt;
-        &lt;attr name=&quot;searchHintText&quot; format=&quot;string&quot;/&gt;
-        &lt;attr name=&quot;searchHintTextColor&quot; format=&quot;color&quot;/&gt;
-
-    &lt;/declare-styleable&gt;
-
-&lt;/resources&gt;
-</code></pre><p>在searchview初始化时，载入布局，初始化子view，读取自定义属性：</p>
-<pre><code> public SearchView(Context context, AttributeSet attrs) {
-    super(context, attrs);
-    LayoutInflater.from(context).inflate(R.layout.widget_search_et_btn, this, true);
-    TypedArray a = context.obtainStyledAttributes(attrs,
-            R.styleable.SearchView);
-    initView();
-    intervalTime=a.getInt(R.styleable.SearchView_intervalTime,1000);
-    setBackGroundColor(a.getColor(R.styleable.SearchView_backgroundColor,getResources().getColor(R.color.default_blue)));
-    setBackIcon(a.getResourceId(R.styleable.SearchView_backIcon,R.drawable.ic_title_back_white));
-    setTagIcon(a.getResourceId(R.styleable.SearchView_tagIcon,R.drawable.ic_content_search));
-    setDelIcon(a.getResourceId(R.styleable.SearchView_delIcon,R.drawable.sl_del_content));
-    setSearchText(a.getString(R.styleable.SearchView_searchText));
-    setSearchTextColor(a.getColor(R.styleable.SearchView_searchTextColor,getResources().getColor(R.color.white)));
-    setSearchBackground(a.getResourceId(R.styleable.SearchView_searchBackground,android.R.color.transparent));
-    setSearchBackgroundColor(a.getColor(R.styleable.SearchView_searchBackgroundColor,getResources().getColor(android.R.color.transparent)));
-    setSearchHintText(a.getString(R.styleable.SearchView_searchHintText));
-    setSearchHintTextColor(a.getColor(R.styleable.SearchView_searchHintTextColor,getResources().getColor(R.color.default_line)));
-
-}
-</code></pre><p>  <img src="http://oqujmbgen.bkt.clouddn.com/blog1.gif" alt="删除按钮效果"><br>  关于删除按钮，我们需要监听文本框的文字变化和点击事件，而且当输入的搜索文字变化时，希望像大多数app一样，有个实时显示搜索结果的效果，但是当输入变化很快时，搜索次数太多可能造成一定的性能下降，我们可以设定一个间隔时间，间隔时间内，不用进行再次搜索：</p>
-<pre><code>  // 当输入框状态改变时，会调用相应的方法
-TextWatcher tw = new TextWatcher() {
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-    }
-
-    // 在文字改变后调用
-    @Override
-    public void afterTextChanged(Editable s) {
-        if (s.length() == 0) {
-            hideBtn();// 隐藏按钮
-        } else {
-            showBtn();// 显示按钮
-        }
-
-
-        //输入文字变化时,超过间隔时间才搜索
-        if(System.currentTimeMillis()-lastTime&gt;intervalTime){
-            searchEvent.onSearch();
-        }
-
-        lastTime= System.currentTimeMillis();
-    }
-};
-
-// 设置按钮不可见
-private void hideBtn() {
-
-    if (ib.isShown())
-        ib.setVisibility(View.GONE);
-}
-
-// 设置按钮可见
-private void showBtn() {
-    if (!ib.isShown())
-        ib.setVisibility(View.VISIBLE);
-}
-
- // 添加按钮点击事件
- ib.setOnClickListener(new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            hideBtn();// 隐藏按钮
-            et.setText(&quot;&quot;);// 设置输入框内容为空
-        }
-    });
-</code></pre><p>关于搜索文字补全，这里是给AutoCompleteTextView添加了一个适配器，需要继承BaseAdapter，并实现Filterable接口，具体实现如下：</p>
-<pre><code>public class AutoComplateSearchAdapter extends BaseAdapter implements Filterable {
-private ArrayFilter mFilter;
-private ArrayList&lt;String&gt; keyList;//数据源列表
-private Context context;
-private ArrayList&lt;String&gt; mUnfilteredData;//待过滤数据集合
-
-public AutoComplateSearchAdapter(Context context,ArrayList&lt;String&gt; keyList) {
-    this.context = context;
-    this.keyList = keyList;
-}
-
-@Override
-public int getCount() {
-    return keyList.size();
-}
-
-@Override
-public Object getItem(int position) {
-    return keyList.get(position);
-}
-
-@Override
-public long getItemId(int position) {
-    return position;
-}
-
-@Override
-public View getView(int position, View convertView, ViewGroup parent) {
-    View view;
-    ViewHolder holder;
-    if (convertView == null) {
-        view = View.inflate(context, R.layout.adapter_auto, null);
-
-        holder = new ViewHolder();
-        holder.tv_name = (TextView) view.findViewById(R.id.item_auto_txt);
-        holder.lineTop = (ImageView) view.findViewById(R.id.item_auto_line_top);
-        holder.lineBottom = (ImageView) view.findViewById(R.id.item_auto_line_bottom);
-        view.setTag(holder);
-    } else {
-        view = convertView;
-        holder = (ViewHolder) view.getTag();
-    }
-
-    String key = keyList.get(position);
-    holder.tv_name.setText(key);
-    return view;
-}
-
-static class ViewHolder {
-    public TextView tv_name;
-    public ImageView lineTop;
-    public ImageView lineBottom;
-}
-
-@Override
-public Filter getFilter() {
-    if (mFilter == null) {
-        mFilter = new ArrayFilter();
-    }
-    return mFilter;
-}
-
-private final Object mLock = new Object();
-
-private class ArrayFilter extends Filter {
-
-    @Override
-    protected FilterResults performFiltering(CharSequence prefix) {
-        FilterResults results = new FilterResults();
-
-        if (mUnfilteredData == null) {
-            synchronized (mLock) {
-                mUnfilteredData = new ArrayList&lt;String&gt;(keyList);
-            }
-        }
-        if (prefix == null || prefix.length() == 0) {
-            results.values = mUnfilteredData;
-            results.count = mUnfilteredData.size();
-        } else {
-            String prefixString = prefix.toString().toLowerCase();
-            ArrayList&lt;String&gt; newValues = new ArrayList&lt;String&gt;(mUnfilteredData.size());
-            for (int i = 0; i &lt; mUnfilteredData.size(); i++) {
-                String str = mUnfilteredData.get(i);
-                if (!TextUtils.isEmpty(str) &amp;&amp; !TextUtils.isEmpty(prefixString) &amp;&amp; str.contains(prefixString)) {
-                    newValues.add(str);
-                }
-            }
-            results.values = newValues;
-            results.count = newValues.size();
-        }
-
-        return results;
-    }
-
-    @Override
-    protected void publishResults(CharSequence constraint,
-                                  FilterResults results) {
-        //noinspection unchecked
-        keyList = (ArrayList&lt;String&gt;) results.values;
-        if (results.count &gt; 0) {
-            notifyDataSetChanged();
-        } else {
-            notifyDataSetInvalidated();
-        }
-    }
-}
-</code></pre><p>}  </p>
+<p>这是封装好的lib库，上图<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview1.png" alt="封装好的lib库截图"></p>
+<h1 id="封装searchview-lib"><a href="#封装searchview-lib" class="headerlink" title="封装searchview lib"></a>封装searchview lib</h1><p>新建一个项目，具体过程不描述了，新建一个module，选择android libiary，填写好相关信息后finish。<br>继承LinearLayout实现View.OnKeyListener接口，这里主要是对实现软键盘搜索键的监听。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnKeyListener</span><span class="params">(OnKeyListener l)</span> </span>&#123;</div><div class="line">        et.setOnKeyListener(l);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>并向外暴露接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">searchEvent</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onSearch</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">back</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注册方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//实现搜索和返回接口</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setSearchEvent</span><span class="params">(SearchView.searchEvent searchEvent)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.searchEvent = searchEvent;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>执行回调并隐藏软键盘<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKey</span><span class="params">(View v, <span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (event != <span class="keyword">null</span></div><div class="line">            &amp;&amp; (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_ENVELOPE)</div><div class="line">            &amp;&amp; event.getRepeatCount() == <span class="number">0</span></div><div class="line">            &amp;&amp; event.getAction() == KeyEvent.ACTION_UP) &#123;</div><div class="line">        searchEvent.onSearch();</div><div class="line">        InputMethodUtils.hideKeyBoard(et);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">     <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>首先我们要自定义searchview的布局，布局文件如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">android:id</span>=<span class="string">"@+id/lay_content_search"</span></span></div><div class="line">                <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">                <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">                <span class="attr">android:layout_height</span>=<span class="string">"50dp"</span></div><div class="line">                <span class="attr">android:background</span>=<span class="string">"@color/default_blue"</span></div><div class="line">                <span class="attr">android:orientation</span>=<span class="string">"horizontal"</span></div><div class="line">                <span class="attr">android:gravity</span>=<span class="string">"center_vertical"</span></div><div class="line">                <span class="attr">android:paddingBottom</span>=<span class="string">"5dp"</span></div><div class="line">                <span class="attr">android:paddingTop</span>=<span class="string">"5dp"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/iv_back"</span></div><div class="line">        <span class="attr">android:padding</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">android:layout_marginLeft</span>=<span class="string">"4dp"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"30dp"</span></div><div class="line">        <span class="attr">android:scaleType</span>=<span class="string">"centerCrop"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_centerVertical</span>=<span class="string">"true"</span></div><div class="line">        <span class="attr">android:src</span>=<span class="string">"@drawable/ic_title_back_white"</span></div><div class="line">        /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">RelativeLayout</span></span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"30dp"</span></div><div class="line">        <span class="attr">android:layout_weight</span>=<span class="string">"1"</span></div><div class="line">        <span class="attr">android:layout_marginLeft</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">android:layout_marginRight</span>=<span class="string">"6dp"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"@drawable/mask_round_rim_circle_gray"</span>&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/iv_tag"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_alignParentLeft</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:layout_centerVertical</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:layout_marginLeft</span>=<span class="string">"8dp"</span></div><div class="line">            <span class="attr">android:scaleType</span>=<span class="string">"centerCrop"</span></div><div class="line">            <span class="attr">android:src</span>=<span class="string">"@drawable/ic_content_search"</span>/&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">AutoCompleteTextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/et_content_search"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_centerHorizontal</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:layout_centerVertical</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:layout_marginLeft</span>=<span class="string">"5dp"</span></div><div class="line">            <span class="attr">android:layout_toRightOf</span>=<span class="string">"@+id/iv_tag"</span></div><div class="line">            <span class="attr">android:background</span>=<span class="string">"@null"</span></div><div class="line">            <span class="attr">android:ems</span>=<span class="string">"10"</span></div><div class="line">            <span class="attr">android:hint</span>=<span class="string">"@string/hint_input_search"</span></div><div class="line">            <span class="attr">android:imeOptions</span>=<span class="string">"actionSearch"</span></div><div class="line">            <span class="attr">android:textCursorDrawable</span>=<span class="string">"@drawable/cursor_blue"</span></div><div class="line">            <span class="attr">android:inputType</span>=<span class="string">"text"</span></div><div class="line">            <span class="attr">android:maxLines</span>=<span class="string">"1"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"@color/default_blue"</span></div><div class="line">            <span class="attr">android:textColorHint</span>=<span class="string">"@color/default_et_hint"</span></div><div class="line">            <span class="attr">android:textSize</span>=<span class="string">"13sp"</span>&gt;</div><div class="line"></div><div class="line">            <span class="tag">&lt;<span class="name">requestFocus</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">AutoCompleteTextView</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/iv_del_content"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"30dp"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_alignParentRight</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:layout_centerVertical</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:scaleType</span>=<span class="string">"centerCrop"</span></div><div class="line">            <span class="attr">android:src</span>=<span class="string">"@drawable/sl_del_content"</span></div><div class="line">            <span class="attr">android:visibility</span>=<span class="string">"gone"</span></div><div class="line">            /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn_content_search"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"60dp"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"@null"</span></div><div class="line">        <span class="attr">android:text</span>=<span class="string">"@string/text_search"</span></div><div class="line">        <span class="attr">android:textSize</span>=<span class="string">"14sp"</span></div><div class="line">        <span class="attr">android:textColor</span>=<span class="string">"@color/white"</span></div><div class="line">        /&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>效果如图：<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview2.png" alt="布局效果图"><br>这里的输入框用的是AutoCompleteTextView，它是继承EditTextView的，可以实现搜索文字补全的功能， android:imeOptions=”actionSearch”这句是把软键盘上的回车键改为搜索。<br>接着我们可以通过一些方法对ui和搜索间隔时长进行自定义：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//设置间隔时间</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setIntervalTime</span><span class="params">(<span class="keyword">int</span> intervalTime)</span></span>&#123;</div><div class="line">    <span class="keyword">this</span>.intervalTime=intervalTime;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置背景颜色</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setBackGroundColor</span><span class="params">(<span class="keyword">int</span> color)</span></span>&#123;</div><div class="line">    layContentSearch.setBackgroundColor(color);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置返回按钮</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setBackIcon</span><span class="params">(<span class="keyword">int</span> resId)</span></span>&#123;</div><div class="line">    iback.setImageResource(resId);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置搜索图标</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setTagIcon</span><span class="params">(<span class="keyword">int</span> resId)</span></span>&#123;</div><div class="line">    ivTag.setImageResource(resId);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置删除图标</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setDelIcon</span><span class="params">(<span class="keyword">int</span> resId)</span></span>&#123;</div><div class="line">    ib.setImageResource(resId);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置搜索文本</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setSearchText</span><span class="params">(String text)</span></span>&#123;</div><div class="line">    search.setText(text);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置搜索文本颜色</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setSearchTextColor</span><span class="params">(<span class="keyword">int</span> color)</span></span>&#123;</div><div class="line">    search.setTextColor(color);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置搜索文本背景图片</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setSearchBackground</span><span class="params">(<span class="keyword">int</span> resId)</span></span>&#123;</div><div class="line">    search.setBackgroundResource(resId);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置搜索文本背景颜色</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setSearchBackgroundColor</span><span class="params">(<span class="keyword">int</span> color)</span></span>&#123;</div><div class="line">    search.setBackgroundColor(color);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置搜索框提示文本</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setSearchHintText</span><span class="params">(String hintText)</span></span>&#123;</div><div class="line">    search.setHint(hintText);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//设置搜索框提示文本颜色</span></div><div class="line"><span class="function"><span class="keyword">public</span> SearchView <span class="title">setSearchHintTextColor</span><span class="params">(<span class="keyword">int</span> color)</span></span>&#123;</div><div class="line">    search.setHintTextColor(color);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>为了方便我们在xml中直接进行自定义，可以新建一些自定义的属性：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!--searchview属性自定义--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">declare-styleable</span> <span class="attr">name</span>=<span class="string">"SearchView"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"intervalTime"</span> <span class="attr">format</span>=<span class="string">"integer"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"backgroundColor"</span> <span class="attr">format</span>=<span class="string">"color"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"backIcon"</span> <span class="attr">format</span>=<span class="string">"reference"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"tagIcon"</span> <span class="attr">format</span>=<span class="string">"reference"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"delIcon"</span> <span class="attr">format</span>=<span class="string">"reference"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"searchText"</span> <span class="attr">format</span>=<span class="string">"string"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"searchTextColor"</span> <span class="attr">format</span>=<span class="string">"color"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"searchBackground"</span> <span class="attr">format</span>=<span class="string">"reference"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"searchBackgroundColor"</span> <span class="attr">format</span>=<span class="string">"color"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"searchHintText"</span> <span class="attr">format</span>=<span class="string">"string"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"searchHintTextColor"</span> <span class="attr">format</span>=<span class="string">"color"</span>/&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;/<span class="name">declare-styleable</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>在searchview初始化时，载入布局，初始化子view，读取自定义属性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">SearchView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>(context, attrs);</div><div class="line">    LayoutInflater.from(context).inflate(R.layout.widget_search_et_btn, <span class="keyword">this</span>, <span class="keyword">true</span>);</div><div class="line">    TypedArray a = context.obtainStyledAttributes(attrs,</div><div class="line">            R.styleable.SearchView);</div><div class="line">    initView();</div><div class="line">    intervalTime=a.getInt(R.styleable.SearchView_intervalTime,<span class="number">1000</span>);</div><div class="line">    setBackGroundColor(a.getColor(R.styleable.SearchView_backgroundColor,getResources().getColor(R.color.default_blue)));</div><div class="line">    setBackIcon(a.getResourceId(R.styleable.SearchView_backIcon,R.drawable.ic_title_back_white));</div><div class="line">    setTagIcon(a.getResourceId(R.styleable.SearchView_tagIcon,R.drawable.ic_content_search));</div><div class="line">    setDelIcon(a.getResourceId(R.styleable.SearchView_delIcon,R.drawable.sl_del_content));</div><div class="line">    setSearchText(a.getString(R.styleable.SearchView_searchText));</div><div class="line">    setSearchTextColor(a.getColor(R.styleable.SearchView_searchTextColor,getResources().getColor(R.color.white)));</div><div class="line">    setSearchBackground(a.getResourceId(R.styleable.SearchView_searchBackground,android.R.color.transparent));</div><div class="line">    setSearchBackgroundColor(a.getColor(R.styleable.SearchView_searchBackgroundColor,getResources().getColor(android.R.color.transparent)));</div><div class="line">    setSearchHintText(a.getString(R.styleable.SearchView_searchHintText));</div><div class="line">    setSearchHintTextColor(a.getColor(R.styleable.SearchView_searchHintTextColor,getResources().getColor(R.color.default_line)));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>  <img src="http://oqujmbgen.bkt.clouddn.com/blog1.gif" alt="删除按钮效果"><br>  关于删除按钮，我们需要监听文本框的文字变化和点击事件，而且当输入的搜索文字变化时，希望像大多数app一样，有个实时显示搜索结果的效果，但是当输入变化很快时，搜索次数太多可能造成一定的性能下降，我们可以设定一个间隔时间，间隔时间内，不用进行再次搜索：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 当输入框状态改变时，会调用相应的方法</span></div><div class="line">TextWatcher tw = <span class="keyword">new</span> TextWatcher() &#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTextChanged</span><span class="params">(CharSequence s, <span class="keyword">int</span> start, <span class="keyword">int</span> before, <span class="keyword">int</span> count)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeTextChanged</span><span class="params">(CharSequence s, <span class="keyword">int</span> start, <span class="keyword">int</span> count, <span class="keyword">int</span> after)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 在文字改变后调用</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterTextChanged</span><span class="params">(Editable s)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (s.length() == <span class="number">0</span>) &#123;</div><div class="line">            hideBtn();<span class="comment">// 隐藏按钮</span></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            showBtn();<span class="comment">// 显示按钮</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">        <span class="comment">//输入文字变化时,超过间隔时间才搜索</span></div><div class="line">        <span class="keyword">if</span>(System.currentTimeMillis()-lastTime&gt;intervalTime)&#123;</div><div class="line">            searchEvent.onSearch();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        lastTime= System.currentTimeMillis();</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">// 设置按钮不可见</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">hideBtn</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ib.isShown())</div><div class="line">        ib.setVisibility(View.GONE);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 设置按钮可见</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">showBtn</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!ib.isShown())</div><div class="line">        ib.setVisibility(View.VISIBLE);</div><div class="line">&#125;</div><div class="line"></div><div class="line">    <span class="comment">// 添加按钮点击事件</span></div><div class="line">    ib.setOnClickListener(<span class="keyword">new</span> OnClickListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">            hideBtn();<span class="comment">// 隐藏按钮</span></div><div class="line">            et.setText(<span class="string">""</span>);<span class="comment">// 设置输入框内容为空</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
+<p>关于搜索文字补全，这里是给AutoCompleteTextView添加了一个适配器，需要继承BaseAdapter，并实现Filterable接口，具体实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AutoComplateSearchAdapter</span> <span class="keyword">extends</span> <span class="title">BaseAdapter</span> <span class="keyword">implements</span> <span class="title">Filterable</span> </span>&#123;</div><div class="line"><span class="keyword">private</span> ArrayFilter mFilter;</div><div class="line"><span class="keyword">private</span> ArrayList&lt;String&gt; keyList;<span class="comment">//数据源列表</span></div><div class="line"><span class="keyword">private</span> Context context;</div><div class="line"><span class="keyword">private</span> ArrayList&lt;String&gt; mUnfilteredData;<span class="comment">//待过滤数据集合</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">AutoComplateSearchAdapter</span><span class="params">(Context context,ArrayList&lt;String&gt; keyList)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.context = context;</div><div class="line">    <span class="keyword">this</span>.keyList = keyList;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> keyList.size();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> keyList.get(position);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getItemId</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> position;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span> </span>&#123;</div><div class="line">    View view;</div><div class="line">    ViewHolder holder;</div><div class="line">    <span class="keyword">if</span> (convertView == <span class="keyword">null</span>) &#123;</div><div class="line">        view = View.inflate(context, R.layout.adapter_auto, <span class="keyword">null</span>);</div><div class="line"></div><div class="line">        holder = <span class="keyword">new</span> ViewHolder();</div><div class="line">        holder.tv_name = (TextView) view.findViewById(R.id.item_auto_txt);</div><div class="line">        holder.lineTop = (ImageView) view.findViewById(R.id.item_auto_line_top);</div><div class="line">        holder.lineBottom = (ImageView) view.findViewById(R.id.item_auto_line_bottom);</div><div class="line">        view.setTag(holder);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        view = convertView;</div><div class="line">        holder = (ViewHolder) view.getTag();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    String key = keyList.get(position);</div><div class="line">    holder.tv_name.setText(key);</div><div class="line">    <span class="keyword">return</span> view;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewHolder</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> TextView tv_name;</div><div class="line">    <span class="keyword">public</span> ImageView lineTop;</div><div class="line">    <span class="keyword">public</span> ImageView lineBottom;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> Filter <span class="title">getFilter</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mFilter == <span class="keyword">null</span>) &#123;</div><div class="line">        mFilter = <span class="keyword">new</span> ArrayFilter();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> mFilter;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Object mLock = <span class="keyword">new</span> Object();</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayFilter</span> <span class="keyword">extends</span> <span class="title">Filter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> FilterResults <span class="title">performFiltering</span><span class="params">(CharSequence prefix)</span> </span>&#123;</div><div class="line">        FilterResults results = <span class="keyword">new</span> FilterResults();</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (mUnfilteredData == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">synchronized</span> (mLock) &#123;</div><div class="line">                mUnfilteredData = <span class="keyword">new</span> ArrayList&lt;String&gt;(keyList);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (prefix == <span class="keyword">null</span> || prefix.length() == <span class="number">0</span>) &#123;</div><div class="line">            results.values = mUnfilteredData;</div><div class="line">            results.count = mUnfilteredData.size();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            String prefixString = prefix.toString().toLowerCase();</div><div class="line">            ArrayList&lt;String&gt; newValues = <span class="keyword">new</span> ArrayList&lt;String&gt;(mUnfilteredData.size());</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mUnfilteredData.size(); i++) &#123;</div><div class="line">                String str = mUnfilteredData.get(i);</div><div class="line">                <span class="keyword">if</span> (!TextUtils.isEmpty(str) &amp;&amp; !TextUtils.isEmpty(prefixString) &amp;&amp; str.contains(prefixString)) &#123;</div><div class="line">                    newValues.add(str);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            results.values = newValues;</div><div class="line">            results.count = newValues.size();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> results;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">publishResults</span><span class="params">(CharSequence constraint,</span></span></div><div class="line">                                    FilterResults results) &#123;</div><div class="line">        <span class="comment">//noinspection unchecked</span></div><div class="line">        keyList = (ArrayList&lt;String&gt;) results.values;</div><div class="line">        <span class="keyword">if</span> (results.count &gt; <span class="number">0</span>) &#123;</div><div class="line">            notifyDataSetChanged();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            notifyDataSetInvalidated();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>自动补全列表的布局也很简单，相当于list的item：</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-              android:layout_width=&quot;match_parent&quot;
-              android:layout_height=&quot;35dp&quot;
-              android:background=&quot;@color/white&quot;
-    &gt;
-
-&lt;ImageView
-    android:id=&quot;@+id/item_auto_line_top&quot;
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;2px&quot;
-    android:layout_alignParentTop=&quot;true&quot;
-    android:background=&quot;#6c01b5c6&quot;/&gt;
-
-&lt;TextView
-    android:id=&quot;@+id/item_auto_txt&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    android:layout_marginLeft=&quot;15dp&quot;
-    android:layout_centerVertical=&quot;true&quot;
-    android:text=&quot;cnsio&quot;
-    android:textColor=&quot;@color/default_blue&quot;
-    android:textSize=&quot;14sp&quot;
-    /&gt;
-
-&lt;ImageView
-    android:id=&quot;@+id/item_auto_line_bottom&quot;
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;2px&quot;
-    android:layout_alignParentBottom=&quot;true&quot;
-    android:background=&quot;#6c01b5c6&quot;/&gt;
-&lt;/RelativeLayout&gt;
-</code></pre><p><img src="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview3.png" alt="搜索文字自动补全效果图"><br>接下来是数据展示，用的是RecyclerView，这里也做了封装：<br>  新建了一个抽象类SearchActivity继承AppCompatActivity，将RecyclerView封装到fragment并暴露一些数据源，RecyclerView，SearchView的设置方法。</p>
-<pre><code>protected SearchView searchView;
-protected ResultFragment resultFragment;
-
-//search to do 搜索逻辑
-protected abstract void doSearch();
-//set result list adapter 设置结果列表适配器
-protected abstract RecyclerView.Adapter setResultListAdapter();
-
-//return search content input
-protected String getSearchContent(){
-    return searchView.getText().toString().trim();
-}
-
-//bind searchview 绑定searchview
-protected void findSearchView(int searchViewId) {
-    searchView = (SearchView) this.findViewById(searchViewId);
-    searchView.setSearchEvent(new SearchView.searchEvent() {
-        @Override
-        public void onSearch() {
-            doSearch();
-        }
-
-        @Override
-        public void back() {
-            finish();
-        }
-
-    });
-}
-
-//set search keylist Completion adapter 设置自动补全搜索关键字适配器
-protected void setKeyListAdapter (ArrayList&lt;String&gt; keyList){
-    searchView.setKeyListAdapter(keyList);
-}
-
-//set result list divider 设置结果列表分割线,可重写
-protected RecyclerView.ItemDecoration setResultListDivider(){
-    return new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL, 10, getResources().getColor(R.color.bg));
-}
-
-//set result list LayoutManager 设置RecyclerView的布局管理器
-protected RecyclerView.LayoutManager setLayoutManager(){
-    return new LinearLayoutManager(this);
-}
-
-//init result fragment 初始化结果分页
-protected void initResultFragment(int SearchFragmentId) {
-    resultFragment = new ResultFragment();
-    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-//        Bundle bundle = new Bundle();
-//        fragment.setArguments(bundle);
-
-    transaction.replace(SearchFragmentId, resultFragment);
-    transaction.commit();
-}
-</code></pre><p>  <img src="http://oqujmbgen.bkt.clouddn.com/blog2.gif" alt="此处输入图片的描述"><br>  接下来是实现点击其它区域，隐藏软键盘并清除输入框焦点：</p>
-<pre><code> //清除焦点
-private void clearViewFocus(View v, View... views) {
-    if (null != v &amp;&amp; null != views &amp;&amp; views.length &gt; 0) {
-        for (View view : views) {
-            if (v.getId() == view.getId()) {
-                v.setEnabled(false);
-                break;
-            }
-        }
-    }
-}
-
-//得到焦点
-private void getViewFocus(View v, View... views) {
-    if (null != v &amp;&amp; null != views &amp;&amp; views.length &gt; 0) {
-        for (View view : views) {
-            if (v.getId() == view.getId()) {
-                v.setEnabled(true);
-                break;
-            }
-        }
-    }
-}
-
-
-//view是否得到焦点
-private boolean isFocusEditText(View v, View... views) {
-    if (v instanceof EditText) {
-        EditText tmp_et = (EditText) v;
-        for (View view : views) {
-            if (tmp_et.getId() == view.getId()) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-
-//是否触摸在指定view上面
-private boolean isTouchView(View[] views, MotionEvent ev) {
-    if (views == null || views.length == 0) return false;
-    int[] location = new int[2];
-    for (View view : views) {
-        view.getLocationOnScreen(location);
-        int x = location[0];
-        int y = location[1];
-        if (ev.getX() &gt; x &amp;&amp; ev.getX() &lt; (x + view.getWidth())
-                &amp;&amp; ev.getY() &gt; y &amp;&amp; ev.getY() &lt; (y + view.getHeight())) {
-            return true;
-        }
-    }
-    return false;
-}
-
-   //隐藏键盘逻辑
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();            //得到当前activity的焦点view
-            if (isTouchView(filterViewByIds(), ev)) //触摸到不隐藏键盘的view不做处理
-                return super.dispatchTouchEvent(ev);
-            if(isTouchView(hideSoftByEditViewIds(), ev)){//触摸到隐藏键盘的view不做处理
-                getViewFocus(v,hideSoftByEditViewIds());
-                return super.dispatchTouchEvent(ev);
-            }
-            //触摸到其它view
-            if (hideSoftByEditViewIds() == null || hideSoftByEditViewIds().length == 0)
-                return super.dispatchTouchEvent(ev);
-            // view得到了焦点
-            if (isFocusEditText(v, hideSoftByEditViewIds())) {
-                //清除隐藏键盘的view焦点
-                clearViewFocus(v, hideSoftByEditViewIds());
-                //隐藏键盘
-                InputMethodUtils.hideKeyBoard(this);
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-
-    }
-
-//传入Id,触摸到其它view时，隐藏此view对应的软键盘
-protected View[] hideSoftByEditViewIds() {
-    View[] views = {searchView.getEditView()};
-    return views;
-}
-
-
-//传入要过滤的View,过滤之后将不会隐藏软键盘
-protected View[] filterViewByIds() {
-    return null;
-}
-</code></pre><p>最后说明一下使用方法，在使用lib库时，需要让搜索界面的activity继承SearchActivity，实现其中的抽象方法：</p>
-<pre><code> //搜索逻辑
-protected void doSearch() {
-    resultListAdapter.setData(search(getSearchContent()));
-}
-
-@Override
-protected RecyclerView.Adapter setResultListAdapter() {
-    //bind data 绑定数据和适配器
-    resultListAdapter=new ResultListAdapter();
-    resultListAdapter.setData(newsDTOs);
-    return resultListAdapter;
-}
-</code></pre><p>结果列表RecyclerView的Adapter的实现就不赘述了，根据展示的需求自定义，RecyclerView的布局管理器，分割线，隐藏软件盘的view过滤，需要隐藏软键盘的view设置都是可以重写SearchActivity中对应的方法进行自定义。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">RelativeLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">                <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">                <span class="attr">android:layout_height</span>=<span class="string">"35dp"</span></div><div class="line">                <span class="attr">android:background</span>=<span class="string">"@color/white"</span></div><div class="line">    &gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/item_auto_line_top"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"2px"</span></div><div class="line">    <span class="attr">android:layout_alignParentTop</span>=<span class="string">"true"</span></div><div class="line">    <span class="attr">android:background</span>=<span class="string">"#6c01b5c6"</span>/&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/item_auto_txt"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_marginLeft</span>=<span class="string">"15dp"</span></div><div class="line">    <span class="attr">android:layout_centerVertical</span>=<span class="string">"true"</span></div><div class="line">    <span class="attr">android:text</span>=<span class="string">"cnsio"</span></div><div class="line">    <span class="attr">android:textColor</span>=<span class="string">"@color/default_blue"</span></div><div class="line">    <span class="attr">android:textSize</span>=<span class="string">"14sp"</span></div><div class="line">    /&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/item_auto_line_bottom"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"2px"</span></div><div class="line">    <span class="attr">android:layout_alignParentBottom</span>=<span class="string">"true"</span></div><div class="line">    <span class="attr">android:background</span>=<span class="string">"#6c01b5c6"</span>/&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p><img src="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview3.png" alt="搜索文字自动补全效果图"><br>接下来是数据展示，用的是RecyclerView，这里也做了封装：<br>  新建了一个抽象类SearchActivity继承AppCompatActivity，将RecyclerView封装到fragment并暴露一些数据源，RecyclerView，SearchView的设置方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">protected</span> SearchView searchView;</div><div class="line"><span class="keyword">protected</span> ResultFragment resultFragment;</div><div class="line"></div><div class="line"><span class="comment">//search to do 搜索逻辑</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">doSearch</span><span class="params">()</span></span>;</div><div class="line"><span class="comment">//set result list adapter 设置结果列表适配器</span></div><div class="line"><span class="keyword">protected</span> <span class="keyword">abstract</span> RecyclerView.<span class="function">Adapter <span class="title">setResultListAdapter</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="comment">//return search content input</span></div><div class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">getSearchContent</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> searchView.getText().toString().trim();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//bind searchview 绑定searchview</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">findSearchView</span><span class="params">(<span class="keyword">int</span> searchViewId)</span> </span>&#123;</div><div class="line">    searchView = (SearchView) <span class="keyword">this</span>.findViewById(searchViewId);</div><div class="line">    searchView.setSearchEvent(<span class="keyword">new</span> SearchView.searchEvent() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSearch</span><span class="params">()</span> </span>&#123;</div><div class="line">            doSearch();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">back</span><span class="params">()</span> </span>&#123;</div><div class="line">            finish();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//set search keylist Completion adapter 设置自动补全搜索关键字适配器</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setKeyListAdapter</span> <span class="params">(ArrayList&lt;String&gt; keyList)</span></span>&#123;</div><div class="line">    searchView.setKeyListAdapter(keyList);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//set result list divider 设置结果列表分割线,可重写</span></div><div class="line"><span class="keyword">protected</span> RecyclerView.<span class="function">ItemDecoration <span class="title">setResultListDivider</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> RecycleViewDivider(<span class="keyword">this</span>, LinearLayoutManager.HORIZONTAL, <span class="number">10</span>, getResources().getColor(R.color.bg));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//set result list LayoutManager 设置RecyclerView的布局管理器</span></div><div class="line"><span class="keyword">protected</span> RecyclerView.<span class="function">LayoutManager <span class="title">setLayoutManager</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//init result fragment 初始化结果分页</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initResultFragment</span><span class="params">(<span class="keyword">int</span> SearchFragmentId)</span> </span>&#123;</div><div class="line">    resultFragment = <span class="keyword">new</span> ResultFragment();</div><div class="line">    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();</div><div class="line"></div><div class="line"><span class="comment">//        Bundle bundle = new Bundle();</span></div><div class="line"><span class="comment">//        fragment.setArguments(bundle);</span></div><div class="line"></div><div class="line">    transaction.replace(SearchFragmentId, resultFragment);</div><div class="line">    transaction.commit();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="http://oqujmbgen.bkt.clouddn.com/blog2.gif" alt="隐藏软键盘"><br>接下来是实现点击其它区域，隐藏软键盘并清除输入框焦点：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line">    <span class="comment">//清除焦点</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">clearViewFocus</span><span class="params">(View v, View... views)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != v &amp;&amp; <span class="keyword">null</span> != views &amp;&amp; views.length &gt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">for</span> (View view : views) &#123;</div><div class="line">            <span class="keyword">if</span> (v.getId() == view.getId()) &#123;</div><div class="line">                v.setEnabled(<span class="keyword">false</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//得到焦点</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getViewFocus</span><span class="params">(View v, View... views)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != v &amp;&amp; <span class="keyword">null</span> != views &amp;&amp; views.length &gt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">for</span> (View view : views) &#123;</div><div class="line">            <span class="keyword">if</span> (v.getId() == view.getId()) &#123;</div><div class="line">                v.setEnabled(<span class="keyword">true</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">//view是否得到焦点</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isFocusEditText</span><span class="params">(View v, View... views)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (v <span class="keyword">instanceof</span> EditText) &#123;</div><div class="line">        EditText tmp_et = (EditText) v;</div><div class="line">        <span class="keyword">for</span> (View view : views) &#123;</div><div class="line">            <span class="keyword">if</span> (tmp_et.getId() == view.getId()) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">//是否触摸在指定view上面</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isTouchView</span><span class="params">(View[] views, MotionEvent ev)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (views == <span class="keyword">null</span> || views.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">int</span>[] location = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">    <span class="keyword">for</span> (View view : views) &#123;</div><div class="line">        view.getLocationOnScreen(location);</div><div class="line">        <span class="keyword">int</span> x = location[<span class="number">0</span>];</div><div class="line">        <span class="keyword">int</span> y = location[<span class="number">1</span>];</div><div class="line">        <span class="keyword">if</span> (ev.getX() &gt; x &amp;&amp; ev.getX() &lt; (x + view.getWidth())</div><div class="line">                &amp;&amp; ev.getY() &gt; y &amp;&amp; ev.getY() &lt; (y + view.getHeight())) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">    <span class="comment">//隐藏键盘逻辑</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (ev.getAction() == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">            View v = getCurrentFocus();            <span class="comment">//得到当前activity的焦点view</span></div><div class="line">            <span class="keyword">if</span> (isTouchView(filterViewByIds(), ev)) <span class="comment">//触摸到不隐藏键盘的view不做处理</span></div><div class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(ev);</div><div class="line">            <span class="keyword">if</span>(isTouchView(hideSoftByEditViewIds(), ev))&#123;<span class="comment">//触摸到隐藏键盘的view不做处理</span></div><div class="line">                getViewFocus(v,hideSoftByEditViewIds());</div><div class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(ev);</div><div class="line">            &#125;</div><div class="line">            <span class="comment">//触摸到其它view</span></div><div class="line">            <span class="keyword">if</span> (hideSoftByEditViewIds() == <span class="keyword">null</span> || hideSoftByEditViewIds().length == <span class="number">0</span>)</div><div class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(ev);</div><div class="line">            <span class="comment">// view得到了焦点</span></div><div class="line">            <span class="keyword">if</span> (isFocusEditText(v, hideSoftByEditViewIds())) &#123;</div><div class="line">                <span class="comment">//清除隐藏键盘的view焦点</span></div><div class="line">                clearViewFocus(v, hideSoftByEditViewIds());</div><div class="line">                <span class="comment">//隐藏键盘</span></div><div class="line">                InputMethodUtils.hideKeyBoard(<span class="keyword">this</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(ev);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"><span class="comment">//传入Id,触摸到其它view时，隐藏此view对应的软键盘</span></div><div class="line"><span class="keyword">protected</span> View[] hideSoftByEditViewIds() &#123;</div><div class="line">    View[] views = &#123;searchView.getEditView()&#125;;</div><div class="line">    <span class="keyword">return</span> views;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">//传入要过滤的View,过滤之后将不会隐藏软键盘</span></div><div class="line"><span class="keyword">protected</span> View[] filterViewByIds() &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="lib库的使用"><a href="#lib库的使用" class="headerlink" title="lib库的使用"></a>lib库的使用</h1><p>最后说明一下使用方法，在使用lib库时，需要让搜索界面的activity继承SearchActivity，实现其中的抽象方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//搜索逻辑</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doSearch</span><span class="params">()</span> </span>&#123;</div><div class="line">    resultListAdapter.setData(search(getSearchContent()));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">protected</span> RecyclerView.<span class="function">Adapter <span class="title">setResultListAdapter</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">//bind data 绑定数据和适配器</span></div><div class="line">    resultListAdapter=<span class="keyword">new</span> ResultListAdapter();</div><div class="line">    resultListAdapter.setData(newsDTOs);</div><div class="line">    <span class="keyword">return</span> resultListAdapter;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>结果列表RecyclerView的Adapter的实现就不赘述了，根据展示的需求自定义，RecyclerView的布局管理器，分割线，隐藏软件盘的view过滤，需要隐藏软键盘的view设置都是可以重写SearchActivity中对应的方法进行自定义。</p>
 <p>搜索界面的activity，初始化时需要绑定searchview的id和fragment的容器id</p>
-<pre><code>//初始化结果分页
-initResultFragment(R.id.ll_content);
-//绑定searchview
-findSearchView(R.id.sc_content);
-</code></pre><p>可以设置searchview自动补全的数据源，自定义ui</p>
-<pre><code>//设置搜索关键字自动补全
-setKeyListAdapter(setKeyList());
-setSearchView();
-
-//custom searchview ui 自定义searchview的外观
-public void setSearchView(){
-    searchView.setIntervalTime(1000)
-              .setBackGroundColor(getResources().getColor(R.color.default_blue))
-              .setBackIcon(R.drawable.ic_title_back_white)
-              .setTagIcon(R.drawable.ic_content_search)
-              .setDelIcon(R.drawable.sl_del_content)
-              .setSearchText(getString(R.string.text_search))
-              .setSearchTextColor(getResources().getColor(R.color.white))
-              .setSearchBackground(getResources().getColor(android.R.color.transparent))
-              .setSearchBackgroundColor(getResources().getColor(android.R.color.transparent))
-              .setSearchHintText(getString(R.string.hint_input_search))
-              .setSearchHintTextColor(getResources().getColor(R.color.default_line));
-}
-</code></pre><p>在xml中直接自定义ui</p>
-<pre><code>&lt;searchview.jessie.com.searchviewlib.SearchView
-android:id=&quot;@+id/sc_content&quot;
-android:layout_width=&quot;match_parent&quot;
-android:layout_height=&quot;wrap_content&quot;
-jessie:intervalTime=&quot;2000&quot;
-jessie:backIcon=&quot;@drawable/ic_title_back_white&quot;
-jessie:backgroundColor=&quot;@color/default_blue&quot;
-jessie:tagIcon=&quot;@drawable/ic_content_search&quot;
-jessie:delIcon=&quot;@drawable/sl_del_content&quot;
-jessie:searchText=&quot;@string/text_search&quot;
-jessie:searchTextColor=&quot;@color/white&quot;
-jessie:searchHintText=&quot;@string/hint_input_search&quot;/&gt;
-</code></pre><p>到此，封装自己的searchview就完成了，需要查看完整代码，这里是<a href="https://github.com/jessieeeee/SearchView" target="_blank" rel="external">传送门</a>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//初始化结果分页</span></div><div class="line">initResultFragment(R.id.ll_content);</div><div class="line"><span class="comment">//绑定searchview</span></div><div class="line">findSearchView(R.id.sc_content);</div></pre></td></tr></table></figure>
+<p>可以设置searchview自动补全的数据源，自定义ui</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//设置搜索关键字自动补全</span></div><div class="line">setKeyListAdapter(setKeyList());</div><div class="line">setSearchView();</div><div class="line"></div><div class="line"><span class="comment">//custom searchview ui 自定义searchview的外观</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSearchView</span><span class="params">()</span></span>&#123;</div><div class="line">    searchView.setIntervalTime(<span class="number">1000</span>)</div><div class="line">                .setBackGroundColor(getResources().getColor(R.color.default_blue))</div><div class="line">                .setBackIcon(R.drawable.ic_title_back_white)</div><div class="line">                .setTagIcon(R.drawable.ic_content_search)</div><div class="line">                .setDelIcon(R.drawable.sl_del_content)</div><div class="line">                .setSearchText(getString(R.string.text_search))</div><div class="line">                .setSearchTextColor(getResources().getColor(R.color.white))</div><div class="line">                .setSearchBackground(getResources().getColor(android.R.color.transparent))</div><div class="line">                .setSearchBackgroundColor(getResources().getColor(android.R.color.transparent))</div><div class="line">                .setSearchHintText(getString(R.string.hint_input_search))</div><div class="line">                .setSearchHintTextColor(getResources().getColor(R.color.default_line));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在xml中直接自定义ui</p>
+<pre><code class="xml"><span class="tag">&lt;<span class="name">searchview.jessie.com.searchviewlib.SearchView</span>
+    <span class="attr">android:id</span>=<span class="string">"@+id/sc_content"</span>
+    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span>
+    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>
+    <span class="attr">jessie:intervalTime</span>=<span class="string">"2000"</span>
+    <span class="attr">jessie:backIcon</span>=<span class="string">"@drawable/ic_title_back_white"</span>
+    <span class="attr">jessie:backgroundColor</span>=<span class="string">"@color/default_blue"</span>
+    <span class="attr">jessie:tagIcon</span>=<span class="string">"@drawable/ic_content_search"</span>
+    <span class="attr">jessie:delIcon</span>=<span class="string">"@drawable/sl_del_content"</span>
+    <span class="attr">jessie:searchText</span>=<span class="string">"@string/text_search"</span>
+    <span class="attr">jessie:searchTextColor</span>=<span class="string">"@color/white"</span>
+    <span class="attr">jessie:searchHintText</span>=<span class="string">"@string/hint_input_search"</span>/&gt;</span>
+</code></pre>
+<p>到此，封装自己的searchview就完成了，需要查看完整代码，这里是<a href="https://github.com/jessieeeee/SearchView" target="_blank" rel="external">传送门</a>。</p>
 
       
     </div>
@@ -1075,13 +522,6 @@ jessie:searchHintText=&quot;@string/hint_input_search&quot;/&gt;
 
           
   <div class="comments" id="comments">
-    
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
-      </div>
     
   </div>
 
@@ -1186,7 +626,7 @@ jessie:searchHintText=&quot;@string/hint_input_search&quot;/&gt;
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#封装自己的SearchView"><span class="nav-number">1.</span> <span class="nav-text">封装自己的SearchView</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#封装searchview-lib"><span class="nav-number">1.</span> <span class="nav-text">封装searchview lib</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lib库的使用"><span class="nav-number">2.</span> <span class="nav-text">lib库的使用</span></a></li></ol></div>
             
 
           </div>
@@ -1322,26 +762,6 @@ jessie:searchHintText=&quot;@string/hint_input_search&quot;/&gt;
 
   
 
-
-  
-
-    
-      <script id="dsq-count-scr" src="https://JessieK.disqus.com/count.js" async></script>
-    
-
-    
-      <script type="text/javascript">
-        var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2017/06/06/封装自己的searchview/';
-          this.page.identifier = '2017/06/06/封装自己的searchview/';
-          this.page.title = '封装自己的searchview';
-        };
-        var d = document, s = d.createElement('script');
-        s.src = 'https://JessieK.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', '' + +new Date());
-        (d.head || d.body).appendChild(s);
-      </script>
-    
 
   
 
