@@ -398,10 +398,7 @@
             <hr>
 <p>google在Android support v7包中提供了SearchView，开放的方法很少，导致SearchView自定义比较麻烦。但是SearchView往往是业务中常用的控件，其实实现也很简单，可以自己动手打造一个易扩展，可自定义的SearchView，来满足以后项目中的需求，下面就记录一下封装SearchView的详细过程。</p>
 <hr>
-<p>最终效果gif:</p>
-<ul>
-<li><img src="http://oqujmbgen.bkt.clouddn.com/blog3.gif" alt="效果gif"></li>
-</ul>
+<p>最终效果gif:<br><img src="http://oqujmbgen.bkt.clouddn.com/blog3.gif" alt="效果gif"></p>
 <p>这是封装好的lib库，上图<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84searchview1.png" alt="封装好的lib库截图"></p>
 <h1 id="封装searchview-lib"><a href="#封装searchview-lib" class="headerlink" title="封装searchview lib"></a>封装searchview lib</h1><p>新建一个项目，具体过程不描述了，新建一个module，选择android libiary，填写好相关信息后finish。<br>继承LinearLayout实现View.OnKeyListener接口，这里主要是对实现软键盘搜索键的监听。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnKeyListener</span><span class="params">(OnKeyListener l)</span> </span>&#123;</div><div class="line">        et.setOnKeyListener(l);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>并向外暴露接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">searchEvent</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onSearch</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">back</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
@@ -952,3 +949,5 @@ $ hexo d
 
 </body>
 </html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
