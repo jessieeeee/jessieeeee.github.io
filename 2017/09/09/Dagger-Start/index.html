@@ -100,7 +100,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/09/09/Dagger-Start/index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="目前android最火的架构就是MVP+Dagger+Retrofit+Rxjava，技术迭代真的是很快啊，程序猿这个职业，需要我们抱着终身学习的热情在互联网急速发展的浪潮中追逐最新的技术，提高开发效率和我们的核心竞争力，好吧，一不小心又灌了一口鸡汤。 架构在大型项目中是很重要的，一个好的架构有着高度的可扩展性，可维护性，低耦合，高聚合，而Dagger正是为了解耦而生，主要是通过依赖注入去实现。">
-<meta property="og:updated_time" content="2017-09-10T11:47:13.000Z">
+<meta property="og:updated_time" content="2017-09-16T15:49:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dagger 学习入门">
 <meta name="twitter:description" content="目前android最火的架构就是MVP+Dagger+Retrofit+Rxjava，技术迭代真的是很快啊，程序猿这个职业，需要我们抱着终身学习的热情在互联网急速发展的浪潮中追逐最新的技术，提高开发效率和我们的核心竞争力，好吧，一不小心又灌了一口鸡汤。 架构在大型项目中是很重要的，一个好的架构有着高度的可扩展性，可维护性，低耦合，高聚合，而Dagger正是为了解耦而生，主要是通过依赖注入去实现。">
@@ -431,13 +431,17 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span> (modules = LoginModelFactory.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LoginModelComponent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity mainActivity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>在MainActivity中，将loginModel用@Inject注解，并增加一句代码实现注入</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Inject</span></div><div class="line">LoginModel loginModel;</div></pre></td></tr></table></figure>
-<p>//开始注入<br>DaggerLoginModelComponent.create().inject(this);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">注：修改后的完整代码就不再贴了，完整代码已打包上传，文末有传送门。</div><div class="line"></div><div class="line">至此，Dagger的基本使用结束，我们发现loginModel注入成功，`loginModel.checkUserName(&quot;admin&quot;)`成功调用，并没有抛异常。</div><div class="line"></div><div class="line">下面介绍另一种实现方法。</div><div class="line"></div><div class="line">## @Provides注解实现</div><div class="line"></div><div class="line">先取消LoginModel构造方法的注解。</div><div class="line"></div><div class="line">前面说过@Provides必须在 Module 中，这里我们用@Module注解的类是LoginModelFactory，我们在LoginModelFactory中增加一个方法，生成LoginModel对象，注意用@Provides注解。</div><div class="line"></div><div class="line">​```java</div><div class="line"> @Provides</div><div class="line"> LoginModel provideLoginModel()&#123;</div><div class="line">      return new LoginModel();</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Inject</span></div><div class="line">LoginModel loginModel;</div><div class="line"></div><div class="line"><span class="comment">//开始注入</span></div><div class="line">DaggerLoginModelComponent.create().inject(<span class="keyword">this</span>);</div></pre></td></tr></table></figure>
 </li>
 </ul>
+<p>注：修改后的完整代码就不再贴了，完整代码已打包上传，文末有传送门。</p>
+<p>至此，Dagger的基本使用结束，我们发现loginModel注入成功，<code>loginModel.checkUserName(&quot;admin&quot;)</code>成功调用，并没有抛异常。</p>
+<p>下面介绍另一种实现方法。</p>
+<h2 id="Provides注解实现"><a href="#Provides注解实现" class="headerlink" title="@Provides注解实现"></a>@Provides注解实现</h2><p>先取消LoginModel构造方法的注解。</p>
+<p>前面说过@Provides必须在 Module 中，这里我们用@Module注解的类是LoginModelFactory，我们在LoginModelFactory中增加一个方法，生成LoginModel对象，注意用@Provides注解。</p>
+<p>​<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Provides</span></div><div class="line"><span class="function">LoginModel <span class="title">provideLoginModel</span><span class="params">()</span></span>&#123;</div><div class="line">     <span class="keyword">return</span> <span class="keyword">new</span> LoginModel();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>这时主Activity的那句注入代码<code>DaggerLoginModelComponent.create().inject(this);</code>报错了，因为这次我们采用的不是注解构造方法的实现方式，而是采用@Provides注解，所以修改如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DaggerLoginModelComponent.builder()</div><div class="line">               .loginModelFactory(<span class="keyword">new</span> LoginModelFactory(<span class="keyword">this</span>))</div><div class="line">               .build()</div><div class="line">               .inject(<span class="keyword">this</span>);</div></pre></td></tr></table></figure>
+<p>​<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DaggerLoginModelComponent.builder()</div><div class="line">               .loginModelFactory(<span class="keyword">new</span> LoginModelFactory(<span class="keyword">this</span>))</div><div class="line">               .build()</div><div class="line">               .inject(<span class="keyword">this</span>);</div></pre></td></tr></table></figure></p>
 <p>这时我们发现loginModel依然注入成功，<code>loginModel.checkUserName(&quot;admin&quot;)</code>成功调用，也并没有抛异常。</p>
 <p>接下来是比较常用的场景。</p>
 <h1 id="与MVP架构结合"><a href="#与MVP架构结合" class="headerlink" title="与MVP架构结合"></a>与MVP架构结合</h1><p>按传统mvp的架构，我们现在有了M层的接口，M层的实现，还需要V层的接口和V层的实现，以及P层的实现，如果有必要还有P层的接口。</p>
@@ -582,7 +586,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -639,7 +643,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入的场景"><span class="nav-number">1.</span> <span class="nav-text">依赖注入的场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dagger常用注解"><span class="nav-number">2.</span> <span class="nav-text">Dagger常用注解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dagger注入过程"><span class="nav-number">3.</span> <span class="nav-text">Dagger注入过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dagger的基本用法"><span class="nav-number">4.</span> <span class="nav-text">Dagger的基本用法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Inject注解构造方法"><span class="nav-number">4.1.</span> <span class="nav-text">@Inject注解构造方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#与MVP架构结合"><span class="nav-number">5.</span> <span class="nav-text">与MVP架构结合</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入的场景"><span class="nav-number">1.</span> <span class="nav-text">依赖注入的场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dagger常用注解"><span class="nav-number">2.</span> <span class="nav-text">Dagger常用注解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dagger注入过程"><span class="nav-number">3.</span> <span class="nav-text">Dagger注入过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dagger的基本用法"><span class="nav-number">4.</span> <span class="nav-text">Dagger的基本用法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Inject注解构造方法"><span class="nav-number">4.1.</span> <span class="nav-text">@Inject注解构造方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Provides注解实现"><span class="nav-number">4.2.</span> <span class="nav-text">@Provides注解实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#与MVP架构结合"><span class="nav-number">5.</span> <span class="nav-text">与MVP架构结合</span></a></li></ol></div>
             
 
           </div>
