@@ -296,6 +296,184 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/03/GoogleArchitectureStudy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/10/03/GoogleArchitectureStudy/" itemprop="url">
+                  Android Architecture Components学习
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-03T13:58:58+08:00">
+                2017-10-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/10/03/GoogleArchitectureStudy/" class="leancloud_visitors" data-flag-title="Android Architecture Components学习">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>Architecture Components 是在 2017 年 Google I/O 大会上，Google 官方推出的一个构建 Android 应用架构的库。它可以帮你避免在 Android 应用开发中常见的一些问题，比如：内存泄露，管理组件生命周期等等，帮助你去构建一个健壮，易测，可维护的应用。Now available in preview目前的版本还是一个预览版，但是我们依然可以去了解一下。</p>
+<p>Google认为在 Android 中，应用间的这种跳跃切换行为很普遍，应用程序必须把这些问题都正确的处理好。移动设备的硬件资源是很有限的，在任何时候系统都可能杀掉一些应用去释放一些资源给新的应用。那么你的应用组件的创建和销毁是不完全可控的，它可能在任何时候由于用户或者系统的行为而触发。应用组件的生命周期也不是完全由你掌控的，所以不应该存储一些数据或者状态在应用组件中，应用组件之间也不应该彼此依赖。</p>
+<hr>
+<h1 id="架构原则"><a href="#架构原则" class="headerlink" title="架构原则"></a>架构原则</h1><ol>
+<li>应用中的关注点分离。不应该在一个Activity或者Fragment中写所有的代码。任何与 UI 或者交互无关的代码都不应该存在这些类中。保证他们尽可能的职责单一化将会使我们避免很多生命周期相关的问题。因为Android系统可能会随时由于用户的行为或者系统状态（比如剩余内存过低）而销毁你的应用组件，减少组件之间的依赖可以提供一个稳定的用户体验。</li>
+<li>应该采用Model驱动UI的方式，最好是一个可持久化的模型。满足以下两个条件：<ul>
+<li>如果系统销毁我们的应用，用户不会为此而导致丢失数据。</li>
+<li>在网络状况不好甚至断网的情况下，我们的应用仍然可以继续工作。</li>
+</ul>
+</li>
+</ol>
+<p>Model是专门负责为我们的应用处理和存储数据的。完全独立于View和其他应用中的组件，所以不存在生命周期相关的问题。保证UI部分的代码足够简单，没有业务逻辑，使Model管理数据的职责明确，这样更容易测试，而且稳定性更高。</p>
+<h1 id="框架介绍"><a href="#框架介绍" class="headerlink" title="框架介绍"></a>框架介绍</h1><h2 id="生命周期的处理"><a href="#生命周期的处理" class="headerlink" title="生命周期的处理"></a>生命周期的处理</h2><p>在 android.arch.lifecycle包中提供了生命周期感知的组件的类和接口，这些组件可以根据 Activity/Fragment 的生命周期自动调整它的行为。</p>
+<ul>
+<li>LifecycleOwner：是一个具有单一方法的接口。如果一个类实现了此接口，则该类中需要持有一个Lifecycle对象，并通过 LifecycleOwner#getLifecycle()方法返回该对象。代码如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> LifecycleRegistry mRegistry = <span class="keyword">new</span> LifecycleRegistry(<span class="keyword">this</span>);</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> LifecycleRegistry <span class="title">getLifecycle</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mRegistry;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果我们需要在Activity的生命周期的某些状态中对一些工具类做对应的处理，按以前的写法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyListener</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyListener</span><span class="params">(Callback callback)</span> </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">  </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">enable</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callback</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">onLocation</span><span class="params">(<span class="keyword">long</span> longtitude ,<span class="keyword">long</span> latitude)</span></span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> MyListener myListener;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        myListener = <span class="keyword">new</span> MyListener(<span class="keyword">new</span> MyListener.Callback() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLocation</span><span class="params">(<span class="keyword">long</span> longtitude, <span class="keyword">long</span> latitude)</span> </span>&#123;</div><div class="line">                Log.d(TAG, <span class="string">"onLocation: "</span> +longtitude+<span class="string">","</span>+latitude);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onStart();</div><div class="line">         myListener.start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onStop();</div><div class="line">        myListener.stop();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>定义一个位置监听类MyLocationListener，定义它在MyActivity生命周期的onStart和onStop中需要执行的方法，start()和stop()，接着在MyActivity的对应状态中调用。</p>
+<p>如果我们让工具类实现LifecycleObserver接口，我们需要注入MyActivity的生命周期对象Lifecycle，那么我们只需要增加注解来调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyListener</span> <span class="keyword">implements</span> <span class="title">LifecycleObserver</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG=<span class="string">"MyListener"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> enabled = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">private</span> Callback callback;</div><div class="line">    <span class="keyword">private</span> Lifecycle lifecycle;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyListener</span><span class="params">(Lifecycle lifecycle, Callback callback)</span> </span>&#123;</div><div class="line">       <span class="keyword">this</span>.lifecycle=lifecycle;</div><div class="line">       <span class="keyword">this</span>.callback =callback;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@OnLifecycleEvent</span>(Lifecycle.Event.ON_START)</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>&#123;</div><div class="line">        Log.d(TAG, <span class="string">"start: "</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@OnLifecycleEvent</span>(Lifecycle.Event.ON_STOP)</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>&#123;</div><div class="line">        Log.d(TAG, <span class="string">"stop: "</span>);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">enable</span><span class="params">()</span> </span>&#123;</div><div class="line">        enabled = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">if</span>(lifecycle.getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED))&#123;</div><div class="line">            getLocation();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//模拟位置获取</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getLocation</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Thread.sleep(<span class="number">1000</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">long</span> longtitude = (<span class="keyword">long</span>) (Math.random()*<span class="number">100</span>);</div><div class="line">        <span class="keyword">long</span> latitude = (<span class="keyword">long</span>) (Math.random()*<span class="number">100</span>);</div><div class="line">        callback.onLocation(longtitude,latitude);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callback</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">onLocation</span><span class="params">(<span class="keyword">long</span> longtitude ,<span class="keyword">long</span> latitude)</span></span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">LifecycleActivity</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> MyListener myListener;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"MainActivity"</span>;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        myListener = <span class="keyword">new</span> MyListener(<span class="keyword">this</span>, getLifecycle(), <span class="keyword">new</span> MyListener.Callback() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLocation</span><span class="params">(<span class="keyword">long</span> longtitude, <span class="keyword">long</span> latitude)</span> </span>&#123;</div><div class="line">                Log.d(TAG, <span class="string">"onLocation: "</span> +longtitude+<span class="string">","</span>+latitude);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        getLifecycle().addObserver(myListener);</div><div class="line">        myListener.enable();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在onStart中调用就增加<code>@OnLifecycleEvent(Lifecycle.Event.ON_START)</code>的注解，不用在MyActivity中调用了。<br>MyActivity继承了LifecycleActivity，而LifecycleActivity已经实现了LifecycleOwner的接口，这里我们需要通过getLifecycle()传入MyActivity的生命周期对象Lifecycle到工具类中即可。<br>工具类获得Lifecycle对象后可对MyActivity的周期状态进行判断，<code>Lifecycle.State.INITIALIZED</code>这个代表生命周期所有者的初始化状态。<br>当然还有其他状态<code>CREATED</code> <code>DESTROYED</code>  <code>RESUMED</code> <code>STARTED</code></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/17/DataBindingStudy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -562,184 +740,6 @@
 <p>优点：解决界面与业务分离问题，简化代码，可提高开发效率。</p>
 <p>缺点：错误提示很难定位，XML中数据捆绑的代码编辑提示不够智能。</p>
 <p>我已经把所有例子的完整代码打包上传，想查看demo源码的朋友，这里有<a href="https://github.com/jessieeeee/DataBindingStudy" target="_blank" rel="external">传送门</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/16/GoogleArchitectureStudy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/09/16/GoogleArchitectureStudy/" itemprop="url">
-                  Android Architecture Components学习
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-16T13:58:58+08:00">
-                2017-09-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/09/16/GoogleArchitectureStudy/" class="leancloud_visitors" data-flag-title="Android Architecture Components学习">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>Architecture Components 是在 2017 年 Google I/O 大会上，Google 官方推出的一个构建 Android 应用架构的库。它可以帮你避免在 Android 应用开发中常见的一些问题，比如：内存泄露，管理组件生命周期等等，帮助你去构建一个健壮，易测，可维护的应用。Now available in preview目前的版本还是一个预览版，但是我们依然可以去了解一下。</p>
-<p>Google认为在 Android 中，应用间的这种跳跃切换行为很普遍，应用程序必须把这些问题都正确的处理好。移动设备的硬件资源是很有限的，在任何时候系统都可能杀掉一些应用去释放一些资源给新的应用。那么你的应用组件的创建和销毁是不完全可控的，它可能在任何时候由于用户或者系统的行为而触发。应用组件的生命周期也不是完全由你掌控的，所以不应该存储一些数据或者状态在应用组件中，应用组件之间也不应该彼此依赖。</p>
-<hr>
-<h1 id="架构原则"><a href="#架构原则" class="headerlink" title="架构原则"></a>架构原则</h1><ol>
-<li>应用中的关注点分离。不应该在一个Activity或者Fragment中写所有的代码。任何与 UI 或者交互无关的代码都不应该存在这些类中。保证他们尽可能的职责单一化将会使我们避免很多生命周期相关的问题。因为Android系统可能会随时由于用户的行为或者系统状态（比如剩余内存过低）而销毁你的应用组件，减少组件之间的依赖可以提供一个稳定的用户体验。</li>
-<li>应该采用Model驱动UI的方式，最好是一个可持久化的模型。满足以下两个条件：<ul>
-<li>如果系统销毁我们的应用，用户不会为此而导致丢失数据。</li>
-<li>在网络状况不好甚至断网的情况下，我们的应用仍然可以继续工作。</li>
-</ul>
-</li>
-</ol>
-<p>Model是专门负责为我们的应用处理和存储数据的。完全独立于View和其他应用中的组件，所以不存在生命周期相关的问题。保证UI部分的代码足够简单，没有业务逻辑，使Model管理数据的职责明确，这样更容易测试，而且稳定性更高。</p>
-<h1 id="框架介绍"><a href="#框架介绍" class="headerlink" title="框架介绍"></a>框架介绍</h1><h2 id="生命周期的处理"><a href="#生命周期的处理" class="headerlink" title="生命周期的处理"></a>生命周期的处理</h2><p>在 android.arch.lifecycle包中提供了生命周期感知的组件的类和接口，这些组件可以根据 Activity/Fragment 的生命周期自动调整它的行为。</p>
-<ul>
-<li>LifecycleOwner：是一个具有单一方法的接口。如果一个类实现了此接口，则该类中需要持有一个Lifecycle对象，并通过 LifecycleOwner#getLifecycle()方法返回该对象。代码如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> LifecycleRegistry mRegistry = <span class="keyword">new</span> LifecycleRegistry(<span class="keyword">this</span>);</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> LifecycleRegistry <span class="title">getLifecycle</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mRegistry;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>如果我们需要在Activity的生命周期的某些状态中对一些工具类做对应的处理，按以前的写法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyListener</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyListener</span><span class="params">(Callback callback)</span> </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">  </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">enable</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callback</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">onLocation</span><span class="params">(<span class="keyword">long</span> longtitude ,<span class="keyword">long</span> latitude)</span></span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> MyListener myListener;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        myListener = <span class="keyword">new</span> MyListener(<span class="keyword">new</span> MyListener.Callback() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLocation</span><span class="params">(<span class="keyword">long</span> longtitude, <span class="keyword">long</span> latitude)</span> </span>&#123;</div><div class="line">                Log.d(TAG, <span class="string">"onLocation: "</span> +longtitude+<span class="string">","</span>+latitude);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onStart();</div><div class="line">         myListener.start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onStop();</div><div class="line">        myListener.stop();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>定义一个位置监听类MyLocationListener，定义它在MyActivity生命周期的onStart和onStop中需要执行的方法，start()和stop()，接着在MyActivity的对应状态中调用。</p>
-<p>如果我们让工具类实现LifecycleObserver接口，我们需要注入MyActivity的生命周期对象Lifecycle，那么我们只需要增加注解来调用。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyListener</span> <span class="keyword">implements</span> <span class="title">LifecycleObserver</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG=<span class="string">"MyListener"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> enabled = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">private</span> Callback callback;</div><div class="line">    <span class="keyword">private</span> Lifecycle lifecycle;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyListener</span><span class="params">(Lifecycle lifecycle, Callback callback)</span> </span>&#123;</div><div class="line">       <span class="keyword">this</span>.lifecycle=lifecycle;</div><div class="line">       <span class="keyword">this</span>.callback =callback;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@OnLifecycleEvent</span>(Lifecycle.Event.ON_START)</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>&#123;</div><div class="line">        Log.d(TAG, <span class="string">"start: "</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@OnLifecycleEvent</span>(Lifecycle.Event.ON_STOP)</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>&#123;</div><div class="line">        Log.d(TAG, <span class="string">"stop: "</span>);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">enable</span><span class="params">()</span> </span>&#123;</div><div class="line">        enabled = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">if</span>(lifecycle.getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED))&#123;</div><div class="line">            getLocation();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//模拟位置获取</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getLocation</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Thread.sleep(<span class="number">1000</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">long</span> longtitude = (<span class="keyword">long</span>) (Math.random()*<span class="number">100</span>);</div><div class="line">        <span class="keyword">long</span> latitude = (<span class="keyword">long</span>) (Math.random()*<span class="number">100</span>);</div><div class="line">        callback.onLocation(longtitude,latitude);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callback</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">onLocation</span><span class="params">(<span class="keyword">long</span> longtitude ,<span class="keyword">long</span> latitude)</span></span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">LifecycleActivity</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> MyListener myListener;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"MainActivity"</span>;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        myListener = <span class="keyword">new</span> MyListener(<span class="keyword">this</span>, getLifecycle(), <span class="keyword">new</span> MyListener.Callback() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLocation</span><span class="params">(<span class="keyword">long</span> longtitude, <span class="keyword">long</span> latitude)</span> </span>&#123;</div><div class="line">                Log.d(TAG, <span class="string">"onLocation: "</span> +longtitude+<span class="string">","</span>+latitude);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        getLifecycle().addObserver(myListener);</div><div class="line">        myListener.enable();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在onStart中调用就增加<code>@OnLifecycleEvent(Lifecycle.Event.ON_START)</code>的注解，不用在MyActivity中调用了。<br>MyActivity继承了LifecycleActivity，而LifecycleActivity已经实现了LifecycleOwner的接口，这里我们需要通过getLifecycle()传入MyActivity的生命周期对象Lifecycle到工具类中即可。<br>工具类获得Lifecycle对象后可对MyActivity的周期状态进行判断，<code>Lifecycle.State.INITIALIZED</code>这个代表生命周期所有者的初始化状态。<br>当然还有其他状态<code>CREATED</code> <code>DESTROYED</code>  <code>RESUMED</code> <code>STARTED</code></p>
 
           
         
