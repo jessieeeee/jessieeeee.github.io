@@ -100,7 +100,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/10/10/react-native-issue/index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="随着近几年web前端的火热，纯原生的开发需求逐渐减少，混合开发也变得越来越流行。连最近刷论坛也传着不会前端的android开发不是好的开发者这么一句话。上一个项目快要结束，最近也闲下来了，带着对前端的好奇和提升自身技术的想法，入了混合开发的坑。react-native是Facebook打造的一款开源的跨平台移动应用开发框架，作为最火的跨平台移动应用开发开发框架，官网上写着Learn once,">
-<meta property="og:updated_time" content="2017-12-04T13:55:35.263Z">
+<meta property="og:updated_time" content="2018-01-20T13:26:47.440Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="react-native issue">
 <meta name="twitter:description" content="随着近几年web前端的火热，纯原生的开发需求逐渐减少，混合开发也变得越来越流行。连最近刷论坛也传着不会前端的android开发不是好的开发者这么一句话。上一个项目快要结束，最近也闲下来了，带着对前端的好奇和提升自身技术的想法，入了混合开发的坑。react-native是Facebook打造的一款开源的跨平台移动应用开发框架，作为最火的跨平台移动应用开发开发框架，官网上写着Learn once,">
@@ -425,6 +425,18 @@
 <p>最后的解决方案是：</p>
 <p>在android设备的菜单中选择最后一个选项，配置编译机器的ip地址和端口号8081。</p>
 <p>注意：6.0以上的模拟器不要忘记连上wifi</p>
+<p>###记2017.12.20爬坑 </p>
+<p>当你的app有多张图片时，如果你发现在android机上某些图片显示不出，不管是嵌套在需要loadmore的listview,还是性能更高的升级版flatlist以及scrollview，这种类似图片长列表加载到固定页数，后面偶尔只能显示出一两张这种问题，是由于内存问题导致的，最简单的解决办法，分配更大的堆内存，在Android的AndroidManifest配置文件中开启largeHeap，在<code>application</code>标签下添加<code>android:largeHeap=&quot;true&quot;</code>即可，整个过程没有任何警告和错误，真的是太坑了。</p>
+<h3 id="记2018-1-18爬坑"><a href="#记2018-1-18爬坑" class="headerlink" title="记2018.1.18爬坑"></a>记2018.1.18爬坑</h3><p>react-native Android真机调试技巧：</p>
+<p>目前网上这块的资料比较少，基本都是如官网所说摇一摇或者是通过adb命令发送一个双击R的输入事件</p>
+<p>然而这并不实用，真机调试的时候经常都是连着数据线，每次reload都要摇一摇触发难度系数比较高，输入adb命令显得过于麻烦。实际上我们使用reactnative绘制的activity都是继承了ReactActivity，查看一下源码，它重写了按键监听，我们可以看到这样的代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyUp</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> mDelegate.onKeyUp(keyCode, event) || <span class="keyword">super</span>.onKeyUp(keyCode, event);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们点击进去<code>mDelegate.onKeyUp(keyCode, event)</code>继续跟踪，可以看到</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyUp</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (getReactNativeHost().hasInstance() &amp;&amp; getReactNativeHost().getUseDeveloperSupport()) &#123;</div><div class="line">    <span class="keyword">if</span> (keyCode == KeyEvent.KEYCODE_MENU) &#123;</div><div class="line">      getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();</div><div class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">boolean</span> didDoubleTapR = Assertions.assertNotNull(mDoubleTapReloadRecognizer)</div><div class="line">      .didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());</div><div class="line">    <span class="keyword">if</span> (didDoubleTapR) &#123;</div><div class="line">      getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();</div><div class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所以我们点菜单键调用的是<code>getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();</code>弹出调试菜单。</p>
+<p>我们双击R键，调用的是<code>getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();</code>进行reload刷新。</p>
+<p>这两个方法在ReactActivity直接调用，纯react-native搭建的项目，我们可以在onCreate时调用方便调试。</p>
+<p>如果是在混合开发的项目，onCreate方法中我们有自己的ReactInstanceManager，可以直接调用 <code>mReactInstanceManager.getDevSupportManager().handleReloadJS();</code>菜单弹出也一样。</p>
 
       
     </div>
@@ -551,7 +563,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -562,7 +574,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -573,7 +585,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -608,7 +620,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#xcode编译时报错"><span class="nav-number">1.</span> <span class="nav-text">xcode编译时报错</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#android-studio报错"><span class="nav-number">2.</span> <span class="nav-text">android studio报错</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编译报错"><span class="nav-number">2.1.</span> <span class="nav-text">编译报错</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击菜单刷新报错"><span class="nav-number">2.2.</span> <span class="nav-text">点击菜单刷新报错</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#xcode编译时报错"><span class="nav-number">1.</span> <span class="nav-text">xcode编译时报错</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#android-studio报错"><span class="nav-number">2.</span> <span class="nav-text">android studio报错</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编译报错"><span class="nav-number">2.1.</span> <span class="nav-text">编译报错</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击菜单刷新报错"><span class="nav-number">2.2.</span> <span class="nav-text">点击菜单刷新报错</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#记2018-1-18爬坑"><span class="nav-number">2.2.1.</span> <span class="nav-text">记2018.1.18爬坑</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -631,7 +643,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
