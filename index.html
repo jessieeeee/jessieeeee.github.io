@@ -271,6 +271,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/31/Ubuntu-start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/31/Ubuntu-start/" itemprop="url">Ubuntu start</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-31T01:47:31+08:00">
+                2018-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/31/Ubuntu-start/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/31/Ubuntu-start/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="搭建Ubuntu下的开发环境"><a href="#搭建Ubuntu下的开发环境" class="headerlink" title="搭建Ubuntu下的开发环境"></a>搭建Ubuntu下的开发环境</h1><hr>
+<p>最近有点闲暇时间，厌倦了windows开发环境，想尝试一下ubuntu下的开发环境。本人Android开发者，也写一点前端，以前家里是mac开发环境，公司是windows开发环境，现在打算把公司的开发环境改为ubuntu，之前也看过ubuntu下搭建Android开发环境的文章，即使这样，也踩了不少的坑，折腾了几天，总算把环境搭建起来了，基本稳定。总的来说ubuntu下的开发环境不像windows和mac那么好搭建，坑点略多，但是搭建成功后运行速度是非常可观的，比起windows快了不少，也不枉费花了这么多时间。接下来总结一下ubuntu下开发的常用软件，插件，以及可能遇到的坑点。</p>
+<hr>
+<h1 id="安装系统遇到的问题"><a href="#安装系统遇到的问题" class="headerlink" title="安装系统遇到的问题"></a>安装系统遇到的问题</h1><p>安装系统流程比较普通，分区方案网上有很多，不过要注意两点</p>
+<h2 id="安装英文版的系统"><a href="#安装英文版的系统" class="headerlink" title="安装英文版的系统"></a>安装英文版的系统</h2><p>即使不习惯英文系统也应该在安装系统时选择英文，安装完了再改回中文，因为如果是安装中文版的系统，文件夹的名称会变成下载，文档，音乐，图片．．．由于ubuntu很多时候用命令行，导致命令行输入经常切换中文不方便，我第一次安装的时候手快选了中文版，以为后面可以改，然而这个目录名是安装系统的时候就建好了的，第二次果断安装英文版</p>
+<h2 id="分区的坑"><a href="#分区的坑" class="headerlink" title="分区的坑"></a>分区的坑</h2><p>ubuntu虽然可以挂载ntfs分区，但是ide在读取工程目录的时候是只读取/下面的，所以根目录的分区一定不能小</p>
+<h1 id="卸载系统自带的软件"><a href="#卸载系统自带的软件" class="headerlink" title="卸载系统自带的软件"></a>卸载系统自带的软件</h1><p>有些软件系统自带，但是并不好用或者不会用到的可以卸载掉<br>以下是卸载清单<br>libreoffice-common libreoffice（可以换 WPS）<br>unity-webapps-common Amazon 链接<br>totem 自带的播放器<br>rhythmbox 自带的音乐播放器<br>empathy 自带的即时聊天应用<br>brasero 自带的光盘刻录器<br>simple-scan 扫描仪<br>gnome-mahjongg 对对碰游戏<br>aisleriot 纸牌游戏<br>gnome-mines 扫雷游戏<br>cheese webcam 应用<br>gnome-sudoku 数独游戏<br>transmission-common BT 客户端<br>gnome-orca 屏幕阅读<br>webbrowser-app 自带的浏览器（这个太难用了，有chrome 和 Firefox）<br>landscape-client-ui-install landscape 远程控制软件<br>deja-dup 备份<br>onboard 屏幕键盘</p>
+<p>apt-get remove –purge xxx # 移除应用及配置<br>apt-get autoremove # 移除没用的包</p>
+<h1 id="设置中文输入法"><a href="#设置中文输入法" class="headerlink" title="设置中文输入法"></a>设置中文输入法</h1><p>sudo add-apt-repository ppa:fcitx-team/nightly<br>sudo apt-get update<br>安装fcitx<br>sudo apt-get install fcitx<br>安装fcitx的配置工具<br>sudo apt-get install fcitx-config-gtk<br>安装fcitx的table-all软件包<br>sudo apt-get install fcitx-table-all<br>安装输入法切换工具<br>sudo apt-get install im-switch<br>设置语言选项：将键盘输入法系统由默认的iBus设置为fcitx<br>安装了搜狗输入法后频繁崩溃，索性就用fcitx自带的，并没觉得有什么不同</p>
+<h1 id="命令行相关"><a href="#命令行相关" class="headerlink" title="命令行相关"></a>命令行相关</h1><p>bash对应配置文件为.bashrc<br>zsh对应配置文件为.zshrc<br>oh-my-zsh是基于zsh的功能做了一个扩展，方便的插件管理、主题自定义，以及漂亮的自动完成效果。比默认的bash好用</p>
+<h2 id="安装zsh"><a href="#安装zsh" class="headerlink" title="安装zsh"></a>安装zsh</h2><p>sudo apt-get install zsh</p>
+<h2 id="安装ohmyzsh"><a href="#安装ohmyzsh" class="headerlink" title="安装ohmyzsh"></a>安装ohmyzsh</h2><h3 id="git源码"><a href="#git源码" class="headerlink" title="git源码"></a>git源码</h3><p>git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh<br>cd oh-my-zsh/tools<br>./install.sh</p>
+<h3 id="curl"><a href="#curl" class="headerlink" title="curl"></a>curl</h3><p>sh -c “$(curl -fsSL <a href="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh" target="_blank" rel="external">https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh</a>)”</p>
+<h3 id="wget"><a href="#wget" class="headerlink" title="wget"></a>wget</h3><p>sh -c “$(wget <a href="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh" target="_blank" rel="external">https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh</a> -O -)”</p>
+<h2 id="修改默认shell"><a href="#修改默认shell" class="headerlink" title="修改默认shell"></a>修改默认shell</h2><p>ubuntu下默认的shell是bash，修改它为zsh&amp;ohmyzsh<br>chsh -s /bin/zsh</p>
+<h2 id="配置主题"><a href="#配置主题" class="headerlink" title="配置主题"></a>配置主题</h2><p>修改~/.zshrc中的ZSH_THEME</p>
+<h2 id="配置插件"><a href="#配置插件" class="headerlink" title="配置插件"></a>配置插件</h2><p>修改~/.zshrc中的plugins=(git bundler osx rake ruby)<br>常用插件<br>wd 快速进入<br>zsh-syntax-highlighting 语法高亮<br>zsh-autosuggestions 历史记录提示<br>svn<br>adb<br>yarn</p>
+<h2 id="更好用的terminal"><a href="#更好用的terminal" class="headerlink" title="更好用的terminal"></a>更好用的terminal</h2><p>支持f12下拉上半屏/全屏显示<br>Guake Terminal</p>
+<h2 id="图形化svn"><a href="#图形化svn" class="headerlink" title="图形化svn"></a>图形化svn</h2><p>rapidsvn</p>
+<h1 id="shadowsocks相关"><a href="#shadowsocks相关" class="headerlink" title="shadowsocks相关"></a>shadowsocks相关</h1><p>作为开发者ss是必不可少的，特别是习惯了google的，完全无法忍受没有梯子的日子，ubuntu下配置shadowsocks稍微有些麻烦。<br>首先我们要下载shadowsocks的无图形界面版本，我用过图形界面版qt5，太不稳定了。<br>sudo apt update<br>sudo apt install python-gevent python-pip<br>pip install shadowsocks<br>编辑配置文件<br>vim /etc/ss.json<br>server 服务器地址<br>server_port 端口<br>local_port 本地端口<br>password 密码<br>method 加密方式 跟服务器保持一致<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123; </div><div class="line">&quot;server&quot;:&quot;server_ip&quot;,</div><div class="line">&quot;server_port&quot;:30696,</div><div class="line">&quot;local_port&quot;:1080,</div><div class="line">&quot;password&quot;:&quot;password&quot;,</div><div class="line">&quot;timeout&quot;:600,</div><div class="line">&quot;method&quot;:&quot;rc4-md5&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>ubuntu自带开机启动项设置工具 startupapplications点击add添加<br>name和comment随意填写，command填写为sudo sslocal -c /etc/ss.json -d start<br>配置好了以后，我们需要修改本机代理，windows、mac都是不需要的</p>
+<h2 id="全部请求用代理"><a href="#全部请求用代理" class="headerlink" title="全部请求用代理"></a>全部请求用代理</h2><p>SystemSetting-&gt;Network-&gt;-&gt;NetworkProxy<br>Method设置为Ｍanual<br>sockshost 127.0.0.1 1080，然后Apply System Wide</p>
+<h2 id="添加规则，部分代理"><a href="#添加规则，部分代理" class="headerlink" title="添加规则，部分代理"></a>添加规则，部分代理</h2><p>安装genpac<br>sudo apt-get install python-pip<br>sudo pip install genpac<br>使用genpac生成autoproxy.pac规则文件<br>genpac -p “SOCKS5 127.0.0.1:1080” –output=”autoproxy.pac”<br>让系统应用规则<br>SystemSetting-&gt;Network-&gt;NetworkProxy<br>Method设置为Automatic<br>Configuration Url填”file:///home/xxx/autoproxy.pac”，然后Apply System Wide<br>chrome和firefox都要安装Proxy SwitchyOmega插件<br>方便我们设置自动切换规则</p>
+<h2 id="http代理"><a href="#http代理" class="headerlink" title="http代理"></a>http代理</h2><p>如果是命令行，很多只支持http协议的软件或者工具，我们再配置一次http代理</p>
+<h3 id="安装privoxy"><a href="#安装privoxy" class="headerlink" title="安装privoxy"></a>安装privoxy</h3><p>sudo apt-get install privoxy</p>
+<h3 id="配置privoxy"><a href="#配置privoxy" class="headerlink" title="配置privoxy"></a>配置privoxy</h3><p>打开/etc/privoxy/config<br>取消listen-address localhost:8118的代码注释<br>找到5.2节<br>加入一句<br>forward-socks5 / 127.0.0.1:1080 .<br>重启privoxy服务<br>sudo /etc/init.d/privoxy restart<br>开机自启privoxy服务<br>sudo /etc/init.d/privoxy start加入到/etc/rc.local文件中的exit 0这句之前<br>在profile中写入http代理<br>export http_proxy=”127.0.0.1:8118”<br>export https_proxy=”127.0.0.1:8118”</p>
+<h1 id="Ubuntu软件集合"><a href="#Ubuntu软件集合" class="headerlink" title="Ubuntu软件集合"></a>Ubuntu软件集合</h1><p>chrome 开发者必备浏览器，自带有firefox<br>Typora markdown编辑器<br>Shutter 截图<br>electronic wechat 微信<br>albert 快速启动lancher<br>ubuntu-tweak 清理软件<br>Redshift 自动调节屏幕色温<br>Android studio android开发者都懂<br>Webstorm 前端开发利器<br>vscode 微软出的开发神器，轻量级<br>mpv 播放器</p>
+<h1 id="wps-金山wps有linux版"><a href="#wps-金山wps有linux版" class="headerlink" title="wps 金山wps有linux版"></a>wps 金山wps有linux版</h1><p>安装后进入，报字体缺失<br>下载字体包<br>百度云<a href="http://pan.baidu.com/s/1nuS5U5b" target="_blank" rel="external">http://pan.baidu.com/s/1nuS5U5b</a> 密码：p4vz</p>
+<ol>
+<li>解压</li>
+<li>把wps_symbol_fonts目录拷贝到 /usr/share/fonts/ 目录下</li>
+<li><p>权限添加</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>cd /usr/share/fonts/</div><div class="line"><span class="meta">#</span>chmod 755 wps_symbol_fonts</div><div class="line"><span class="meta">#</span>cd /usr/share/fonts/wps_symbol_fonts</div><div class="line"><span class="meta">#</span>chmod 644 *</div></pre></td></tr></table></figure>
+</li>
+<li><p>生成缓存配置信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>cd /usr/share/fonts/wps_symbol_fonts</div><div class="line"><span class="meta">#</span>mkfontdir</div><div class="line"><span class="meta">#</span>mkfontscale</div><div class="line"><span class="meta">#</span>fc-cache</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="小程序开发工具"><a href="#小程序开发工具" class="headerlink" title="小程序开发工具"></a>小程序开发工具</h1><p>微信开发者工具(微信小程序)linux完美支持<br><a href="https://github.com/cytle/wechat_web_devtools" target="_blank" rel="external">https://github.com/cytle/wechat_web_devtools</a></p>
+<h1 id="wireshark抓包"><a href="#wireshark抓包" class="headerlink" title="wireshark抓包"></a>wireshark抓包</h1><p>app开发者必备的抓包工具，windows上有fiddler，mac上有charles，ubuntu上用wireshark<br><a href="https://blog.csdn.net/xukai871105/article/details/31008635" target="_blank" rel="external">https://blog.csdn.net/xukai871105/article/details/31008635</a></p>
+<h1 id="qq-解决方案"><a href="#qq-解决方案" class="headerlink" title="qq 解决方案"></a>qq 解决方案</h1><p>优麒麟版本的qq确实是有点老了，不仅很多字符显示不出来，而且表情发送和显示也有很多问题，目前发现最好用的版本是Wine-QQ-TIM，打包后的Wine-QQ-TIM，linux下命令行直接运行，<a href="https://github.com/askme765cs/Wine-QQ-TIM/issues/63" target="_blank" rel="external">https://github.com/askme765cs/Wine-QQ-TIM/issues/63</a></p>
+<h1 id="virtualbox-amp-genymotion"><a href="#virtualbox-amp-genymotion" class="headerlink" title="virtualbox&amp;genymotion"></a>virtualbox&amp;genymotion</h1><p>虚拟机和Android模拟器<br>在virtualbox下安装win7，解决ubuntu下无法解决的问题<br>安装virtualbox时注意安装ubuntu最新版本，如果开了intel虚拟技术，还是卡开机界面，可能是当前显卡驱动问题，不要选择opensource版本的显卡驱动<br>genymotion有个坑，如果卡死，内存分配尽量大一点</p>
+<h1 id="拾色器"><a href="#拾色器" class="headerlink" title="拾色器"></a>拾色器</h1><p>客户端，前端开发必不可少<br><a href="https://kryogenix.org/code/pick/" target="_blank" rel="external">https://kryogenix.org/code/pick/</a></p>
+<h1 id="系统备份"><a href="#系统备份" class="headerlink" title="系统备份"></a>系统备份</h1><p>remastersys这个系统备份工具不错，辛苦折腾的系统最好做个备份 <a href="https://blog.csdn.net/yaoqi_isee/article/details/73730010" target="_blank" rel="external">https://blog.csdn.net/yaoqi_isee/article/details/73730010</a></p>
+<p>目前就总结到这里，后面如果发现更好用的软件，插件，坑点会持续更新～</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/03/SimpleOne/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2206,221 +2380,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/09/Dagger-Start/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/09/Dagger-Start/" itemprop="url">Dagger 学习入门</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-09T15:01:37+08:00">
-                2017-09-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/09/09/Dagger-Start/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2017/09/09/Dagger-Start/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>目前android最火的架构就是MVP+Dagger+Retrofit+Rxjava，技术迭代真的是很快啊，程序猿这个职业，需要我们抱着终身学习的热情在互联网急速发展的浪潮中追逐最新的技术，提高开发效率和我们的核心竞争力，好吧，一不小心又灌了一口鸡汤。</p>
-<p>架构在大型项目中是很重要的，一个好的架构有着高度的可扩展性，可维护性，低耦合，高聚合，而Dagger正是为了解耦而生，主要是通过依赖注入去实现。依赖注入是一种设计模式，降低了依赖和被依赖对象之间的耦合，方便扩展和单元测试。是面向对象六大原则之一的依赖倒置原则（dependency inversion principle）比如当服务端接口未开发完时，我们可使用本地json注入做一个测试，与MVP结合可以实现更大程度的解耦，当面对需求更改时，进行更灵活的处理，避免项目的大规模修改，妈妈再也不用担心我又加班了～</p>
-<p>所以，Dagger值得我们去跳坑，在此做一个学习记录</p>
-<hr>
-<h1 id="依赖注入的场景"><a href="#依赖注入的场景" class="headerlink" title="依赖注入的场景"></a>依赖注入的场景</h1><p>依赖注入，这个名词太抽象了，实际上我们平时开发是经常用到的，只不过你不知道这个就叫依赖注入而已，通过一个类的构造函数入参引入另一个类的对象，或者是通过set方法引入另一个类的对象，就是依赖注入。</p>
-<p>比如这段代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//构造方法依赖注入</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</div><div class="line">    B b;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">A</span><span class="params">(B b)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.b = b;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//set()方法依赖注入</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</div><div class="line">    B b;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setB</span><span class="params">(B b)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.b = b;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>好吧，这么一说神秘感就没有了，Dagger2不同的地方就是通过注解的方式依赖注入的。如果有一天，产品需要更改需求，A类依赖的不是B而是C，如果我们很多地方都引用到A，并且A都需要依赖于B，那么我们的代码就需要大面积更改了，而Dagger能够让我们避免这种问题的出现。</p>
-<h1 id="Dagger常用注解"><a href="#Dagger常用注解" class="headerlink" title="Dagger常用注解"></a>Dagger常用注解</h1><p>@Inject 一般情况下是标注成员属性和构造函数，标注的成员属性不能是private，Dagger 2 中还可以标注方法，一般用于注解需要注入的对象。<br>@Module 用来标注 Module类，用来生成实例，像一个工厂，用于生成各种类的实例。<br>@Provides 只能标注方法，必须在 Module类 中，Module类对外提供实例方法的注解。<br>@Component 只能标注接口或抽象类，声明的注入接口的参数类型必须和目标类一致。Module类的构造函数入参与调用类Activity保持一致。Component一般是个接口，就是将Activity与Module类联系起来，通过它调用Module，传入当前Activity，获得Provides提供的实例，完成注入。<br>@Named:Dagger2是根据Provide方法返回类型查找对应的依赖的，如果需要注入相同类型的，但是内容不同，多态情况，这个时候就可以使用@Named进行区分。<br>@Singleton有时候，我们不需要多次创建Component，可以使用一个Component，即单例模式，这个时候就可以使用@Singleton来修饰它，这样就会以单例的模式在生成的 <code>Daggerxxxxx</code>中保存 。如果某个module也只需要使用同一个，那么也可以使用@Single来修饰provide的方法，同时也需要使用@Singleton注解使用该module的Component。</p>
-<h1 id="Dagger注入过程"><a href="#Dagger注入过程" class="headerlink" title="Dagger注入过程"></a>Dagger注入过程</h1><p>当某个变量被@Inject注解时，会先判断注解成员属性的构造函数是否被注解，（Dagger2通过Inject标记可以在需要这个类实例的时候来找到这个构造函数并把相关实例new出来），在建立Component和工厂类的情况下，直接完成注入，如果没有被注解，会通过Component查找对应的Module里的Provides方法生成。</p>
-<h1 id="Dagger的基本用法"><a href="#Dagger的基本用法" class="headerlink" title="Dagger的基本用法"></a>Dagger的基本用法</h1><p>以一个简陋的登录功能为例</p>
-<p>首先我们定义一个接口ILoginModel</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ILoginModel</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">login</span><span class="params">(String username,String password)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkUserName</span><span class="params">(String username)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkPassword</span><span class="params">(String password)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>接着我们实现这个接口，创建一个类LoginModel，这里只是模拟一下，随便写点逻辑</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginModel</span> <span class="keyword">implements</span> <span class="title">ILoginModel</span> </span>&#123;</div><div class="line">  </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">login</span><span class="params">(String username,String password)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(<span class="string">"admin"</span>.equals(username)&amp;&amp;<span class="string">"123456"</span>.equals(password))&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkUserName</span><span class="params">(String username)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(<span class="string">"admin"</span>.equals(username))&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkPassword</span><span class="params">(String password)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(<span class="string">"123456"</span>.equals(password))&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>接着在主Activity中声明这个对象，随意调用里面的一个方法比如<code>checkUserName(String username)</code></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"测试注入"</span>;</div><div class="line">    LoginModel loginModel;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        Log.d(TAG, <span class="string">"onCreate: "</span>+loginModel.checkUserName(<span class="string">"admin"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>是不是在作死呢？loginModel明显会报空指针啊，没错，loginModel没初始化必然报空指针。这里我们使用Dagger依赖注入。</p>
-<h2 id="Inject注解构造方法"><a href="#Inject注解构造方法" class="headerlink" title="@Inject注解构造方法"></a>@Inject注解构造方法</h2><ul>
-<li><p>给LoginModel增加构造方法，并使用@Inject注解</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Inject</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">LoginModel</span><span class="params">()</span></span>&#123;&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>创建一个LoginModel的实例工厂LoginModelFactory，专门负责生成LoginModel，记得用@Module注解，这里由于我们已经用@Inject注解了构造方法，所以LoginModel会直接被new出来。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Module</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginModelFactory</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">private</span> MainActivity mainActivity;</div><div class="line"></div><div class="line">  <span class="comment">//保持与需要被注入的变量所在的类名称一致</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">LoginModelFactory</span><span class="params">(MainActivity mainActivity)</span></span>&#123;</div><div class="line">      <span class="keyword">this</span>.mainActivity=mainActivity;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>创建一个关联组建LoginModelComponent，关联LoginModelFactory和MainActivity</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span> (modules = LoginModelFactory.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LoginModelComponent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity mainActivity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>在MainActivity中，将loginModel用@Inject注解，并增加一句代码实现注入</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Inject</span></div><div class="line">LoginModel loginModel;</div><div class="line"></div><div class="line"><span class="comment">//开始注入</span></div><div class="line">DaggerLoginModelComponent.create().inject(<span class="keyword">this</span>);</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>注：修改后的完整代码就不再贴了，完整代码已打包上传，文末有传送门。</p>
-<p>至此，Dagger的基本使用结束，我们发现loginModel注入成功，<code>loginModel.checkUserName(&quot;admin&quot;)</code>成功调用，并没有抛异常。</p>
-<p>下面介绍另一种实现方法。</p>
-<h2 id="Provides注解实现"><a href="#Provides注解实现" class="headerlink" title="@Provides注解实现"></a>@Provides注解实现</h2><p>先取消LoginModel构造方法的注解。</p>
-<p>前面说过@Provides必须在 Module 中，这里我们用@Module注解的类是LoginModelFactory，我们在LoginModelFactory中增加一个方法，生成LoginModel对象，注意用@Provides注解。</p>
-<p>​<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Provides</span></div><div class="line"><span class="function">LoginModel <span class="title">provideLoginModel</span><span class="params">()</span></span>&#123;</div><div class="line">     <span class="keyword">return</span> <span class="keyword">new</span> LoginModel();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这时主Activity的那句注入代码<code>DaggerLoginModelComponent.create().inject(this);</code>报错了，因为这次我们采用的不是注解构造方法的实现方式，而是采用@Provides注解，所以修改如下</p>
-<p>​<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DaggerLoginModelComponent.builder()</div><div class="line">               .loginModelFactory(<span class="keyword">new</span> LoginModelFactory(<span class="keyword">this</span>))</div><div class="line">               .build()</div><div class="line">               .inject(<span class="keyword">this</span>);</div></pre></td></tr></table></figure></p>
-<p>这时我们发现loginModel依然注入成功，<code>loginModel.checkUserName(&quot;admin&quot;)</code>成功调用，也并没有抛异常。</p>
-<p>接下来是比较常用的场景。</p>
-<h1 id="与MVP架构结合"><a href="#与MVP架构结合" class="headerlink" title="与MVP架构结合"></a>与MVP架构结合</h1><p>按传统mvp的架构，我们现在有了M层的接口，M层的实现，还需要V层的接口和V层的实现，以及P层的实现，如果有必要还有P层的接口。</p>
-<p>下面就直接贴传统mvp架构缺少的那部分代码</p>
-<p>先删除主Activity中，引用到的LoginModel对象</p>
-<p>删除或注释LoginModelComponent这个关联组件，否则会报错</p>
-<p>V层接口ILoginView</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ILoginView</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCheckUserNameResult</span><span class="params">(<span class="keyword">boolean</span> result)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCheckPasswordResult</span><span class="params">(<span class="keyword">boolean</span> result)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoginResult</span><span class="params">(<span class="keyword">boolean</span> result)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>P层实现LoginPresenter</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginPresenter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> ILoginModel iLoginModel;</div><div class="line">    <span class="keyword">private</span> ILoginView iLoginView;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LoginPresenter</span><span class="params">(ILoginModel iLoginModel,ILoginView iLoginView)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.iLoginModel=iLoginModel;</div><div class="line">        <span class="keyword">this</span>.iLoginView=iLoginView;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkPassword</span><span class="params">(String password)</span></span>&#123;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (iLoginModel.checkPassword(password)) &#123;</div><div class="line">            iLoginView.onCheckPasswordResult(<span class="keyword">true</span>);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            iLoginView.onCheckPasswordResult(<span class="keyword">false</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkUserName</span><span class="params">(String username)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(iLoginModel.checkUserName(username))&#123;</div><div class="line">            iLoginView.onCheckUserNameResult(<span class="keyword">true</span>);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            iLoginView.onCheckUserNameResult(<span class="keyword">false</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">login</span><span class="params">(String username,String password)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(iLoginModel.login(username,password))&#123;</div><div class="line">           iLoginView.onLoginResult(<span class="keyword">true</span>);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            iLoginView.onLoginResult(<span class="keyword">false</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>主Activity修改，实现ILoginView的接口，声明待注入的LoginPresenter对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> <span class="keyword">implements</span> <span class="title">ILoginView</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"测试Inject注释构造方法"</span>;</div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    LoginPresenter loginPresenter;</div><div class="line"></div><div class="line">    TextInputLayout usernameInput;</div><div class="line">    TextInputLayout passwordInput;</div><div class="line"></div><div class="line">    </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        usernameInput = (TextInputLayout) findViewById(R.id.usernameInput);</div><div class="line">        passwordInput = (TextInputLayout) findViewById(R.id.passwordInput);</div><div class="line">        <span class="comment">//开始注入</span></div><div class="line">        DaggerLoginPresenterComponent.builder()</div><div class="line">                .loginPresenterFactory(<span class="keyword">new</span> LoginPresenterFactory(<span class="keyword">this</span>))</div><div class="line">                .build()</div><div class="line">                .inject(<span class="keyword">this</span>);</div><div class="line">        EditText editUsername= (EditText) findViewById(R.id.username);</div><div class="line">        EditText editPassword= (EditText) findViewById(R.id.password);</div><div class="line">        editUsername.addTextChangedListener(<span class="keyword">new</span> TextWatcher() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeTextChanged</span><span class="params">(CharSequence charSequence, <span class="keyword">int</span> i, <span class="keyword">int</span> i1, <span class="keyword">int</span> i2)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTextChanged</span><span class="params">(CharSequence charSequence, <span class="keyword">int</span> i, <span class="keyword">int</span> i1, <span class="keyword">int</span> i2)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterTextChanged</span><span class="params">(Editable editable)</span> </span>&#123;</div><div class="line">               onChangeUsername();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        editPassword.addTextChangedListener(<span class="keyword">new</span> TextWatcher() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeTextChanged</span><span class="params">(CharSequence charSequence, <span class="keyword">int</span> i, <span class="keyword">int</span> i1, <span class="keyword">int</span> i2)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTextChanged</span><span class="params">(CharSequence charSequence, <span class="keyword">int</span> i, <span class="keyword">int</span> i1, <span class="keyword">int</span> i2)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterTextChanged</span><span class="params">(Editable editable)</span> </span>&#123;</div><div class="line">               onChangePassword();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">//点击用户名输入回调</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChangeUsername</span><span class="params">()</span></span>&#123;</div><div class="line">        String username = usernameInput.getEditText().getText().toString().trim();</div><div class="line">        <span class="comment">//密码输入框已输入</span></div><div class="line">        <span class="keyword">if</span>(!TextUtils.isEmpty(username))&#123;</div><div class="line">          loginPresenter.checkUserName(username);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//点击密码输入回调</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChangePassword</span><span class="params">()</span></span>&#123;</div><div class="line">       String password = passwordInput.getEditText().getText().toString().trim();</div><div class="line">        <span class="comment">//用户名输入框已输入</span></div><div class="line">       <span class="keyword">if</span>(!TextUtils.isEmpty(password))&#123;</div><div class="line">           loginPresenter.checkPassword(password);</div><div class="line">       &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//登录按钮点击回调</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoginClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">        hideKeyboard();</div><div class="line">        String username = usernameInput.getEditText().getText().toString().trim();</div><div class="line">        String password = passwordInput.getEditText().getText().toString().trim();</div><div class="line"></div><div class="line">        loginPresenter.login(username,password);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hideKeyboard</span><span class="params">()</span></span>&#123;</div><div class="line">        View view = getCurrentFocus();</div><div class="line">        <span class="keyword">if</span> (view != <span class="keyword">null</span>) &#123;</div><div class="line">            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).</div><div class="line">                    hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCheckUserNameResult</span><span class="params">(<span class="keyword">boolean</span> result)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(result)&#123;</div><div class="line">            usernameInput.setErrorEnabled(<span class="keyword">false</span>);</div><div class="line"></div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            usernameInput.setError(<span class="string">"用户名无效!"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCheckPasswordResult</span><span class="params">(<span class="keyword">boolean</span> result)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(result)&#123;</div><div class="line">            passwordInput.setErrorEnabled(<span class="keyword">false</span>);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            passwordInput.setError(<span class="string">"密码无效!"</span>);</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoginResult</span><span class="params">(<span class="keyword">boolean</span> result)</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span>(result)&#123;</div><div class="line">           Toast.makeText(<span class="keyword">this</span>,<span class="string">"登录成功！"</span>,Toast.LENGTH_SHORT).show();</div><div class="line">       &#125;<span class="keyword">else</span>&#123;</div><div class="line">           Toast.makeText(<span class="keyword">this</span>,<span class="string">"登录失败！"</span>,Toast.LENGTH_SHORT).show();</div><div class="line">       &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>修改了注入代码，这里我们需要新建LoginPresenter的实例工厂LoginPresenterFactory，和LoginPresenterFactory与主Activity的关联组件LoginPresenterComponent</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Module</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginPresenterFactory</span> </span>&#123;</div><div class="line">    MainActivity mainActivity;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LoginPresenterFactory</span><span class="params">(MainActivity mainActivity)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.mainActivity=mainActivity;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="function">LoginPresenter <span class="title">provideLoginPresenter</span><span class="params">(LoginModel loginModel,MainActivity mainActivity)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> LoginPresenter(loginModel,mainActivity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="function">LoginModel <span class="title">provideLoginModel</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> LoginModel();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="function">MainActivity <span class="title">proviceMainActivity</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> mainActivity;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span> (modules = LoginPresenterFactory.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LoginPresenterComponent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity mainActivity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到LoginPresenterFactory提供了3个实例方法，首先必须提供LoginPresenter的实例生成方法，其中LoginPresenter需要依赖MainActivity和LoginModel创建，所以我们可以增加两个实例的生成方法分别是provideLoginModel和proviceMainActivity，其中前者可以直接new出来，后者是通过注入方法从主Activity传进来。</p>
-<p>到此mvp与Dagger结合的例子就完成了。</p>
-<p>最后附上完整源码<a href="https://github.com/jessieeeee/DaggerDemo" target="_blank" rel="external">传送门</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2470,7 +2434,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2492,7 +2456,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
