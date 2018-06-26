@@ -261,12 +261,216 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/20/RN-Refresh-Loadmore/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/20/RN-Refresh-Loadmore/" itemprop="url">ReactNative-Refresh-Loadmore</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-20T13:35:38+08:00">
+                2018-04-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ReactNative/" itemprop="url" rel="index">
+                    <span itemprop="name">ReactNative</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/20/RN-Refresh-Loadmore/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/04/20/RN-Refresh-Loadmore/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/04/20/RN-Refresh-Loadmore/" class="leancloud_visitors" data-flag-title="ReactNative-Refresh-Loadmore">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="react-native-封装下拉刷新和加载更多"><a href="#react-native-封装下拉刷新和加载更多" class="headerlink" title="react-native-封装下拉刷新和加载更多"></a>react-native-封装下拉刷新和加载更多</h1><hr>
+<p>最近又是很长一段时间没写文章了，忙着学习webpack，react，react-router，eslint，babel，mobx，一系列框架，开源的SimpleOne项目也在持续维护，把以前的ES5语法改为ES6，移除了react-timer-mixin这个模块，当然这个项目中的某些技术点需要总结，接下来的几篇会对这些技术点做一个记录。我们的app经常会用到长列表的展示方式，显示内容过多，大多数情况会用到分页加载，滑动到列表的底部，通过加载更多的方式，显示下一页的内容，看起来是一页，其实是多页拼接的长列表。一般我们的列表都有下拉刷新，但是这些react-native没有封装好的组件，我们需要自己实现，下面详细记录实现过程，如果你有更好的实现方式，希望一起学习讨论。</p>
+<hr>
+<p>当前的效果图gif：<br><img src="http://oqujmbgen.bkt.clouddn.com//images/rn-refresh.gif"><br><img src="http://oqujmbgen.bkt.clouddn.com//images/rn-loadmore.gif"></p>
+<p>要实现下拉刷新和加载更多，需要对scrollview做一个扩展，对scrollview的滑动事件做监听和逻辑处理，利用官方的PanResponder 做手势识别，显示一个自定义的顶部下拉刷新视图，所以我们可以利用react-native现有的组件封装一个支持下拉刷新和加载更多的view来实现我们的需求。这里我们定义下拉刷新的动画是一个常见的图片旋转+文字提示。</p>
+<h1 id="自定义view封装，实现下拉刷新"><a href="#自定义view封装，实现下拉刷新" class="headerlink" title="自定义view封装，实现下拉刷新"></a>自定义view封装，实现下拉刷新</h1><p>首先，定义下拉到位时距离顶部的高度，默认下拉到位的时长，默认顶部刷新视图的高度，下拉刷新提示文字的显示状态，主要是4个状态，默认状态，正在下拉状态，下拉到位状态，和下拉释放状态。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> pullOkMargin = <span class="number">100</span>; <span class="comment">//下拉到位状态时距离顶部的高度</span></div><div class="line"><span class="keyword">const</span> defaultDuration = <span class="number">300</span>; <span class="comment">//默认时长</span></div><div class="line"><span class="keyword">const</span> defaultTopRefreshHeight = <span class="number">50</span>; <span class="comment">//顶部刷新视图的高度</span></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 提示文字的显示状态</div><div class="line"> * @type &#123;&#123;pulling: boolean, pullok: boolean, pullrelease: boolean&#125;&#125;</div><div class="line"> */</div><div class="line"><span class="keyword">const</span> defaultState = &#123;<span class="attr">pulling</span>: <span class="literal">false</span>, <span class="attr">pullok</span>: <span class="literal">false</span>, <span class="attr">pullrelease</span>: <span class="literal">false</span>&#125;; <span class="comment">//默认状态</span></div><div class="line"><span class="keyword">const</span> statePulling = &#123;<span class="attr">pulling</span>: <span class="literal">true</span>, <span class="attr">pullok</span>: <span class="literal">false</span>, <span class="attr">pullrelease</span>: <span class="literal">false</span>&#125;; <span class="comment">//正在下拉状态</span></div><div class="line"><span class="keyword">const</span> statePullok = &#123;<span class="attr">pulling</span>: <span class="literal">false</span>, <span class="attr">pullok</span>: <span class="literal">true</span>, <span class="attr">pullrelease</span>: <span class="literal">false</span>&#125;; <span class="comment">//下拉到位状态</span></div><div class="line"><span class="keyword">const</span> statePullrelease = &#123;<span class="attr">pulling</span>: <span class="literal">false</span>, <span class="attr">pullok</span>: <span class="literal">false</span>, <span class="attr">pullrelease</span>: <span class="literal">true</span>&#125;; <span class="comment">//下拉释放状态</span></div></pre></td></tr></table></figure>
+<p>接下来是定义手势判断</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//向下手势</span></div><div class="line"><span class="keyword">const</span> isDownGesture = <span class="function">(<span class="params">x, y</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">return</span> y &gt; <span class="number">0</span> &amp;&amp; (y &gt; <span class="built_in">Math</span>.abs(x));</div><div class="line">&#125;;</div><div class="line"><span class="comment">//向上手势</span></div><div class="line"><span class="keyword">const</span> isUpGesture = <span class="function">(<span class="params">x, y</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">return</span> y &lt; <span class="number">0</span> &amp;&amp; (<span class="built_in">Math</span>.abs(x) &lt; <span class="built_in">Math</span>.abs(y));</div><div class="line">&#125;;</div><div class="line"><span class="comment">//垂直方向手势</span></div><div class="line"><span class="keyword">const</span> isVerticalGesture = <span class="function">(<span class="params">x, y</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">return</span> (<span class="built_in">Math</span>.abs(x) &lt; <span class="built_in">Math</span>.abs(y));</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>定义我们自定义的组件PullScollView继承自Component，在构造函数中初始化</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">constructor</span>(props) &#123;</div><div class="line">       <span class="keyword">super</span>(props);</div><div class="line">       <span class="keyword">this</span>.defaultScrollEnabled = <span class="literal">false</span>;</div><div class="line">       <span class="keyword">this</span>.topRefreshHeight = <span class="keyword">this</span>.props.topRefreshHeight ? <span class="keyword">this</span>.props.topRefreshHeight : defaultTopRefreshHeight;</div><div class="line">       <span class="keyword">this</span>.defaultXY = &#123;<span class="attr">x</span>: <span class="number">0</span>, <span class="attr">y</span>: <span class="keyword">this</span>.topRefreshHeight * <span class="number">-1</span>&#125;;</div><div class="line">       <span class="keyword">this</span>.pullOkMargin = <span class="keyword">this</span>.props.pullOkMargin ? <span class="keyword">this</span>.props.pullOkMargin : pullOkMargin;</div><div class="line">       <span class="keyword">this</span>.state = <span class="built_in">Object</span>.assign(&#123;&#125;, props, &#123;</div><div class="line">           <span class="attr">pullPan</span>: <span class="keyword">new</span> Animated.ValueXY(<span class="keyword">this</span>.defaultXY), <span class="comment">//下拉区域</span></div><div class="line">           scrollEnabled: <span class="keyword">this</span>.defaultScrollEnabled, <span class="comment">//滚动启动</span></div><div class="line">           height: <span class="number">0</span>,</div><div class="line">           <span class="attr">spinValue</span> : <span class="keyword">new</span> Animated.Value(<span class="number">0</span>), <span class="comment">//旋转值</span></div><div class="line">       &#125;);</div><div class="line">       <span class="comment">// 滚动监听</span></div><div class="line">       <span class="keyword">this</span>.onScroll = <span class="keyword">this</span>.onScroll.bind(<span class="keyword">this</span>);</div><div class="line">       <span class="comment">// 布局监听</span></div><div class="line">       <span class="keyword">this</span>.onLayout = <span class="keyword">this</span>.onLayout.bind(<span class="keyword">this</span>);</div><div class="line">       <span class="comment">// 下拉状态监听</span></div><div class="line">       <span class="keyword">this</span>.isPullState = <span class="keyword">this</span>.isPullState.bind(<span class="keyword">this</span>);</div><div class="line">       <span class="comment">// 下拉未到位，重置回调</span></div><div class="line">       <span class="keyword">this</span>.resetDefaultXYHandler = <span class="keyword">this</span>.resetDefaultXYHandler.bind(<span class="keyword">this</span>);</div><div class="line">       <span class="comment">// 数据加载完，重置归位</span></div><div class="line">       <span class="keyword">this</span>.resolveHandler = <span class="keyword">this</span>.resolveHandler.bind(<span class="keyword">this</span>);</div><div class="line">       <span class="comment">// 顶部绘制</span></div><div class="line">       <span class="keyword">this</span>.renderTopRefresh = <span class="keyword">this</span>.renderTopRefresh.bind(<span class="keyword">this</span>);</div><div class="line">       <span class="comment">// 默认顶部绘制</span></div><div class="line">       <span class="keyword">this</span>.defaultTopRefreshRender = <span class="keyword">this</span>.defaultTopRefreshRender.bind(<span class="keyword">this</span>);</div><div class="line">       <span class="comment">// 多点触摸识别</span></div><div class="line">       <span class="keyword">this</span>.panResponder = PanResponder.create(&#123;</div><div class="line">           <span class="attr">onStartShouldSetPanResponder</span>: <span class="keyword">this</span>.onShouldSetPanResponder.bind(<span class="keyword">this</span>),</div><div class="line">           <span class="attr">onMoveShouldSetPanResponder</span>: <span class="keyword">this</span>.onShouldSetPanResponder.bind(<span class="keyword">this</span>),</div><div class="line">           <span class="attr">onPanResponderGrant</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;&#125;, <span class="comment">// 开始手势操作。给用户一些视觉反馈，让他们知道发生了什么事情！</span></div><div class="line">           onPanResponderMove: <span class="keyword">this</span>.onPanResponderMove.bind(<span class="keyword">this</span>),<span class="comment">// 最近一次的移动距离为gestureState.move&#123;X,Y&#125;</span></div><div class="line">           onPanResponderRelease: <span class="keyword">this</span>.onPanResponderRelease.bind(<span class="keyword">this</span>),<span class="comment">//用户放开了所有的触摸点，且此时视图已经成为了响应者。</span></div><div class="line">           onPanResponderTerminate: <span class="keyword">this</span>.onPanResponderRelease.bind(<span class="keyword">this</span>),<span class="comment">// 另一个组件已经成为了新的响应者，所以当前手势将被取消。</span></div><div class="line">       &#125;);</div><div class="line">       <span class="keyword">this</span>.setPullState(defaultState);<span class="comment">// 设置提示文字的默认状态</span></div><div class="line">       <span class="comment">// 初始化刷新视图中的转圈动画</span></div><div class="line">       <span class="keyword">this</span>.animation=Animated.timing(</div><div class="line">           <span class="keyword">this</span>.state.spinValue,</div><div class="line">           &#123;</div><div class="line">               <span class="attr">toValue</span>: <span class="number">1</span>,</div><div class="line">               <span class="attr">duration</span>: <span class="number">3000</span>,</div><div class="line">               <span class="attr">easing</span>: Easing.linear</div><div class="line">           &#125;</div><div class="line">       );</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>PanResponder手势响应回调中的处理</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 手势响应回调，是否处理</span></div><div class="line">  onShouldSetPanResponder(e, gesture) &#123;</div><div class="line">      <span class="comment">//非垂直手势不处理</span></div><div class="line">      <span class="keyword">if</span> (!isVerticalGesture(gesture.dx, gesture.dy)) &#123;</div><div class="line">          <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (!<span class="keyword">this</span>.state.scrollEnabled) &#123;</div><div class="line">          <span class="keyword">this</span>.lastY = <span class="keyword">this</span>.state.pullPan.y._value;</div><div class="line">          <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>PanResponder手势移动回调中的处理</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 手势移动的处理</span></div><div class="line">    onPanResponderMove(e, gesture) &#123;</div><div class="line">        <span class="keyword">if</span> (isUpGesture(gesture.dx, gesture.dy)) &#123; <span class="comment">//向上手势</span></div><div class="line">            <span class="comment">// 如果处于下拉状态，重置</span></div><div class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.isPullState()) &#123;</div><div class="line">                <span class="keyword">this</span>.resetDefaultXYHandler();</div><div class="line">            &#125; <span class="keyword">else</span> &#123; <span class="comment">// 恢复到默认位置</span></div><div class="line">                <span class="keyword">this</span>.scroll.scrollTo(&#123;<span class="attr">x</span>:<span class="number">0</span>, <span class="attr">y</span>: gesture.dy * <span class="number">-1</span>&#125;);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDownGesture(gesture.dx, gesture.dy)) &#123; <span class="comment">//向下手势</span></div><div class="line">            <span class="comment">// 设置下拉区域</span></div><div class="line">            <span class="keyword">this</span>.state.pullPan.setValue(&#123;<span class="attr">x</span>: <span class="keyword">this</span>.defaultXY.x, <span class="attr">y</span>: <span class="keyword">this</span>.lastY + gesture.dy / <span class="number">2</span>&#125;);</div><div class="line">            <span class="keyword">if</span> (gesture.dy &lt; <span class="keyword">this</span>.topRefreshHeight + <span class="keyword">this</span>.pullOkMargin) &#123; <span class="comment">//正在下拉</span></div><div class="line">                <span class="comment">// 之前状态不是正在下拉状态，调用正在下拉回调</span></div><div class="line">                <span class="keyword">if</span> (!<span class="keyword">this</span>.curState.pulling) &#123;</div><div class="line">                    <span class="keyword">this</span>.props.onPulling &amp;&amp; <span class="keyword">this</span>.props.onPulling();</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// 记录当前为下拉状态</span></div><div class="line">                <span class="keyword">this</span>.setPullState(statePulling);</div><div class="line">            &#125; <span class="keyword">else</span> &#123; <span class="comment">//下拉到位</span></div><div class="line">                <span class="comment">// 之前状态不是下拉到位状态，调用下拉到位回调</span></div><div class="line">                <span class="keyword">if</span> (!<span class="keyword">this</span>.state.pullok) &#123;</div><div class="line">                    <span class="keyword">this</span>.props.onPullOk &amp;&amp; <span class="keyword">this</span>.props.onPullOk();</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// 记录当前为下拉到位状态</span></div><div class="line">                <span class="keyword">this</span>.setPullState(statePullok);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>PanResponder手势释放回调中的处理</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 手势释放</span></div><div class="line">    onPanResponderRelease() &#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.curState.pulling) &#123; <span class="comment">// 之前是下拉状态</span></div><div class="line">            <span class="keyword">this</span>.resetDefaultXYHandler(); <span class="comment">//重置状态</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.curState.pullok) &#123; <span class="comment">// 之前是下拉到位状态</span></div><div class="line">            <span class="comment">// 之前没有松开</span></div><div class="line">            <span class="keyword">if</span> (!<span class="keyword">this</span>.curState.pullrelease) &#123;</div><div class="line">                <span class="comment">// 之前是刷新中，调用数据处理回调</span></div><div class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.props.onPullRelease) &#123;</div><div class="line">                    <span class="keyword">this</span>.props.onPullRelease(<span class="keyword">this</span>.resolveHandler);</div><div class="line">                &#125; <span class="keyword">else</span> &#123; <span class="comment">// 重置</span></div><div class="line">                    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;<span class="keyword">this</span>.resetDefaultXYHandler()&#125;, <span class="number">3000</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">this</span>.setPullState(statePullrelease); <span class="comment">//记录当前状态为完成下拉，已松开</span></div><div class="line">            <span class="comment">// 刷新view 的下拉动画开启</span></div><div class="line">            Animated.timing(<span class="keyword">this</span>.state.pullPan, &#123;</div><div class="line">                <span class="attr">toValue</span>: &#123;<span class="attr">x</span>: <span class="number">0</span>, <span class="attr">y</span>: <span class="number">0</span>&#125;,</div><div class="line">                <span class="attr">easing</span>: Easing.linear,</div><div class="line">                <span class="attr">duration</span>: defaultDuration</div><div class="line">            &#125;).start();</div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'调用下拉'</span>);</div><div class="line"></div><div class="line">            <span class="comment">// 刷新视图中的转圈动画开启</span></div><div class="line">            <span class="keyword">this</span>.spin();</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>下拉重置，注意这里需要停止转圈的动画，根据当前剩余的变化值去初始化动画，如果没有这个操作，可能导致后面几次下拉刷新显示的刷新视图动画异常。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** 数据加载完成后调用此方法进行重置归位*/</span></div><div class="line">   resolveHandler() &#123;</div><div class="line">       <span class="keyword">if</span> (<span class="keyword">this</span>.curState.pullrelease) &#123; <span class="comment">//仅触摸松开时才触发</span></div><div class="line">           <span class="keyword">this</span>.resetDefaultXYHandler();</div><div class="line">       &#125;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="comment">// 重置下拉</span></div><div class="line">   resetDefaultXYHandler() &#123;</div><div class="line">       <span class="keyword">this</span>.curState = defaultState;</div><div class="line">       <span class="keyword">this</span>.state.pullPan.setValue(<span class="keyword">this</span>.defaultXY);</div><div class="line">       <span class="keyword">this</span>.state.spinValue.stopAnimation(<span class="function"><span class="params">value</span> =&gt;</span> &#123;</div><div class="line">           <span class="built_in">console</span>.log(<span class="string">'剩余时间'</span> + (<span class="number">1</span> - value) * <span class="number">3000</span>);</div><div class="line">           <span class="comment">//计算角度比例</span></div><div class="line">           <span class="keyword">this</span>.animation = Animated.timing(<span class="keyword">this</span>.state.spinValue, &#123;</div><div class="line">               <span class="attr">toValue</span>: <span class="number">1</span>,</div><div class="line">               <span class="attr">duration</span>: (<span class="number">1</span> - value) * <span class="number">3000</span>,</div><div class="line">               <span class="attr">easing</span>: Easing.linear,</div><div class="line">           &#125;);</div><div class="line">       &#125;);</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>实现刷新视图中的循环转圈动画</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 转圈动画</span></div><div class="line"> spin () &#123;</div><div class="line">   <span class="keyword">this</span>.animation.start(<span class="function">(<span class="params">result</span>)=&gt;</span>&#123;</div><div class="line">         <span class="comment">//正常转完1周,继续转</span></div><div class="line">         <span class="keyword">if</span> (<span class="built_in">Boolean</span>(result.finished)) &#123;</div><div class="line">             <span class="keyword">this</span>.animation = Animated.timing(</div><div class="line">                 <span class="keyword">this</span>.state.spinValue,</div><div class="line">                 &#123;</div><div class="line">                     <span class="attr">toValue</span>: <span class="number">1</span>,</div><div class="line">                     <span class="attr">duration</span>: <span class="number">3000</span>,</div><div class="line">                     <span class="attr">easing</span>: Easing.linear</div><div class="line">                 &#125;</div><div class="line">             );</div><div class="line">             <span class="keyword">this</span>.state.spinValue.setValue(<span class="number">0</span>);<span class="comment">// 每次转完都要重置</span></div><div class="line">             <span class="keyword">this</span>.spin();</div><div class="line">         &#125;</div><div class="line">     &#125;);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>我们仍然需要对scrollview的滑动事件做一个监听，这里我们需要过滤一个临界状态，当列表已经滑动到顶部，但还没有触发下拉刷新的状态，不允许继续滚动：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// scrollview 的滚动回调</span></div><div class="line"> onScroll(e) &#123;</div><div class="line">     <span class="keyword">if</span> (e.nativeEvent.contentOffset.y &lt;= <span class="number">0</span>) &#123; <span class="comment">//临界状态，此时已经到列表顶部，但是还没触发下拉刷新状态</span></div><div class="line">         <span class="keyword">this</span>.setState(&#123;<span class="attr">scrollEnabled</span>: <span class="keyword">this</span>.defaultScrollEnabled&#125;);</div><div class="line">     &#125; <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="keyword">this</span>.isPullState()) &#123;  <span class="comment">//当前不是下拉状态允许滚动</span></div><div class="line">         <span class="keyword">this</span>.setState(&#123;<span class="attr">scrollEnabled</span>: <span class="literal">true</span>&#125;);</div><div class="line">     &#125;</div><div class="line">     <span class="comment">// 调用外部的滑动回调</span></div><div class="line">     <span class="keyword">this</span>.props.onScroll &amp;&amp; <span class="keyword">this</span>.props.onScroll(e);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>处于下拉过程判断</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//处于下拉过程判断</span></div><div class="line">isPullState() &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.curState.pulling || <span class="keyword">this</span>.curState.pullok || <span class="keyword">this</span>.curState.pullrelease;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>设置当前处于的下拉状态</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 设置当前的下拉状态</span></div><div class="line"> setPullState(pullState) &#123;</div><div class="line">     <span class="keyword">if</span> (<span class="keyword">this</span>.curState !== pullState) &#123;</div><div class="line">         <span class="keyword">this</span>.curState = pullState;</div><div class="line">         <span class="keyword">this</span>.renderTopRefresh();</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>根据当前的下拉状态，完成下拉刷新部分的重绘：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 绘制下拉刷新</span></div><div class="line">   renderTopRefresh() &#123;</div><div class="line">       <span class="keyword">let</span> &#123; pulling, pullok, pullrelease &#125; = <span class="keyword">this</span>.curState;</div><div class="line">       <span class="keyword">return</span> <span class="keyword">this</span>.defaultTopRefreshRender(pulling, pullok, pullrelease);</div><div class="line">   &#125;</div><div class="line"></div><div class="line"></div><div class="line">   <span class="comment">/**</span></div><div class="line">    使用setNativeProps解决卡顿问题</div><div class="line">    绘制默认的下拉刷新</div><div class="line">    */</div><div class="line">   defaultTopRefreshRender(pulling, pullok, pullrelease) &#123;</div><div class="line">       <span class="comment">//控制下拉刷新提示文字显示状态</span></div><div class="line">       setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">           <span class="keyword">if</span> (pulling) &#123;</div><div class="line">               <span class="keyword">this</span>.txtPulling &amp;&amp; <span class="keyword">this</span>.txtPulling.setNativeProps(&#123;<span class="attr">style</span>: styles.show&#125;);</div><div class="line">               <span class="keyword">this</span>.txtPullok &amp;&amp; <span class="keyword">this</span>.txtPullok.setNativeProps(&#123;<span class="attr">style</span>: styles.hide&#125;);</div><div class="line">               <span class="keyword">this</span>.txtPullrelease &amp;&amp; <span class="keyword">this</span>.txtPullrelease.setNativeProps(&#123;<span class="attr">style</span>: styles.hide&#125;);</div><div class="line">           &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pullok) &#123;</div><div class="line">               <span class="keyword">this</span>.txtPulling &amp;&amp; <span class="keyword">this</span>.txtPulling.setNativeProps(&#123;<span class="attr">style</span>: styles.hide&#125;);</div><div class="line">               <span class="keyword">this</span>.txtPullok &amp;&amp; <span class="keyword">this</span>.txtPullok.setNativeProps(&#123;<span class="attr">style</span>: styles.show&#125;);</div><div class="line">               <span class="keyword">this</span>.txtPullrelease &amp;&amp; <span class="keyword">this</span>.txtPullrelease.setNativeProps(&#123;<span class="attr">style</span>: styles.hide&#125;);</div><div class="line">           &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pullrelease) &#123;</div><div class="line">               <span class="keyword">this</span>.txtPulling &amp;&amp; <span class="keyword">this</span>.txtPulling.setNativeProps(&#123;<span class="attr">style</span>: styles.hide&#125;);</div><div class="line">               <span class="keyword">this</span>.txtPullok &amp;&amp; <span class="keyword">this</span>.txtPullok.setNativeProps(&#123;<span class="attr">style</span>: styles.hide&#125;);</div><div class="line">               <span class="keyword">this</span>.txtPullrelease &amp;&amp; <span class="keyword">this</span>.txtPullrelease.setNativeProps(&#123;<span class="attr">style</span>: styles.show&#125;);</div><div class="line">           &#125;</div><div class="line">       &#125;, <span class="number">1</span>);</div><div class="line">       <span class="comment">// 初始化旋转角度</span></div><div class="line">       <span class="keyword">const</span> spin = <span class="keyword">this</span>.state.spinValue.interpolate(&#123;</div><div class="line">           <span class="attr">inputRange</span>: [<span class="number">0</span>, <span class="number">1</span>],</div><div class="line">           <span class="attr">outputRange</span>: [<span class="string">'0deg'</span>, <span class="string">'1080deg'</span>]</div><div class="line">       &#125;);</div><div class="line">       <span class="comment">// 绘制下拉刷新view</span></div><div class="line">       <span class="keyword">return</span> (</div><div class="line">           <span class="xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;&#123;flexDirection:</span> '<span class="attr">row</span>', <span class="attr">justifyContent:</span> '<span class="attr">center</span>', <span class="attr">alignItems:</span> '<span class="attr">center</span>', <span class="attr">height:</span> <span class="attr">defaultTopRefreshHeight</span>&#125;&#125;&gt;</span></span></div><div class="line">               <span class="tag">&lt;<span class="name">Animated.Image</span></span></div><div class="line">                   <span class="attr">style</span>=<span class="string">&#123;&#123;</span></div><div class="line">                       <span class="attr">width:</span> <span class="attr">23</span>,</div><div class="line">                       <span class="attr">height:</span> <span class="attr">23</span>,</div><div class="line">                       <span class="attr">transform:</span> [&#123;<span class="attr">rotate:</span> <span class="attr">spin</span>&#125;] ,</div><div class="line">                       <span class="attr">position:</span>'<span class="attr">absolute</span>',</div><div class="line">                       <span class="attr">left:24</span></div><div class="line">                   &#125;&#125;</div><div class="line">                   <span class="attr">source</span>=<span class="string">&#123;&#123;uri:</span> '<span class="attr">default_ptr_rotate</span>'&#125;&#125;</div><div class="line">               /&gt;</div><div class="line"></div><div class="line">               <span class="tag">&lt;<span class="name">Text</span> <span class="attr">ref</span>=<span class="string">&#123;(c)</span> =&gt;</span> &#123;this.txtPulling = c;&#125;&#125; style=&#123;styles.hide&#125;&gt;&#123;tipText.pulling&#125;<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></div><div class="line">               <span class="tag">&lt;<span class="name">Text</span> <span class="attr">ref</span>=<span class="string">&#123;(c)</span> =&gt;</span> &#123;this.txtPullok = c;&#125;&#125; style=&#123;styles.hide&#125;&gt;&#123;tipText.pullok&#125;<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></div><div class="line">               <span class="tag">&lt;<span class="name">Text</span> <span class="attr">ref</span>=<span class="string">&#123;(c)</span> =&gt;</span> &#123;this.txtPullrelease = c;&#125;&#125; style=&#123;styles.hide&#125;&gt;&#123;tipText.pullrelease&#125;<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></div><div class="line">           <span class="tag">&lt;/<span class="name">View</span>&gt;</span></div><div class="line">       );</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>测量宽高，动态设置自定义view的宽高，绘制整个自定义view以及该组件内部包含的子view</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获得测量的宽高，动态设置</span></div><div class="line">    onLayout(e) &#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.state.width !== e.nativeEvent.layout.width || <span class="keyword">this</span>.state.height !== e.nativeEvent.layout.height) &#123;</div><div class="line">            <span class="keyword">this</span>.scrollContainer.setNativeProps(&#123;<span class="attr">style</span>: &#123;<span class="attr">width</span>: e.nativeEvent.layout.width, <span class="attr">height</span>: e.nativeEvent.layout.height&#125;&#125;);</div><div class="line">            <span class="keyword">this</span>.width = e.nativeEvent.layout.width;</div><div class="line">            <span class="keyword">this</span>.height = e.nativeEvent.layout.height;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    render() &#123;</div><div class="line">        <span class="keyword">return</span> (</div><div class="line">            <span class="xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;[styles.wrap,</span> <span class="attr">this.props.style</span>]&#125; <span class="attr">onLayout</span>=<span class="string">&#123;this.onLayout&#125;</span>&gt;</span></span></div><div class="line">                <span class="tag">&lt;<span class="name">Animated.View</span> <span class="attr">style</span>=<span class="string">&#123;[this.state.pullPan.getLayout()]&#125;</span>&gt;</span></div><div class="line">                    &#123;/*绘制下拉刷新view*/&#125;</div><div class="line">                    &#123;this.renderTopRefresh()&#125;</div><div class="line">                    &#123;/*绘制里面的子view*/&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">View</span> <span class="attr">ref</span>=<span class="string">&#123;(c)</span> =&gt;</span> &#123;this.scrollContainer = c;&#125;&#125; &#123;...this.panResponder.panHandlers&#125; style=&#123;&#123;width: this.state.width, height: this.state.height&#125;&#125;&gt;</div><div class="line">                        <span class="tag">&lt;<span class="name">ScrollView</span> <span class="attr">ref</span>=<span class="string">&#123;(c)</span> =&gt;</span> &#123;this.scroll = c;&#125;&#125;  scrollEnabled=&#123;this.state.scrollEnabled&#125; onScroll=&#123;this.onScroll&#125;&gt;</div><div class="line">                            &#123;this.props.children&#125;</div><div class="line">                        <span class="tag">&lt;/<span class="name">ScrollView</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">View</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">Animated.View</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">View</span>&gt;</span></div><div class="line">        );</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>设置默认提示文本和自带样式</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 默认提示文本</span></div><div class="line"><span class="keyword">const</span> tipText = &#123;</div><div class="line">    <span class="attr">pulling</span>: <span class="string">"下拉刷新..."</span>,</div><div class="line">    <span class="attr">pullok</span>: <span class="string">"松开刷新......"</span>,</div><div class="line">    <span class="attr">pullrelease</span>: <span class="string">"刷新中......"</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">// 自带样式</span></div><div class="line"><span class="keyword">const</span> styles = StyleSheet.create(&#123;</div><div class="line">    <span class="attr">wrap</span>: &#123;</div><div class="line">        <span class="attr">flex</span>: <span class="number">1</span>,</div><div class="line">        <span class="attr">flexGrow</span>: <span class="number">1</span>,</div><div class="line">        <span class="attr">flexDirection</span>: <span class="string">'column'</span>,</div><div class="line">        <span class="attr">zIndex</span>:<span class="number">-999</span>,</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">hide</span>: &#123;</div><div class="line">        <span class="attr">position</span>: <span class="string">'absolute'</span>,</div><div class="line">        <span class="attr">left</span>: <span class="number">10000</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">show</span>: &#123;</div><div class="line">        <span class="attr">position</span>: <span class="string">'relative'</span>,</div><div class="line">        <span class="attr">left</span>: <span class="number">0</span></div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h1 id="在业务代码中使用"><a href="#在业务代码中使用" class="headerlink" title="在业务代码中使用"></a>在业务代码中使用</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;PullScollView onPullRelease=&#123;<span class="keyword">this</span>.onPullRelease&#125; onScroll=&#123;<span class="keyword">this</span>.onScroll&#125;&gt;</div><div class="line"><span class="xml"><span class="tag">&lt;/<span class="name">PullScollView</span>&gt;</span></span></div></pre></td></tr></table></figure>
+<p>这里注意在onPullRelease中一定要调用<code>resolve()</code>让下拉刷新重置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">onPullRelease(resolve) &#123;</div><div class="line">    <span class="comment">//更改刷新状态</span></div><div class="line">    <span class="keyword">this</span>.setState(&#123;<span class="attr">isRefreshing</span>: <span class="literal">true</span>&#125;);</div><div class="line">    <span class="comment">//刷新完毕，重置下拉刷新，再次更新刷新和加载更多状态</span></div><div class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">        resolve();</div><div class="line">        <span class="keyword">this</span>.setState(&#123;</div><div class="line">            <span class="attr">isRefreshing</span>: <span class="literal">false</span>,</div><div class="line">            <span class="attr">loadMore</span>: <span class="literal">false</span>  <span class="comment">//不显示更多列表内容</span></div><div class="line">        &#125;);</div><div class="line">    &#125;, <span class="number">3000</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="滑动监听实现加载更多"><a href="#滑动监听实现加载更多" class="headerlink" title="滑动监听实现加载更多"></a>滑动监听实现加载更多</h1><p>先获取到垂直方向的滑动距离，列表的高度，内容的高度，当滑出去的距离加上列表的高度大于等于内容高度时触发加载更多，这里给个20的偏移量。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * scrollview滑动回调</div><div class="line">  */</div><div class="line"> onScroll(event) &#123;</div><div class="line">     <span class="keyword">let</span> y = event.nativeEvent.contentOffset.y;</div><div class="line">     <span class="comment">// console.log('滑动距离' + y);</span></div><div class="line">     <span class="keyword">let</span> height = event.nativeEvent.layoutMeasurement.height;</div><div class="line">     <span class="comment">// console.log('列表高度' + height);</span></div><div class="line">     <span class="keyword">let</span> contentHeight = event.nativeEvent.contentSize.height;</div><div class="line">     <span class="comment">// console.log('内容高度' + contentHeight);</span></div><div class="line">     <span class="comment">// console.log('判断条件' + (y + height));</span></div><div class="line">     <span class="keyword">if</span> (y + height &gt;= contentHeight - <span class="number">20</span>) &#123;</div><div class="line">         <span class="built_in">console</span>.log(<span class="string">'触发加载更多'</span>);</div><div class="line">     &#125;</div><div class="line">     <span class="comment">//设置正在加载和显示更多标记</span></div><div class="line">     <span class="keyword">this</span>.setState(&#123;</div><div class="line">         <span class="attr">loadMore</span>: <span class="literal">true</span>,</div><div class="line">         <span class="attr">loading</span>: <span class="literal">true</span>, <span class="comment">//显示更多列表内容</span></div><div class="line">     &#125;);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>我们需要在触发加载更多，发起网络请求时显示一个加载更多的loadingview，通过loading参数传值控制当前是否显示，同样简单封装一下，这里加了一个逐个展示小圆点的组合动画</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> React, &#123;Component&#125; <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line"><span class="keyword">import</span> &#123;</div><div class="line">    StyleSheet,</div><div class="line">    View,</div><div class="line">    Text,</div><div class="line">    Animated,</div><div class="line">    Easing</div><div class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</div><div class="line"></div><div class="line"><span class="keyword">import</span> constants <span class="keyword">from</span> <span class="string">'../Constants'</span>;</div><div class="line"></div><div class="line"><span class="keyword">var</span> &#123;width, height&#125; = constants.ScreenWH;</div><div class="line"><span class="keyword">const</span> pointsNum = <span class="number">3</span>; <span class="comment">//点数量</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoadingMore</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">constructor</span>(props) &#123;</div><div class="line">        <span class="keyword">super</span>(props);</div><div class="line">        <span class="comment">// 初始化点的数量</span></div><div class="line">        <span class="keyword">this</span>.arr = [];</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; pointsNum; i++) &#123;</div><div class="line">            <span class="keyword">this</span>.arr.push(i);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 初始化动画</span></div><div class="line">        <span class="keyword">this</span>.animatedValue = [];</div><div class="line">        <span class="keyword">this</span>.arr.forEach(<span class="function">(<span class="params">value</span>) =&gt;</span> &#123;</div><div class="line">            <span class="keyword">this</span>.animatedValue[value] = <span class="keyword">new</span> Animated.Value(<span class="number">0</span>)</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 动画执行，逐个显示</div><div class="line">     */</div><div class="line">    animate() &#123;</div><div class="line">        <span class="keyword">this</span>.arr.forEach(<span class="function">(<span class="params">value</span>) =&gt;</span> &#123;</div><div class="line">            <span class="keyword">this</span>.animatedValue[value].setValue(<span class="number">0</span>);</div><div class="line">        &#125;);</div><div class="line">        <span class="keyword">const</span> animations = <span class="keyword">this</span>.arr.map(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</div><div class="line">            <span class="keyword">return</span> Animated.timing(</div><div class="line">                <span class="keyword">this</span>.animatedValue[item],</div><div class="line">                &#123;</div><div class="line">                    <span class="attr">toValue</span>: <span class="number">1</span>,</div><div class="line">                    <span class="attr">duration</span>: <span class="number">200</span>,</div><div class="line">                    <span class="attr">easing</span>: Easing.linear</div><div class="line">                &#125;</div><div class="line">            )</div><div class="line">        &#125;);</div><div class="line">        <span class="keyword">this</span>.loadingAnim = Animated.sequence(animations);</div><div class="line">        <span class="keyword">this</span>.loadingAnim.start(<span class="function">(<span class="params">result</span>) =&gt;</span> &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="built_in">Boolean</span>(result.finished)) <span class="keyword">this</span>.animate()</div><div class="line">        &#125;)</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    componentDidMount() &#123;</div><div class="line">        <span class="keyword">this</span>.animate()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    render() &#123;</div><div class="line">        <span class="keyword">return</span> (</div><div class="line">            <span class="xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;styles.container&#125;</span>&gt;</span></span></div><div class="line">                &#123;this.loading()&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">View</span>&gt;</span></div><div class="line">        );</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    componentWillReceiveProps(nextProps) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (nextProps.loading) &#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'callback---start'</span>);</div><div class="line">            <span class="keyword">this</span>.animate();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'callback---stop'</span>);</div><div class="line">            <span class="keyword">this</span>.arr.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</div><div class="line">                <span class="keyword">this</span>.animatedValue[item].stopAnimation(<span class="function"><span class="params">value</span> =&gt;</span> &#123;</div><div class="line">                    <span class="built_in">console</span>.log(<span class="string">'剩余时间'</span> + (<span class="number">1</span> - value) * <span class="number">200</span>);</div><div class="line">                &#125;);</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    loading() &#123;</div><div class="line">        <span class="keyword">const</span> animations = <span class="keyword">this</span>.arr.map(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</div><div class="line">            <span class="keyword">return</span> (</div><div class="line">                <span class="xml"><span class="tag">&lt;<span class="name">Animated.Text</span> <span class="attr">key</span>=<span class="string">&#123;item&#125;</span> <span class="attr">style</span>=<span class="string">&#123;&#123;</span></span></span></div><div class="line">                    <span class="attr">opacity:</span> <span class="attr">this.animatedValue</span>[<span class="attr">item</span>], <span class="attr">fontSize:</span> <span class="attr">width</span> * <span class="attr">0.06</span>, <span class="attr">color:</span> '<span class="attr">gray</span>', <span class="attr">marginRight:</span> <span class="attr">width</span> * <span class="attr">0.02</span></div><div class="line">                &#125;&#125;&gt;.<span class="tag">&lt;/<span class="name">Animated.Text</span>&gt;</span></div><div class="line">            );</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        if (this.props.loading) &#123;</div><div class="line">            return (</div><div class="line">                <span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;&#123;flexDirection:</span> '<span class="attr">row</span>', <span class="attr">alignItems:</span> '<span class="attr">center</span>'&#125;&#125;&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">Text</span> <span class="attr">style</span>=<span class="string">&#123;&#123;</span></span></div><div class="line">                        <span class="attr">color:</span> '<span class="attr">gray</span>',</div><div class="line">                        <span class="attr">fontSize:</span> <span class="attr">width</span> * <span class="attr">0.04</span>,</div><div class="line">                        <span class="attr">marginRight:</span> <span class="attr">width</span> * <span class="attr">0.02</span></div><div class="line">                    &#125;&#125;&gt;</div><div class="line">                        正在加载中</div><div class="line">                    <span class="tag">&lt;/<span class="name">Text</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;styles.pointsView&#125;</span>&gt;</span></div><div class="line">                        &#123;animations&#125;</div><div class="line">                    <span class="tag">&lt;/<span class="name">View</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">View</span>&gt;</span></div><div class="line">            );</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">LoadingMore.defaultProps = &#123;</div><div class="line">    loading: false, //加载更多</div><div class="line">&#125;;</div><div class="line">LoadingMore.propTypes = &#123;</div><div class="line">    loading: React.PropTypes.bool.isRequired</div><div class="line">&#125;;</div><div class="line">const styles = StyleSheet.create(&#123;</div><div class="line">    container: &#123;</div><div class="line">        flex: 1,</div><div class="line">        justifyContent: 'center',</div><div class="line">        alignItems: 'center',</div><div class="line">        backgroundColor: 'white',</div><div class="line">    &#125;,</div><div class="line">    pointsView: &#123;</div><div class="line">        height: width * 0.14,</div><div class="line">        flexDirection: 'row',</div><div class="line">        alignItems: 'center',</div><div class="line">    &#125;,</div><div class="line">    instructions: &#123;</div><div class="line">        textAlign: 'center',</div><div class="line">        color: '#333333',</div><div class="line">        marginBottom: 5,</div><div class="line">    &#125;,</div><div class="line">&#125;);</div><div class="line"></div><div class="line">export default LoadingMore;</div></pre></td></tr></table></figure>
+<p>对应的源码地址:</p>
+<p><a href="https://github.com/jessieeeee/SimpleOne/blob/master/js/view/PullScollView.js" target="_blank" rel="external">组件封装</a><br><a href="https://github.com/jessieeeee/SimpleOne/blob/master/js/mainall/All.js" target="_blank" rel="external">组件使用</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/31/Ubuntu-start/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -379,7 +583,7 @@
 <h2 id="http代理"><a href="#http代理" class="headerlink" title="http代理"></a>http代理</h2><p>如果是命令行，很多只支持http协议的软件或者工具，我们再配置一次http代理</p>
 <h3 id="安装privoxy"><a href="#安装privoxy" class="headerlink" title="安装privoxy"></a>安装privoxy</h3><p>sudo apt-get install privoxy</p>
 <h3 id="配置privoxy"><a href="#配置privoxy" class="headerlink" title="配置privoxy"></a>配置privoxy</h3><p>打开/etc/privoxy/config<br>取消listen-address localhost:8118的代码注释<br>找到5.2节<br>加入一句<br>forward-socks5 / 127.0.0.1:1080 .<br>重启privoxy服务<br>sudo /etc/init.d/privoxy restart<br>开机自启privoxy服务<br>sudo /etc/init.d/privoxy start加入到/etc/rc.local文件中的exit 0这句之前<br>在profile中写入http代理<br>export http_proxy=”127.0.0.1:8118”<br>export https_proxy=”127.0.0.1:8118”</p>
-<h1 id="Ubuntu软件集合"><a href="#Ubuntu软件集合" class="headerlink" title="Ubuntu软件集合"></a>Ubuntu软件集合</h1><p>chrome 开发者必备浏览器，自带有firefox<br>Typora markdown编辑器<br>Shutter 截图<br>electronic wechat 微信<br>albert 快速启动lancher<br>ubuntu-tweak 清理软件<br>Redshift 自动调节屏幕色温<br>Android studio android开发者都懂<br>Webstorm 前端开发利器<br>vscode 微软出的开发神器，轻量级<br>mpv 播放器</p>
+<h1 id="Ubuntu软件集合"><a href="#Ubuntu软件集合" class="headerlink" title="Ubuntu软件集合"></a>Ubuntu软件集合</h1><p>chrome 开发者必备浏览器，自带有firefox<br>Typora markdown编辑器<br>Shutter 截图<br>electronic wechat 微信<br>快速启动ULauncher<br>Redshift 自动调节屏幕色温<br>Android studio android开发者都懂<br>Webstorm 前端开发利器<br>vscode 微软出的开发神器，轻量级<br>mpv 播放器<br>angrySearch文件搜索<br>ubuntu-tweak 集清理，主题管理，字体管理，热区自定义于一体的软件，可替代ubuntu-tweak-tool，这个软件会默认安装系统自带的浏览器</p>
 <h1 id="wps-金山wps有linux版"><a href="#wps-金山wps有linux版" class="headerlink" title="wps 金山wps有linux版"></a>wps 金山wps有linux版</h1><p>安装后进入，报字体缺失<br>下载字体包<br>百度云<a href="http://pan.baidu.com/s/1nuS5U5b" target="_blank" rel="external">http://pan.baidu.com/s/1nuS5U5b</a> 密码：p4vz</p>
 <ol>
 <li>解压</li>
@@ -392,14 +596,14 @@
 </li>
 </ol>
 <h1 id="小程序开发工具"><a href="#小程序开发工具" class="headerlink" title="小程序开发工具"></a>小程序开发工具</h1><p>微信开发者工具(微信小程序)linux完美支持<br><a href="https://github.com/cytle/wechat_web_devtools" target="_blank" rel="external">https://github.com/cytle/wechat_web_devtools</a></p>
-<h1 id="wireshark抓包"><a href="#wireshark抓包" class="headerlink" title="wireshark抓包"></a>wireshark抓包</h1><p>app开发者必备的抓包工具，windows上有fiddler，mac上有charles，ubuntu上用wireshark<br><a href="https://blog.csdn.net/xukai871105/article/details/31008635" target="_blank" rel="external">https://blog.csdn.net/xukai871105/article/details/31008635</a></p>
-<h1 id="qq-解决方案"><a href="#qq-解决方案" class="headerlink" title="qq 解决方案"></a>qq 解决方案</h1><p>优麒麟版本的qq确实是有点老了，不仅很多字符显示不出来，而且表情发送和显示也有很多问题，目前发现最好用的版本是Wine-QQ-TIM，打包后的Wine-QQ-TIM，linux下命令行直接运行，<a href="https://github.com/askme765cs/Wine-QQ-TIM/issues/63" target="_blank" rel="external">https://github.com/askme765cs/Wine-QQ-TIM/issues/63</a></p>
+<h1 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h1><p>wireshark<br><a href="https://blog.csdn.net/xukai871105/article/details/31008635" target="_blank" rel="external">https://blog.csdn.net/xukai871105/article/details/31008635</a><br>charles也有linux版</p>
+<h1 id="qq-解决方案"><a href="#qq-解决方案" class="headerlink" title="qq 解决方案"></a>qq 解决方案</h1><p>优麒麟qq，表情显示不出来且发送错误，版本很老</p>
+<p>Wine-QQ-TIM，使用几天后出现电脑无故卡死，输入法切换不了，无法启动等问题</p>
+<p>Wine真的不好用，还不如虚拟机</p>
+<p>一番折腾后，还是卸载了qq，珍爱生命，远离qq</p>
 <h1 id="virtualbox-amp-genymotion"><a href="#virtualbox-amp-genymotion" class="headerlink" title="virtualbox&amp;genymotion"></a>virtualbox&amp;genymotion</h1><p>虚拟机和Android模拟器<br>在virtualbox下安装win7，解决ubuntu下无法解决的问题<br>安装virtualbox时注意安装ubuntu最新版本，如果开了intel虚拟技术，还是卡开机界面，可能是当前显卡驱动问题，不要选择opensource版本的显卡驱动<br>genymotion有个坑，如果卡死，内存分配尽量大一点</p>
 <h1 id="拾色器"><a href="#拾色器" class="headerlink" title="拾色器"></a>拾色器</h1><p>前端开发，app开发必不可少的工具<br><a href="https://kryogenix.org/code/pick/" target="_blank" rel="external">https://kryogenix.org/code/pick/</a></p>
-<h1 id="系统备份"><a href="#系统备份" class="headerlink" title="系统备份"></a>系统备份</h1><p>remastersys这个系统备份工具不错，辛苦折腾的系统最好做个备份 </p>
-<p>前面三个选项都是对系统备份，只不过第一个”Backup”会把个人的数据和配置也一块备份，但是这里有个&lt;4g的大小限制。官方文档也说了这个问题是iso9660的限制，目前无解。</p>
-<p>恢复ubuntu系统，用管理员权限打开UltraISO，然后制作u盘启动，插入U盘，向U盘里写入custom-backup.iso镜像文件。</p>
-<p>重启电脑，从U盘进入，boot选项有live模式（直接进入U盘备份好的系统），install模式（把U盘里的系统安装到磁盘）。</p>
+<h1 id="系统备份"><a href="#系统备份" class="headerlink" title="系统备份"></a>系统备份</h1><p>辛苦折腾的系统最好做个备份 ,remastersys这个系统备份工具是不错，官方文档也说了这个问题是iso9660的限制，目前无解。<br>后来发现一个更好用的工具，Timeshift类似mac上的TimeMachine，按备份时间点创建快照，对快照可进行管理，有备份计划等功能，可以实现增强备份和完整备份。</p>
 <p>目前就总结到这里，后面如果发现更好用的软件，插件，坑点会持续更新～</p>
 
           
@@ -454,7 +658,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -670,7 +874,7 @@
 <ol>
 <li>基本控件的使用 View，Text，Image，ScrollView，ListView，WebView，Clipboard，Platform，TouchableOpacity，ActivityIndicator，StatusBar，SliderBar。</li>
 <li>动画的调用，Animated，Easing</li>
-<li>计时器的使用，react-timer-mixin</li>
+<li>计时器的使用，<del>react-timer-mixin</del> 改为ES6语法，该模块移除</li>
 <li>react-native调用原生模块（原生toast，调android第三方分享sdk）</li>
 <li>底部导航栏TabNavigator，页面导航Navigator</li>
 <li>子组件的封装，调用以及回调</li>
@@ -686,6 +890,8 @@
 <li>调用基于Android原生封装的ui控件</li>
 <li>在Android原生项目的基础上引入react-native框架进行混合开发</li>
 <li>音乐专辑封面旋转动画（解决动画循环播放中的暂停与播放事件），通过直接修改属性setNativeProps实现帧动画提高性能</li>
+<li>加入mobx实现多界面同时刷新（2018.5.2更新）</li>
+<li>利用高阶组件封装base组件，实现组件的公共逻辑（2018.5.2更新）</li>
 </ol>
 <p>这个项目让初学者的我受益良多，现在的react-native第三方框架还不是很多，很多时候要自定义，而且在Android上的坑还是有很多，不过react-native的更新速度也是相当快的。后面有时间会陆续追加一些此项目中自定义部分的详细技术文章。<br>最近由于公司的项目需求，入坑了微信小程序，年前忙项目进度，估计短期内没有时间更新这个项目了，有时间会上传目前的动画效果图。</p>
 <p>此项目的github地址<a href="https://github.com/jessieeeee/SimpleOne" target="_blank" rel="external">传送门</a>，欢迎一起交流和学习。</p>
@@ -742,7 +948,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -939,7 +1145,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1148,7 +1354,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1318,7 +1524,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1516,7 +1722,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1761,7 +1967,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1994,7 +2200,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -2294,195 +2500,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/12/constraintLayout-study/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/12/constraintLayout-study/" itemprop="url">constraintLayout 学习总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-12T22:20:48+08:00">
-                2017-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/09/12/constraintLayout-study/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2017/09/12/constraintLayout-study/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2017/09/12/constraintLayout-study/" class="leancloud_visitors" data-flag-title="constraintLayout 学习总结">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能，升级Android Studio 2.3之后，IDE默认生成的Activity布局都是以ConstraintLayout做为根布局。</p>
-<p>新技术毕竟有其优势，google大力宣传的ConstraintLayout有以下两大特性：</p>
-<ol>
-<li>可视化操作编写界面，提高开发效率</li>
-<li>有效地解决布局嵌套过多的问题,是一个升级版的RelativeLayout，有效提升性能</li>
-</ol>
-<p>下面对其进行一个学习总结，毕竟这个布局是为了可视化而生，可视化操作的练习是必不可少的。由于constraintLayout的拖拽部分涉及到太多的动态效果图，就不详细描述了，已有很多文章写过这部分。其实constraintLayout的很多属性对于我们来说是新鲜的，是其它布局所没有的，所以这里主要总结一下constraintLayout的属性学习。</p>
-<hr>
-<h1 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h1><p>使用constraintLayout需要添加以下依赖<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">classpath <span class="string">'com.android.support.constraint:constraint-layout：XXX'</span></div></pre></td></tr></table></figure></p>
-<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>app:layout_constraintBottom_toBottomOf=”parent”<br>当前控件底部的布局约束是位于parent控件底部，parent是指包裹着它的ConstraintLayout，也可以设置指定某个控件的id。效果类似于RelativeLayout的layout_alignParentBottom=”true”<br>对比RelativeLayout，同类的属性还有以下这些<br>app:layout_constraintLeft_toLeftOf = layout_alignParentLeft=”true”<br>app:layout_constraintBottom_toBottomOf = layout_alignParentBottom=”true”<br>app:layout_constraintRight_toRightOf = layout_alignParentRight=”true”<br>app:layout_constraintTop_toTopOf = layout_alignParentTop=”true”<br>app:layout_constraintLeft_toRightOf = toRightOf<br>app:layout_constraintRight_toLeftOf = toLeftOf<br>app:layout_constraintTop_toBottomOf = toBottomOf<br>app:layout_constraintBottom_toTopOf = toTopOf<br>app:layout_constraintBaseline_toBaselineOf 此控件与指定控件水平对齐<br>点击该button按钮，下方会出现 x,ab两个图标，x表示去掉所有约束，ab表示切换显示横条还是四个点，点击ab，button中间会出现一根横条，然后把该控件和指定控件的横条相连就行了。</p>
-<p>goneMargin属性<br>这些设置生效于当依赖的约束对象被设置visibility为gone时，支持的属性如下：<br>layout_goneMarginStart<br>layout_goneMarginEnd<br>layout_goneMarginLeft<br>layout_goneMarginTop<br>layout_goneMarginRight<br>layout_goneMarginBottom<br>比如A,B两个view,B在A的右边，这时候如果A消失了，但是你想让B在父布局的右边多少距离，就可以使用这个属性。</p>
-<p>Bias属性<br>ConstraintLayout新增了如下两个属性用于控制控件在水平和垂直方向在屏幕上的偏移比例<br>当目标控件设置好水平方向约束<br>app:layout_constraintLeft_toLeftOf=”parent”、app:layout_constraintRight_toRightOf=”parent”<br>或者垂直方向约束时<br>app:layout_constraintTop_toTopOf=”parent”、app:layout_constraintBottom_toBottomOf=”parent”<br>layout_constraintHorizontal_bias和layout_constraintVertical_bias会随着控件的拖到一直发生相应的变化，如果你需要居中，那么直接将这两个属性的参数值设置为0.5即可。</p>
-<h1 id="与其他Layout不同之处"><a href="#与其他Layout不同之处" class="headerlink" title="与其他Layout不同之处"></a>与其他Layout不同之处</h1><p>它的layout_width和layout_height不支持设置match_parent，其属性取值只有以下三种情况：<br>wrap_content；<br>指定具体dp值；<br>0dp<code>（match_constraint）</code>，代表填充约束之意。和match_parent不一样<br>要让一个控件的宽高按某个比例进行布局可以使用<code>layout_constraintDimentionRatio</code>属性设置宽高比例，前提是目标控件的<code>layout_width</code>和<code>layout_height</code>至少有一个设置为0dp，为0dp那个按宽高比适应<br><code>layout_constraintDimentionRatio</code>默认参数比例是指宽：高<br>使其高:宽写成<code>app:layout_constraintDimensionRatio=”H,2:1”</code>。</p>
-<h1 id="链条（Chains）"><a href="#链条（Chains）" class="headerlink" title="链条（Chains）"></a>链条（Chains）</h1><h2 id="实现LinearLayout的水平布局"><a href="#实现LinearLayout的水平布局" class="headerlink" title="实现LinearLayout的水平布局"></a>实现LinearLayout的水平布局</h2><p><code>app:layout_constraintHorizontal_chainStyle</code><br>水平方向的<code>layout_constraintHorizontal_chainStyle</code><br>垂直方向的<code>layout_constraintVertical_chainStyle</code></p>
-<p>两者均有spread,spread_inside,packed这三种取值</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">android.support.constraint.ConstraintLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn1"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">app:layout_constraintHorizontal_chainStyle</span>=<span class="string">"spread"</span></div><div class="line">        <span class="attr">app:layout_constraintLeft_toLeftOf</span>=<span class="string">"parent"</span></div><div class="line">        <span class="attr">app:layout_constraintRight_toLeftOf</span>=<span class="string">"@+id/btn2"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn2"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">app:layout_constraintLeft_toRightOf</span>=<span class="string">"@+id/btn1"</span></div><div class="line">        <span class="attr">app:layout_constraintRight_toLeftOf</span>=<span class="string">"@+id/btn3"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn3"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">app:layout_constraintLeft_toRightOf</span>=<span class="string">"@+id/btn2"</span></div><div class="line">        <span class="attr">app:layout_constraintRight_toRightOf</span>=<span class="string">"parent"</span> /&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">android.support.constraint.ConstraintLayout</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>效果图如下<br><img src="http://oqujmbgen.bkt.clouddn.com/spread.png" alt="效果图"><br>当app:layout_constraintHorizontal_chainStyle = “spread_inside”<br>效果图如下<br><img src="http://oqujmbgen.bkt.clouddn.com/spread_inside.png" alt="效果图"></p>
-<p>当app:layout_constraintHorizontal_chainStyle = “packed”<br>效果图如下<br><img src="http://oqujmbgen.bkt.clouddn.com/packed.png" alt="效果图"></p>
-<h2 id="bias链条"><a href="#bias链条" class="headerlink" title="bias链条"></a>bias链条</h2><p>当app:layout_constraintHorizontal_chainStyle = “packed”的情况下，通过设置head头控件的bias属性，来设置链条的位置（更偏向左或更偏向右）<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/btn1"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">app:layout_constraintHorizontal_bias</span>=<span class="string">"0.3"</span> // 权重为靠左<span class="attr">0.3</span></div><div class="line">    <span class="attr">app:layout_constraintHorizontal_chainStyle</span>=<span class="string">"packed"</span> // 样式为<span class="attr">packed</span></div><div class="line">    <span class="attr">app:layout_constraintLeft_toLeftOf</span>=<span class="string">"parent"</span></div><div class="line">    <span class="attr">app:layout_constraintRight_toLeftOf</span>=<span class="string">"@+id/btn2"</span> /&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/btn2"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">app:layout_constraintLeft_toRightOf</span>=<span class="string">"@+id/btn1"</span></div><div class="line">    <span class="attr">app:layout_constraintRight_toLeftOf</span>=<span class="string">"@+id/btn3"</span> /&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/btn3"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">app:layout_constraintLeft_toRightOf</span>=<span class="string">"@+id/btn2"</span></div><div class="line">    <span class="attr">app:layout_constraintRight_toRightOf</span>=<span class="string">"parent"</span> /&gt;</div></pre></td></tr></table></figure></p>
-<p>效果图如下<br><img src="http://oqujmbgen.bkt.clouddn.com/bias.png" alt="效果图"></p>
-<h2 id="权重链"><a href="#权重链" class="headerlink" title="权重链"></a>权重链</h2><p>如果将控件的<code>layout_width</code>和<code>layout_height</code>设置成为0dp，还可以配合<code>layout_constraintHorizontal_weight</code>、<code>layout_constraintVertical_weight</code>两个属性实现和LinearLayout中设置<code>layout_weight</code>相同的效果</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">android.support.constraint.ConstraintLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn1"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"60dp"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">app:layout_constraintLeft_toLeftOf</span>=<span class="string">"parent"</span></div><div class="line">        <span class="attr">app:layout_constraintRight_toLeftOf</span>=<span class="string">"@+id/btn2"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn2"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"0dp"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">app:layout_constraintHorizontal_weight</span>=<span class="string">"1"</span></div><div class="line">        <span class="attr">app:layout_constraintLeft_toRightOf</span>=<span class="string">"@+id/btn1"</span></div><div class="line">        <span class="attr">app:layout_constraintRight_toLeftOf</span>=<span class="string">"@+id/btn3"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/btn3"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"0dp"</span></div><div class="line">        <span class="attr">app:layout_constraintHorizontal_weight</span>=<span class="string">"1"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">app:layout_constraintLeft_toRightOf</span>=<span class="string">"@+id/btn2"</span></div><div class="line">        <span class="attr">app:layout_constraintRight_toRightOf</span>=<span class="string">"parent"</span>/&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">android.support.constraint.ConstraintLayout</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>当<code>layout_width</code>设置为60dp时，<code>app:layout_constraintHorizontal_weight=&quot;1&quot;</code>平分剩余的空间，效果图如下<br><img src="http://oqujmbgen.bkt.clouddn.com/weight.png" alt="效果图"></p>
-<h1 id="GuildLine"><a href="#GuildLine" class="headerlink" title="GuildLine"></a>GuildLine</h1><p>这是一个辅助我们布局的View，并且默认设置了visibility为gone</p>
-<p>Guideline也分为垂直和水平两种<br>设置在屏幕中所处的位置<br><code>layout_constraintGuide_begin</code> 引导线距离左边框的距离<br><code>layout_constraintGuide_end</code> 中引导线距离右边框的距离<br><code>layout_constraintGuide_percent</code> 在整个布局中引导线距离左边框的百分比<br>（<code>app:layout_constraintGuide_percent=”0.5”</code>表示距离左边框50%的位置）</p>
-<p>到此约束布局的基本用法总结就结束了，接下来就需要更多的时间进行可视化操作练习~</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2523,7 +2540,7 @@
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
+                src="/images/avatar.png"
                 alt="Jessie Kate" />
             
               <p class="site-author-name" itemprop="name">Jessie Kate</p>
@@ -2537,7 +2554,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

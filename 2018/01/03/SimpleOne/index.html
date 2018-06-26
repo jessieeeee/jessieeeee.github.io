@@ -99,7 +99,7 @@
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/simpleone12.jpg">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/simpleone13.jpg">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/simpleone14.jpg">
-<meta property="og:updated_time" content="2018-02-11T14:54:49.704Z">
+<meta property="og:updated_time" content="2018-06-03T08:57:18.028Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SimpleOne">
 <meta name="twitter:description" content="随着混合开发越来越火，逐渐成为行业发展趋势，ReactNative也一直保持着快速更新的节奏，”learn once,write anywhere”这个宣传语一直吸引着我，公司最近也不忙了，一直想入坑的我终于找到了一个合适的时间点，很长一段时间没有更新博客了，因为在学习ReactNative这个框架，由于喜欢one一个的ui界面，做了这个开源项目，这是一个高仿韩寒one一个的开源项目，在此声明，">
@@ -281,7 +281,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -493,7 +493,7 @@
 <ol>
 <li>基本控件的使用 View，Text，Image，ScrollView，ListView，WebView，Clipboard，Platform，TouchableOpacity，ActivityIndicator，StatusBar，SliderBar。</li>
 <li>动画的调用，Animated，Easing</li>
-<li>计时器的使用，react-timer-mixin</li>
+<li>计时器的使用，<del>react-timer-mixin</del> 改为ES6语法，该模块移除</li>
 <li>react-native调用原生模块（原生toast，调android第三方分享sdk）</li>
 <li>底部导航栏TabNavigator，页面导航Navigator</li>
 <li>子组件的封装，调用以及回调</li>
@@ -509,6 +509,8 @@
 <li>调用基于Android原生封装的ui控件</li>
 <li>在Android原生项目的基础上引入react-native框架进行混合开发</li>
 <li>音乐专辑封面旋转动画（解决动画循环播放中的暂停与播放事件），通过直接修改属性setNativeProps实现帧动画提高性能</li>
+<li>加入mobx实现多界面同时刷新（2018.5.2更新）</li>
+<li>利用高阶组件封装base组件，实现组件的公共逻辑（2018.5.2更新）</li>
 </ol>
 <p>这个项目让初学者的我受益良多，现在的react-native第三方框架还不是很多，很多时候要自定义，而且在Android上的坑还是有很多，不过react-native的更新速度也是相当快的。后面有时间会陆续追加一些此项目中自定义部分的详细技术文章。<br>最近由于公司的项目需求，入坑了微信小程序，年前忙项目进度，估计短期内没有时间更新这个项目了，有时间会上传目前的动画效果图。</p>
 <p>此项目的github地址<a href="https://github.com/jessieeeee/SimpleOne" target="_blank" rel="external">传送门</a>，欢迎一起交流和学习。</p>
@@ -624,7 +626,7 @@
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
+                src="/images/avatar.png"
                 alt="Jessie Kate" />
             
               <p class="site-author-name" itemprop="name">Jessie Kate</p>
@@ -638,7 +640,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
