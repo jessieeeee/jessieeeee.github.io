@@ -83,7 +83,7 @@
 <meta name="keywords" content="new component">
 <meta property="og:type" content="article">
 <meta property="og:title" content="constraintLayout 学习总结">
-<meta property="og:url" content="http://yoursite.com/2017/09/12/constraintLayout-study/index.html">
+<meta property="og:url" content="http://yoursite.com/2017/09/12/ConstraintLayout-Study/index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能，升级Android Studio 2.3之后，IDE默认生成的Activity布局都是以ConstraintLayout做为根布局。 新技术毕竟有其优势，google大力宣传的ConstraintLayout有以下两大特性：  可视化操作编写界面，提">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/spread.png">
@@ -91,7 +91,7 @@
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/packed.png">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/bias.png">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/weight.png">
-<meta property="og:updated_time" content="2017-09-13T13:18:07.000Z">
+<meta property="og:updated_time" content="2018-07-09T10:44:32.036Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="constraintLayout 学习总结">
 <meta name="twitter:description" content="ConstraintLayout是Android Studio 2.2中主要的新增功能之一，也是Google在去年的I/O大会上重点宣传的一个功能，升级Android Studio 2.3之后，IDE默认生成的Activity布局都是以ConstraintLayout做为根布局。 新技术毕竟有其优势，google大力宣传的ConstraintLayout有以下两大特性：  可视化操作编写界面，提">
@@ -125,7 +125,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/09/12/constraintLayout-study/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/09/12/ConstraintLayout-Study/"/>
 
 
 
@@ -268,7 +268,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/12/constraintLayout-study/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/12/ConstraintLayout-Study/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
@@ -338,8 +338,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/09/12/constraintLayout-study/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2017/09/12/constraintLayout-study/" itemprop="commentCount"></span>
+                <a href="/2017/09/12/ConstraintLayout-Study/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/09/12/ConstraintLayout-Study/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -347,7 +347,7 @@
 
           
           
-             <span id="/2017/09/12/constraintLayout-study/" class="leancloud_visitors" data-flag-title="constraintLayout 学习总结">
+             <span id="/2017/09/12/ConstraintLayout-Study/" class="leancloud_visitors" data-flag-title="constraintLayout 学习总结">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -404,6 +404,12 @@
 <p>当<code>layout_width</code>设置为60dp时，<code>app:layout_constraintHorizontal_weight=&quot;1&quot;</code>平分剩余的空间，效果图如下<br><img src="http://oqujmbgen.bkt.clouddn.com/weight.png" alt="效果图"></p>
 <h1 id="GuildLine"><a href="#GuildLine" class="headerlink" title="GuildLine"></a>GuildLine</h1><p>这是一个辅助我们布局的View，并且默认设置了visibility为gone</p>
 <p>Guideline也分为垂直和水平两种<br>设置在屏幕中所处的位置<br><code>layout_constraintGuide_begin</code> 引导线距离左边框的距离<br><code>layout_constraintGuide_end</code> 中引导线距离右边框的距离<br><code>layout_constraintGuide_percent</code> 在整个布局中引导线距离左边框的百分比<br>（<code>app:layout_constraintGuide_percent=”0.5”</code>表示距离左边框50%的位置）</p>
+<p>###2018.5.15 更新内容：</p>
+<h1 id="圆形布局"><a href="#圆形布局" class="headerlink" title="圆形布局"></a>圆形布局</h1><p>一个控件以另一个控件的中心为基准，以一定的角度和距离进行定位，如buttonB在buttonA的<br>顺时针方向45度，半径为100dp的位置<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">Button</span> <span class="attr">android:id</span>=<span class="string">"@+id/buttonA"</span> <span class="attr">...</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">Button</span> <span class="attr">android:id</span>=<span class="string">"@+id/buttonB"</span> <span class="attr">...</span></span></div><div class="line">      <span class="attr">app:layout_constraintCircle</span>=<span class="string">"@+id/buttonA"</span></div><div class="line">      <span class="attr">app:layout_constraintCircleRadius</span>=<span class="string">"100dp"</span></div><div class="line">      <span class="attr">app:layout_constraintCircleAngle</span>=<span class="string">"45"</span> /&gt;</div></pre></td></tr></table></figure></p>
+<p><code>layout_constraintCircle</code>参照的控件id<br><code>layout_constraintCircleRadius</code>圆半径<br><code>layout_constraintCircleAngle</code>偏离角度，当水平右方向为0时，逆时针方向旋转</p>
+<h1 id="屏障布局"><a href="#屏障布局" class="headerlink" title="屏障布局"></a>屏障布局</h1><p>将多个带约束的组件看作一个整体，以此为基准，约束其它的组件，如常见的表单填写，左边是textview的标签，右边是edittext的输入框这种常见布局，一般都是以左边textview最长的控件为准，确定右边的edittext的位置<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">     <span class="attr">android:id</span>=<span class="string">"@+id/tv_id"</span></div><div class="line">     <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">     <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">     <span class="attr">android:text</span>=<span class="string">"帐号："</span></div><div class="line">     <span class="attr">app:layout_constraintBottom_toBottomOf</span>=<span class="string">"@+id/et_id"</span></div><div class="line">     <span class="attr">app:layout_constraintTop_toTopOf</span>=<span class="string">"@+id/et_id"</span>/&gt;</div><div class="line"></div><div class="line"> <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">     <span class="attr">android:id</span>=<span class="string">"@+id/tv_password"</span></div><div class="line">     <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">     <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">     <span class="attr">android:layout_marginTop</span>=<span class="string">"8dp"</span></div><div class="line">     <span class="attr">android:text</span>=<span class="string">"联系方式："</span></div><div class="line">     <span class="attr">app:layout_constraintBottom_toBottomOf</span>=<span class="string">"@+id/et_password"</span></div><div class="line">     <span class="attr">app:layout_constraintTop_toTopOf</span>=<span class="string">"@+id/et_password"</span>/&gt;</div><div class="line"></div><div class="line"> <span class="tag">&lt;<span class="name">EditText</span></span></div><div class="line">     <span class="attr">android:id</span>=<span class="string">"@+id/et_id"</span></div><div class="line">     <span class="attr">android:layout_width</span>=<span class="string">"0dp"</span></div><div class="line">     <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">     <span class="attr">android:hint</span>=<span class="string">"请输入姓名"</span></div><div class="line">     <span class="attr">app:layout_constraintLeft_toLeftOf</span>=<span class="string">"@+id/barrier"</span></div><div class="line">     <span class="attr">app:layout_constraintRight_toRightOf</span>=<span class="string">"parent"</span></div><div class="line">     <span class="attr">app:layout_constraintTop_toTopOf</span>=<span class="string">"parent"</span>/&gt;</div><div class="line"></div><div class="line"> <span class="tag">&lt;<span class="name">EditText</span></span></div><div class="line">     <span class="attr">android:id</span>=<span class="string">"@+id/et_password"</span></div><div class="line">     <span class="attr">android:layout_width</span>=<span class="string">"0dp"</span></div><div class="line">     <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">     <span class="attr">android:hint</span>=<span class="string">"请输入联系方式"</span></div><div class="line">     <span class="attr">app:layout_constraintLeft_toLeftOf</span>=<span class="string">"@+id/barrier"</span></div><div class="line">     <span class="attr">app:layout_constraintRight_toRightOf</span>=<span class="string">"parent"</span></div><div class="line">     <span class="attr">app:layout_constraintTop_toBottomOf</span>=<span class="string">"@+id/et_id"</span>/&gt;</div><div class="line"></div><div class="line"> <span class="tag">&lt;<span class="name">android.support.constraint.Barrier</span></span></div><div class="line">     <span class="attr">android:id</span>=<span class="string">"@+id/barrier"</span></div><div class="line">     <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">     <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">     <span class="attr">app:barrierDirection</span>=<span class="string">"right"</span></div><div class="line">     <span class="attr">app:constraint_referenced_ids</span>=<span class="string">"tv_id,tv_password"</span>/&gt;</div></pre></td></tr></table></figure></p>
+<p><code>barrierDirection</code> 以这多个组件为基准，设置屏障的位置<br><code>constraint_referenced_ids</code> 多个基准组件的id</p>
+<h1 id="强制约束"><a href="#强制约束" class="headerlink" title="强制约束"></a>强制约束</h1><p>当控件的宽度设置为<code>WRAP_CONTENT</code>时，如果实际宽度超过了约束的宽度，约束会失效，这个实际宽度可能会受到内容的影响，比如button中的文字太长时，会让以前的约束失效。<br>防止约束失效，需要设置以下属性：<br>水平方向上仍然约束： <code>layout_constrainedWidth=”true|false” //默认false</code><br>垂直方向上仍然约束： <code>layout_constrainedHeight=”true|false” //默认false</code></p>
 <p>到此约束布局的基本用法总结就结束了，接下来就需要更多的时间进行可视化操作练习~</p>
 
       
@@ -531,7 +537,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -553,7 +559,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -586,7 +592,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#添加依赖"><span class="nav-number">1.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本用法"><span class="nav-number">2.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#与其他Layout不同之处"><span class="nav-number">3.</span> <span class="nav-text">与其他Layout不同之处</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#链条（Chains）"><span class="nav-number">4.</span> <span class="nav-text">链条（Chains）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现LinearLayout的水平布局"><span class="nav-number">4.1.</span> <span class="nav-text">实现LinearLayout的水平布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bias链条"><span class="nav-number">4.2.</span> <span class="nav-text">bias链条</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权重链"><span class="nav-number">4.3.</span> <span class="nav-text">权重链</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GuildLine"><span class="nav-number">5.</span> <span class="nav-text">GuildLine</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#添加依赖"><span class="nav-number">1.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本用法"><span class="nav-number">2.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#与其他Layout不同之处"><span class="nav-number">3.</span> <span class="nav-text">与其他Layout不同之处</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#链条（Chains）"><span class="nav-number">4.</span> <span class="nav-text">链条（Chains）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现LinearLayout的水平布局"><span class="nav-number">4.1.</span> <span class="nav-text">实现LinearLayout的水平布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bias链条"><span class="nav-number">4.2.</span> <span class="nav-text">bias链条</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权重链"><span class="nav-number">4.3.</span> <span class="nav-text">权重链</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GuildLine"><span class="nav-number">5.</span> <span class="nav-text">GuildLine</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#圆形布局"><span class="nav-number">6.</span> <span class="nav-text">圆形布局</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#屏障布局"><span class="nav-number">7.</span> <span class="nav-text">屏障布局</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#强制约束"><span class="nav-number">8.</span> <span class="nav-text">强制约束</span></a></li></ol></div>
             
 
           </div>
