@@ -86,7 +86,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/10/10/RN-issue/index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="随着近几年web前端的火热，纯原生的开发需求逐渐减少，混合开发也变得越来越流行。连最近刷论坛也传着不会前端的android开发不是好的开发者这么一句话。上一个项目快要结束，最近也闲下来了，带着对前端的好奇和提升自身技术的想法，入了混合开发的坑。react-native是Facebook打造的一款开源的跨平台移动应用开发框架，作为最火的跨平台移动应用开发开发框架，官网上写着Learn once,">
-<meta property="og:updated_time" content="2018-07-09T10:44:32.035Z">
+<meta property="og:updated_time" content="2018-08-28T11:00:36.640Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="react-native 踩坑记录">
 <meta name="twitter:description" content="随着近几年web前端的火热，纯原生的开发需求逐渐减少，混合开发也变得越来越流行。连最近刷论坛也传着不会前端的android开发不是好的开发者这么一句话。上一个项目快要结束，最近也闲下来了，带着对前端的好奇和提升自身技术的想法，入了混合开发的坑。react-native是Facebook打造的一款开源的跨平台移动应用开发框架，作为最火的跨平台移动应用开发开发框架，官网上写着Learn once,">
@@ -408,6 +408,12 @@
 <p>我们双击R键，调用的是<code>getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();</code>进行reload刷新。</p>
 <p>这两个方法在ReactActivity直接调用，纯react-native搭建的项目，我们可以在onCreate时调用方便调试。</p>
 <p>如果是在混合开发的项目，onCreate方法中我们有自己的ReactInstanceManager，可以直接调用 <code>mReactInstanceManager.getDevSupportManager().handleReloadJS();</code>菜单弹出也一样。</p>
+<h3 id="记2018-8-28爬坑"><a href="#记2018-8-28爬坑" class="headerlink" title="记2018.8.28爬坑"></a>记2018.8.28爬坑</h3><p>当前最新的react-native版本0.56.0引入mobx报错<br>网上诸多教程为老版本引入方式，过程如下：<br>npm安装以下插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i babel-plugin-transform-decorators-legacy babel-preset-react-native-stage-0 --save-dev</div></pre></td></tr></table></figure></p>
+<p>修改 .babelrc 文件配置 babel 插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line"> &apos;presets&apos;: [&apos;react-native&apos;],</div><div class="line"> &apos;plugins&apos;: [&apos;transform-decorators-legacy&apos;]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个方式已经过时了，你会得到以下错误，看起来是babel的问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">error: bundling failed: TypeError: Property right of AssignmentExpression expected node to be of a type [&quot;Expression&quot;] but instead got null</div></pre></td></tr></table></figure></p>
+<p>google无数次后在github上issue查到babel@7.0+不能再使用原先的babel-plugin-transform-decorators-legacy，这个只能在babel@6以下使用，而新版本rn使用正好使用的是babel@7.0+<br>正确的.babelrc如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;presets&quot;: [&quot;react-native&quot;],</div><div class="line">  &quot;plugins&quot;: [</div><div class="line">    [&quot;@babel/plugin-proposal-decorators&quot;, &#123; &quot;legacy&quot;: true &#125;]</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注意，这里的plugin-proposal-decorators的版本必须与babel的版本完全一样，<br>在yarn.lock文件中可以查看babel的版本如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&quot;@babel/core@7.0.0-beta.47&quot;:</div><div class="line">  version &quot;7.0.0-beta.47&quot;</div><div class="line">  resolved &quot;http://r.cnpmjs.org/@babel/core/download/@babel/core-7.0.0-beta.47.tgz#b9c164fb9a1e1083f067c236a9da1d7a7d759271&quot;</div><div class="line">  dependencies:</div><div class="line">    &quot;@babel/code-frame&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/generator&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/helpers&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/template&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/traverse&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/types&quot; &quot;7.0.0-beta.47&quot;</div></pre></td></tr></table></figure></p>
+<p>如果你的版本是@7.0.0-beta.47那么用如下命令安装<br><code>yarn add @babel/plugin-proposal-decorators@7.0.0-beta.47</code></p>
 
       
     </div>
@@ -448,7 +454,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/11/02/genymotion-issue/" rel="prev" title="genymotion 踩坑记录">
+              <a href="/2017/11/02/Genymotion-issue/" rel="prev" title="genymotion 踩坑记录">
                 genymotion 踩坑记录 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -589,7 +595,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#xcode编译时报错"><span class="nav-number">1.</span> <span class="nav-text">xcode编译时报错</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#android-studio报错"><span class="nav-number">2.</span> <span class="nav-text">android studio报错</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编译报错"><span class="nav-number">2.1.</span> <span class="nav-text">编译报错</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击菜单刷新报错"><span class="nav-number">2.2.</span> <span class="nav-text">点击菜单刷新报错</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#记2018-1-18爬坑"><span class="nav-number">2.2.1.</span> <span class="nav-text">记2018.1.18爬坑</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#xcode编译时报错"><span class="nav-number">1.</span> <span class="nav-text">xcode编译时报错</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#android-studio报错"><span class="nav-number">2.</span> <span class="nav-text">android studio报错</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编译报错"><span class="nav-number">2.1.</span> <span class="nav-text">编译报错</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击菜单刷新报错"><span class="nav-number">2.2.</span> <span class="nav-text">点击菜单刷新报错</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#记2018-1-18爬坑"><span class="nav-number">2.2.1.</span> <span class="nav-text">记2018.1.18爬坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#记2018-8-28爬坑"><span class="nav-number">2.2.2.</span> <span class="nav-text">记2018.8.28爬坑</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
