@@ -1852,6 +1852,15 @@ $ hexo d
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm uninstall dtrace-provider</div></pre></td></tr></table></figure>
 <p>终于正常了</p>
 <p>据说安装 hexo-cli 的时候依赖了该组件</p>
+<p>2018-10-16记<br>mac下，修改文章的名字大小写无效问题，由于mac和windows下git本身就忽略大小写，所以导致修改了文章的名字大小写本地生成正常，远程仓库死活不刷新的问题。<br>解决方案：</p>
+<ol>
+<li>进入博客目录.deploy_git文件夹下的.git文件夹，修改里面的git配置文件config，把ignorecase = true改为ignorecase = false，让git不要忽略大小写</li>
+<li><p>如果你仅仅是做了上一步的话，再次上传会生成一个大写的文件夹和一个小写的文件夹，需要先删除git缓存中的博客目录下的 .deploy_git 文件夹下的所有文件，再 push 一次</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git rm -rf *</div><div class="line">git commit -m &apos;clean all file&apos;</div><div class="line">git push</div></pre></td></tr></table></figure>
+</li>
+<li><p>此时再重新生成上传就没有问题了，博客目录下执行hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</p>
+</li>
+</ol>
 
           
         

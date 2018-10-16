@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="简介我是JessieK，从学校起开始自学android，很幸运，毕业后顺利从事android开发，学校里为数不多的女coder之一（相信读计算机的女生会深有感触~(￣▽￣)ブ，在浏览博客的时候发现，不少女coder很牛逼的，相信不久的 将来，越来越多的女生会进入到这个行业，成为行业中的精英）有人可能会疑惑，女生从事这个职业的很少，为什么会选择这条路呢？很简单，因为热爱。俗话说搜索引擎是我们最好的">
 <meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A21.png">
-<meta property="og:updated_time" content="2017-09-07T15:34:53.000Z">
+<meta property="og:updated_time" content="2018-10-16T05:40:18.783Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="我的第一篇文章">
 <meta name="twitter:description" content="简介我是JessieK，从学校起开始自学android，很幸运，毕业后顺利从事android开发，学校里为数不多的女coder之一（相信读计算机的女生会深有感触~(￣▽￣)ブ，在浏览博客的时候发现，不少女coder很牛逼的，相信不久的 将来，越来越多的女生会进入到这个行业，成为行业中的精英）有人可能会疑惑，女生从事这个职业的很少，为什么会选择这条路呢？很简单，因为热爱。俗话说搜索引擎是我们最好的">
@@ -450,6 +450,15 @@ $ hexo d
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm uninstall dtrace-provider</div></pre></td></tr></table></figure>
 <p>终于正常了</p>
 <p>据说安装 hexo-cli 的时候依赖了该组件</p>
+<p>2018-10-16记<br>mac下，修改文章的名字大小写无效问题，由于mac和windows下git本身就忽略大小写，所以导致修改了文章的名字大小写本地生成正常，远程仓库死活不刷新的问题。<br>解决方案：</p>
+<ol>
+<li>进入博客目录.deploy_git文件夹下的.git文件夹，修改里面的git配置文件config，把ignorecase = true改为ignorecase = false，让git不要忽略大小写</li>
+<li><p>如果你仅仅是做了上一步的话，再次上传会生成一个大写的文件夹和一个小写的文件夹，需要先删除git缓存中的博客目录下的 .deploy_git 文件夹下的所有文件，再 push 一次</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git rm -rf *</div><div class="line">git commit -m &apos;clean all file&apos;</div><div class="line">git push</div></pre></td></tr></table></figure>
+</li>
+<li><p>此时再重新生成上传就没有问题了，博客目录下执行hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</p>
+</li>
+</ol>
 
       
     </div>
