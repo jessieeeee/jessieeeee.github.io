@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="custom view," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="android原生的dialog样式很不美观，大多数情况下，我们需要根据需求自定义弹窗的样式，而dialogfragment是官方推荐的对话框控件。使用DialogFragment来管理对话框，当旋转屏幕和按下后退键时可以更好的管理其声明周期，它和Fragment有着基本一致的声明周期。屏幕旋转时，传统的dialog会报异常，而通过DialogFragment实现的对话框则可以完全不必考虑旋转的">
+<meta name="keywords" content="custom view">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用dialogfragment封装弹窗工具类">
+<meta property="og:url" content="http://yoursite.com/2017/06/08/DialogFragment/index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="android原生的dialog样式很不美观，大多数情况下，我们需要根据需求自定义弹窗的样式，而dialogfragment是官方推荐的对话框控件。使用DialogFragment来管理对话框，当旋转屏幕和按下后退键时可以更好的管理其声明周期，它和Fragment有着基本一致的声明周期。屏幕旋转时，传统的dialog会报异常，而通过DialogFragment实现的对话框则可以完全不必考虑旋转的">
+<meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB2.gif">
+<meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB2.png">
+<meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB3.png">
+<meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB7.png">
+<meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB4.png">
+<meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB6.png">
+<meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB5.png">
+<meta property="og:updated_time" content="2017-09-14T14:44:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用dialogfragment封装弹窗工具类">
+<meta name="twitter:description" content="android原生的dialog样式很不美观，大多数情况下，我们需要根据需求自定义弹窗的样式，而dialogfragment是官方推荐的对话框控件。使用DialogFragment来管理对话框，当旋转屏幕和按下后退键时可以更好的管理其声明周期，它和Fragment有着基本一致的声明周期。屏幕旋转时，传统的dialog会报异常，而通过DialogFragment实现的对话框则可以完全不必考虑旋转的">
+<meta name="twitter:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB2.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/08/DialogFragment/"/>
+
+
+
+
+
+  <title>利用dialogfragment封装弹窗工具类 | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/08/DialogFragment/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">利用dialogfragment封装弹窗工具类</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-08T11:22:57+08:00">
+                2017-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/08/DialogFragment/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/06/08/DialogFragment/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/06/08/DialogFragment/" class="leancloud_visitors" data-flag-title="利用dialogfragment封装弹窗工具类">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>android原生的dialog样式很不美观，大多数情况下，我们需要根据需求自定义弹窗的样式，而dialogfragment是官方推荐的对话框控件。<br>使用DialogFragment来管理对话框，当旋转屏幕和按下后退键时可以更好的管理其声明周期，它和Fragment有着基本一致的声明周期。屏幕旋转时，传统的dialog会报异常，而通过DialogFragment实现的对话框则可以完全不必考虑旋转的问题。且DialogFragment也允许开发者把Dialog作为内嵌的Fragment进行重用，可以在大屏幕和小屏幕显示出不同的效果。详情可以查看<a href="http://blog.csdn.net/lmj623565791/article/details/37815413/" target="_blank" rel="external">鸿洋大神的博文</a>。<br>所以利用dialogfragment来封装常用的弹窗工具类再合适不过了，这里记录一下详细过程：</p>
+<hr>
+<p>最终效果gif：<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB2.gif" alt="效果gif"><br>这是封装好的lib库，上图<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB2.png" alt="封装好的lib库截图"><br>这里我们封装了常见的提示弹窗，选择列表弹窗（支持垂直列表，水平列表，网格列表，同时支持单选与多选），加载弹窗，三种模式。</p>
+<h1 id="封装dialog-lib"><a href="#封装dialog-lib" class="headerlink" title="封装dialog lib"></a>封装dialog lib</h1><p>新建一个项目，具体过程不描述了，新建一个module，选择android libiary，填写好相关信息后finish。</p>
+<h2 id="创建一个弹窗基类"><a href="#创建一个弹窗基类" class="headerlink" title="创建一个弹窗基类"></a>创建一个弹窗基类</h2><p>  继承DialogFragment创建一个弹窗基类BaseDialogFragment，以便做统一管理。<br>统一默认颜色，背景，以及图标。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">protected</span> <span class="keyword">int</span> layout;<span class="comment">//布局文件id</span></div><div class="line"> <span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_COLOR = -<span class="number">1</span>; <span class="comment">//default</span></div><div class="line"> <span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_BG= -<span class="number">1</span>;</div><div class="line"> <span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_ICON=-<span class="number">1</span>;</div></pre></td></tr></table></figure></p>
+<p>统一动画，这里我们默认两种动画<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">protected</span> <span class="keyword">int</span> animation = R.style.BottomDialog;<span class="comment">//动画类型</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BOTTOM_TO_TOP=<span class="number">0</span>;</div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TOP_TO_BOTTOM=<span class="number">1</span>;</div></pre></td></tr></table></figure></p>
+<p>由子类传入布局文件，并提供显示弹窗和设置动画的方法，具体代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> Dialog <span class="title">onCreateDialog</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">       <span class="comment">//Step1 build Dialog</span></div><div class="line">       <span class="keyword">if</span> (layout == <span class="number">0</span>) &#123;</div><div class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"no correct layout found."</span>);</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       View view = LayoutInflater.from(getActivity()).inflate(layout, <span class="keyword">null</span>);</div><div class="line">       Dialog dialog= setDialog(view);</div><div class="line"></div><div class="line">       <span class="keyword">return</span> dialog;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> Dialog <span class="title">setDialog</span><span class="params">(View view)</span></span>;</div><div class="line">   <span class="function"><span class="keyword">public</span>  BaseDialogFragment <span class="title">setDialogAnimation</span><span class="params">(<span class="keyword">int</span> animation)</span></span>&#123;</div><div class="line">       <span class="keyword">if</span>(animation==TOP_TO_BOTTOM)&#123;</div><div class="line">           <span class="keyword">this</span>.animation= R.style.TopDialog;</div><div class="line">       &#125;<span class="keyword">else</span>&#123;</div><div class="line">           <span class="keyword">this</span>.animation= R.style.BottomDialog;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">   &#125;</div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showDialog</span><span class="params">(FragmentManager fragmentManager)</span></span>&#123;</div><div class="line">       FragmentTransaction ft = fragmentManager.beginTransaction();</div><div class="line">       Fragment fragment = fragmentManager.findFragmentByTag(<span class="string">"dialogFragment"</span>);</div><div class="line">       <span class="comment">//避免重复弹窗</span></div><div class="line">       <span class="keyword">if</span> (fragment != <span class="keyword">null</span>) &#123;</div><div class="line">           ft.remove(fragment);</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       show(ft, <span class="string">"dialogFragment"</span>);<span class="comment">//显示一个Fragment并且给该Fragment添加一个Tag，可通过findFragme ntByTag找到该Fragment</span></div><div class="line">       fragmentManager.executePendingTransactions();</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroyView</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">super</span>.onDestroyView();</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<h2 id="封装提示弹窗"><a href="#封装提示弹窗" class="headerlink" title="封装提示弹窗"></a>封装提示弹窗</h2><p>创建BaseNormalDialogFragment类继承BaseDialogFragment，添加icon的图标设置和是否显示的属性，提供按键监听接口。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_ICON=-<span class="number">1</span>;</div><div class="line"><span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> HIDE_ICON=-<span class="number">2</span>;<span class="comment">//隐藏字段</span></div><div class="line"><span class="keyword">protected</span> ClickListener clickListener;<span class="comment">//按键监听</span></div><div class="line"></div><div class="line"> <span class="comment">//监听接口</span></div><div class="line">   <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ClickListener</span> </span>&#123;</div><div class="line">       <span class="function"><span class="keyword">void</span> <span class="title">clickSure</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">void</span> <span class="title">clickCancel</span><span class="params">()</span></span>;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>外部注册监听：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> BaseNormalDialogFragment <span class="title">setOnBtnClickListener</span><span class="params">(ClickListener clickListener)</span> </span>&#123;</div><div class="line">       <span class="keyword">this</span>.clickListener = clickListener;</div><div class="line">       <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>抽象自定义ui方法，待子类实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getSureTextColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getCancelTextColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">getSureText</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">getCancelText</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">getContent</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getSureBg</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getCancelBg</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getDialogIcon</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getDividerVerticalColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getDividerHorizontalColor</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure></p>
+<p>初始化弹窗设置ui和监听：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//设置自定义窗口和监听</span></div><div class="line">   <span class="function"><span class="keyword">public</span> Dialog <span class="title">setDialog</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">       Dialog dlg = <span class="keyword">new</span> Dialog(getActivity(), R.style.MyDialogBottom);</div><div class="line">       dlg.setCancelable(<span class="keyword">false</span>);</div><div class="line">       dlg.setCanceledOnTouchOutside(<span class="keyword">false</span>);</div><div class="line">       dlg.setContentView(view);</div><div class="line">       dlg.getWindow().setBackgroundDrawableResource(R.color.transparent);</div><div class="line">       TextView textMsg = (TextView) view.findViewById(R.id.text_msg);</div><div class="line">       Button sureButton = (Button) view.findViewById(R.id.btn_sure);</div><div class="line">       Button cancelButton = (Button) view.findViewById(R.id.btn_cancel);</div><div class="line">       ImageView dialog_icon= (ImageView) view.findViewById(R.id.dialog_icon);</div><div class="line">       ImageView divider_vertical= (ImageView) view.findViewById(R.id.divider_vertical);</div><div class="line">       ImageView divider_horizontal= (ImageView) view.findViewById(R.id.divider_horizontal);</div><div class="line"></div><div class="line">       <span class="keyword">if</span> (getSureTextColor() != DEFAULT_COLOR) &#123;</div><div class="line">           sureButton.setTextColor(getResources().getColor(getSureTextColor()));</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (getCancelTextColor() != DEFAULT_COLOR) &#123;</div><div class="line">           cancelButton.setTextColor(getResources().getColor(getCancelTextColor()));</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (getCancelBg() != DEFAULT_BG) &#123;</div><div class="line">           sureButton.setBackgroundResource(getSureBg());</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (getSureBg() != DEFAULT_BG) &#123;</div><div class="line">           sureButton.setBackgroundResource(getSureBg());</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="keyword">if</span> (getDividerHorizontalColor() != DEFAULT_COLOR)&#123;</div><div class="line">           divider_horizontal.setBackgroundColor(getResources().getColor(getDividerHorizontalColor()));</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (getDividerVerticalColor() != DEFAULT_COLOR)&#123;</div><div class="line">           divider_vertical.setBackgroundColor(getResources().getColor(getDividerVerticalColor()));</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="keyword">if</span>( getDialogIcon() != DEFAULT_ICON)&#123;</div><div class="line">           <span class="keyword">if</span>(getDialogIcon()==HIDE_ICON)&#123;</div><div class="line">               dialog_icon.setVisibility(View.GONE);</div><div class="line">           &#125;<span class="keyword">else</span>&#123;</div><div class="line">               dialog_icon.setVisibility(View.VISIBLE);</div><div class="line">               dialog_icon.setImageResource(getDialogIcon());</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       textMsg.setText(getContent());</div><div class="line">       sureButton.setText(getSureText());</div><div class="line">       cancelButton.setText(getCancelText());</div><div class="line">       sureButton.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">               <span class="keyword">if</span> (clickListener != <span class="keyword">null</span>) &#123;</div><div class="line">                   clickListener.clickSure();</div><div class="line">               &#125;</div><div class="line">               dismiss();</div><div class="line">           &#125;</div><div class="line">       &#125;);</div><div class="line">       cancelButton.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">               <span class="keyword">if</span> (clickListener != <span class="keyword">null</span>) &#123;</div><div class="line">                   clickListener.clickCancel();</div><div class="line">               &#125;</div><div class="line">               dismiss();</div><div class="line">           &#125;</div><div class="line">       &#125;);</div><div class="line">       <span class="keyword">return</span> dlg;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>最后封装一个提示窗子类，传入布局文件，当然这里也可以根据需求自己做扩展，传入不同的布局文件，但要保证控件id相同。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ListDialogFragment <span class="title">newInstance</span><span class="params">(<span class="keyword">int</span> orientation)</span> </span>&#123;</div><div class="line">      <span class="comment">//创建一个带有参数的Fragment实例</span></div><div class="line">      ListDialogFragment fragment = <span class="keyword">new</span> ListDialogFragment();</div><div class="line">      fragment.orientation=orientation;</div><div class="line">      Bundle bundle = <span class="keyword">new</span> Bundle();</div><div class="line">      bundle.putInt(TAG_ARG, R.layout.dialog_list);</div><div class="line">      fragment.setArguments(bundle);<span class="comment">//把参数传递给该DialogFragment</span></div><div class="line"></div><div class="line">      <span class="keyword">return</span> fragment;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>提示窗效果图：<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB3.png" alt="提示窗效果图"><br>布局文件如下:<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span></span></div><div class="line">    <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></div><div class="line">    <span class="attr">android:padding</span>=<span class="string">"30dp"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">RelativeLayout</span></span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"200dp"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"@drawable/dialog_bg_round"</span>&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">LinearLayout</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/dia_ll"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"fill_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"45dp"</span></div><div class="line">            <span class="attr">android:layout_alignParentBottom</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:orientation</span>=<span class="string">"horizontal"</span>&gt;</div><div class="line"></div><div class="line">            <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">                <span class="attr">android:id</span>=<span class="string">"@+id/btn_cancel"</span></div><div class="line">                <span class="attr">android:layout_width</span>=<span class="string">"0dp"</span></div><div class="line">                <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">                <span class="attr">android:layout_weight</span>=<span class="string">"1"</span></div><div class="line">                <span class="attr">android:background</span>=<span class="string">"@null"</span></div><div class="line">                <span class="attr">android:text</span>=<span class="string">"取消"</span></div><div class="line">                <span class="attr">android:textColor</span>=<span class="string">"@color/default_blue"</span></div><div class="line">                /&gt;</div><div class="line"></div><div class="line">            <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">                <span class="attr">android:id</span>=<span class="string">"@+id/divider_vertical"</span></div><div class="line">                <span class="attr">android:layout_width</span>=<span class="string">"1dp"</span></div><div class="line">                <span class="attr">android:layout_height</span>=<span class="string">"45dp"</span></div><div class="line">                <span class="attr">android:background</span>=<span class="string">"@color/default_blue"</span></div><div class="line">                /&gt;</div><div class="line"></div><div class="line">            <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">                <span class="attr">android:id</span>=<span class="string">"@+id/btn_sure"</span></div><div class="line">                <span class="attr">android:layout_width</span>=<span class="string">"0dp"</span></div><div class="line">                <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">                <span class="attr">android:layout_weight</span>=<span class="string">"1"</span></div><div class="line">                <span class="attr">android:background</span>=<span class="string">"@drawable/dialog_btn_bg_round"</span></div><div class="line">                <span class="attr">android:text</span>=<span class="string">"确定"</span></div><div class="line">                <span class="attr">android:textColor</span>=<span class="string">"@color/white"</span>/&gt;</div><div class="line">        <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line"></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/divider_horizontal"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"1dp"</span></div><div class="line">            <span class="attr">android:layout_above</span>=<span class="string">"@id/dia_ll"</span></div><div class="line">            <span class="attr">android:background</span>=<span class="string">"@color/default_blue"</span></div><div class="line">            /&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">RelativeLayout</span></span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_above</span>=<span class="string">"@id/dia_ll"</span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            &gt;</div><div class="line"></div><div class="line">            <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">                <span class="attr">android:id</span>=<span class="string">"@+id/dialog_icon"</span></div><div class="line">                <span class="attr">android:layout_width</span>=<span class="string">"60dp"</span></div><div class="line">                <span class="attr">android:layout_height</span>=<span class="string">"60dp"</span></div><div class="line">                <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span></div><div class="line">                <span class="attr">android:src</span>=<span class="string">"@drawable/dialog_icon"</span></div><div class="line">                /&gt;</div><div class="line"></div><div class="line">            <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">                <span class="attr">android:id</span>=<span class="string">"@+id/text_msg"</span></div><div class="line">                <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">                <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">                <span class="attr">android:layout_below</span>=<span class="string">"@id/dialog_icon"</span></div><div class="line">                <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span></div><div class="line">                <span class="attr">android:layout_marginTop</span>=<span class="string">"15dp"</span></div><div class="line">                <span class="attr">android:text</span>=<span class="string">"发现新版本"</span></div><div class="line">                <span class="attr">android:textColor</span>=<span class="string">"@color/default_blue"</span></div><div class="line">                /&gt;</div><div class="line"></div><div class="line"></div><div class="line">        <span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>向外暴露ui设置和接口，具体代码这里就不贴了，后面可查看源码。</p>
+<h2 id="提示弹窗的使用"><a href="#提示弹窗的使用" class="headerlink" title="提示弹窗的使用"></a>提示弹窗的使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">NormalDialogFragment.newInstance()</div><div class="line">           .setContent(<span class="string">"这只是一个普通的提示弹窗"</span>)</div><div class="line">           .setSureTextColor(R.color.white)</div><div class="line">           .setCancelTextColor(R.color.default_blue)</div><div class="line">           .setSuretext(<span class="string">"确定"</span>)</div><div class="line">           .setCanceltext(<span class="string">"取消"</span>)</div><div class="line">           .setDividerHorizontalColor(R.color.default_line)</div><div class="line">           .setDividerVerticalColor(R.color.default_line)</div><div class="line">           .hideIcon()</div><div class="line">           .setSureBg(R.drawable.dialog_btn_bg_round)</div><div class="line">           .setOnBtnClickListener(<span class="keyword">new</span> BaseNormalDialogFragment.ClickListener() &#123;</div><div class="line">               <span class="meta">@Override</span></div><div class="line">               <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clickSure</span><span class="params">()</span> </span>&#123;</div><div class="line">                   Toast.makeText(context, <span class="string">"点击了确定"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">               &#125;</div><div class="line"></div><div class="line">               <span class="meta">@Override</span></div><div class="line">               <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clickCancel</span><span class="params">()</span> </span>&#123;</div><div class="line">                   Toast.makeText(context, <span class="string">"点击了取消"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">               &#125;</div><div class="line">           &#125;)</div><div class="line">           .setDialogAnimation(BaseListDialogFragment.BOTTOM_TO_TOP)</div><div class="line">           .showDialog(getFragmentManager());</div></pre></td></tr></table></figure>
+<h2 id="封装加载弹窗"><a href="#封装加载弹窗" class="headerlink" title="封装加载弹窗"></a>封装加载弹窗</h2><p>创建BaseLoadDialogFragment继承BaseDialogFragment，暴露一些自定义ui的方法，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获得加载文字颜色</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getLoadMsgColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="comment">//获得加载文字</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">getLoadMsgText</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="comment">//获得加载图片</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getLoadImg</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"></div><div class="line">  <span class="comment">//设置加载进度图1</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getLoadShape1</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="comment">//设置加载进度图2</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getLoadShape2</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="comment">//设置背景</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getBackgroundShape</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure></p>
+<p>根据设置的ui初始化<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> Dialog <span class="title">setDialog</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">      Dialog dlg = <span class="keyword">new</span> Dialog(getActivity(), R.style.MyDialogBottom);</div><div class="line">      dlg.setCancelable(<span class="keyword">false</span>);</div><div class="line">      dlg.setCanceledOnTouchOutside(<span class="keyword">false</span>);</div><div class="line">      dlg.setContentView(view);</div><div class="line">      dlg.getWindow().setBackgroundDrawableResource(R.color.transparent);</div><div class="line">      ProgressBar pb_progress = (ProgressBar) view.findViewById(R.id.pb_progress);</div><div class="line">      TextView load_msg = (TextView) view.findViewById(R.id.load_msg);</div><div class="line">      ImageView dot_loading1 = (ImageView) view.findViewById(R.id.dot_loading1);</div><div class="line">      ImageView dot_loading2 = (ImageView) view.findViewById(R.id.dot_loading2);</div><div class="line">      ImageView dot_loading3 = (ImageView) view.findViewById(R.id.dot_loading3);</div><div class="line">      LinearLayout ly_background= (LinearLayout) view.findViewById(R.id.ly_background);</div><div class="line">      ly_background.setBackgroundResource(getBackgroundShape());</div><div class="line">      load_msg.setText(getLoadMsgText());</div><div class="line">      <span class="keyword">if</span> (getLoadMsgColor() != DEFAULT_COLOR) &#123;</div><div class="line">          load_msg.setTextColor(getResources().getColor(getLoadMsgColor()));</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (getLoadImg() != DEFAULT_COLOR) &#123;</div><div class="line">          pb_progress.setIndeterminateDrawable(getResources().getDrawable(getLoadImg()));</div><div class="line">      &#125;</div><div class="line">      Drawable drawableBlue = getResources().getDrawable(getLoadShape1());</div><div class="line">      Drawable drawableGray = getResources().getDrawable(getLoadShape2());</div><div class="line"></div><div class="line">      AnimationDrawable anim1 = <span class="keyword">new</span> AnimationDrawable();</div><div class="line">      anim1.addFrame(drawableBlue, <span class="number">300</span>);</div><div class="line">      anim1.addFrame(drawableGray, <span class="number">300</span>);</div><div class="line">      anim1.addFrame(drawableGray, <span class="number">300</span>);</div><div class="line">      anim1.setOneShot(<span class="keyword">false</span>);</div><div class="line">      dot_loading1.setBackgroundDrawable(anim1);</div><div class="line">      anim1.start();</div><div class="line"></div><div class="line">      AnimationDrawable anim2 = <span class="keyword">new</span> AnimationDrawable();</div><div class="line">      anim2.addFrame(drawableGray, <span class="number">300</span>);</div><div class="line">      anim2.addFrame(drawableBlue, <span class="number">300</span>);</div><div class="line">      anim2.addFrame(drawableGray, <span class="number">300</span>);</div><div class="line">      anim2.setOneShot(<span class="keyword">false</span>);</div><div class="line">      dot_loading2.setBackgroundDrawable(anim2);</div><div class="line">      anim2.start();</div><div class="line"></div><div class="line">      AnimationDrawable anim3 = <span class="keyword">new</span> AnimationDrawable();</div><div class="line">      anim3.addFrame(drawableGray, <span class="number">300</span>);</div><div class="line">      anim3.addFrame(drawableGray, <span class="number">300</span>);</div><div class="line">      anim3.addFrame(drawableBlue, <span class="number">300</span>);</div><div class="line">      anim3.setOneShot(<span class="keyword">false</span>);</div><div class="line">      dot_loading3.setBackgroundDrawable(anim3);</div><div class="line">      anim3.start();</div><div class="line">      <span class="keyword">return</span> dlg;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>封装一个加载窗子类，传入布局文件，这里也可以根据需求自己做扩展，传入不同的布局文件，但要保证控件id相同。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LoadDialogFragment <span class="title">newInstance</span><span class="params">()</span></span>&#123;</div><div class="line">      LoadDialogFragment fragment=<span class="keyword">new</span> LoadDialogFragment();</div><div class="line">      Bundle bundle = <span class="keyword">new</span> Bundle();</div><div class="line">      bundle.putInt(TAG_ARG, R.layout.dialog_load);</div><div class="line">      fragment.setArguments(bundle);<span class="comment">//把参数传递给该DialogFragment</span></div><div class="line"></div><div class="line">      <span class="keyword">return</span> fragment;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>加载窗效果图：<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB7.png" alt="加载窗效果图"><br>布局文件如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/ly_background"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:background</span>=<span class="string">"@drawable/bg_load"</span></div><div class="line">    <span class="attr">android:gravity</span>=<span class="string">"center_horizontal"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></div><div class="line">    <span class="attr">android:paddingBottom</span>=<span class="string">"20dp"</span></div><div class="line">    <span class="attr">android:paddingLeft</span>=<span class="string">"30dp"</span></div><div class="line">    <span class="attr">android:paddingRight</span>=<span class="string">"30dp"</span></div><div class="line">    <span class="attr">android:paddingTop</span>=<span class="string">"20dp"</span> &gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">ProgressBar</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/pb_progress"</span></div><div class="line">        <span class="attr">style</span>=<span class="string">"@style/CustomProgressStyle"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"48dp"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"48dp"</span></div><div class="line">        <span class="attr">android:indeterminateDrawable</span>=<span class="string">"@drawable/load_progress"</span>/&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">LinearLayout</span></span></div><div class="line">        <span class="attr">android:orientation</span>=<span class="string">"horizontal"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/load_msg"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_marginTop</span>=<span class="string">"15dp"</span></div><div class="line">        <span class="attr">android:text</span>=<span class="string">"Message"</span></div><div class="line">        <span class="attr">android:textColor</span>=<span class="string">"@color/white"</span> /&gt;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/dot_loading1"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"5dp"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"5dp"</span></div><div class="line">        <span class="attr">android:layout_gravity</span>=<span class="string">"bottom"</span></div><div class="line">        <span class="attr">android:layout_marginBottom</span>=<span class="string">"3dp"</span></div><div class="line">        <span class="attr">android:layout_marginLeft</span>=<span class="string">"5dp"</span></div><div class="line">        /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/dot_loading2"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"5dp"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"5dp"</span></div><div class="line">        <span class="attr">android:layout_gravity</span>=<span class="string">"bottom"</span></div><div class="line">        <span class="attr">android:layout_marginBottom</span>=<span class="string">"3dp"</span></div><div class="line">        <span class="attr">android:layout_marginLeft</span>=<span class="string">"5dp"</span></div><div class="line">        /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/dot_loading3"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"5dp"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"5dp"</span></div><div class="line">        <span class="attr">android:layout_gravity</span>=<span class="string">"bottom"</span></div><div class="line">        <span class="attr">android:layout_marginBottom</span>=<span class="string">"3dp"</span></div><div class="line">        <span class="attr">android:layout_marginLeft</span>=<span class="string">"3dp"</span></div><div class="line">        /&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>同样向外暴露ui设置和接口，具体代码这里就不贴了，后面可查看源码。</p>
+<h2 id="加载弹窗的使用"><a href="#加载弹窗的使用" class="headerlink" title="加载弹窗的使用"></a>加载弹窗的使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> LoadDialogFragment loadDialogFragment = LoadDialogFragment.newInstance()</div><div class="line">                .setLoadMsgText(<span class="string">"正在加载中"</span>)</div><div class="line">                .setLoadImg(R.drawable.load_progress)</div><div class="line">                .setLoadShape1(R.drawable.load_cicle_blue)</div><div class="line">                .setLoadShape2(R.drawable.load_cicle_gray)</div><div class="line">                .setBackgroundShape(R.drawable.bg_load)</div><div class="line">                .setLoadMsgColor(R.color.white);</div><div class="line"></div><div class="line">        loadDialogFragment .setDialogAnimation(BaseListDialogFragment.BOTTOM_TO_TOP).showDialog(getFragmentManager());</div><div class="line"><span class="comment">//        loadDialogFragment.dismiss();</span></div></pre></td></tr></table></figure>
+<h2 id="封装选择列表窗"><a href="#封装选择列表窗" class="headerlink" title="封装选择列表窗"></a>封装选择列表窗</h2><p>这里展示样式可以分为三种情况，水平，垂直以及网格列表，展示位置也有三种情况，顶部，中间，底部，选择模式可以分为两种情况，单选和多选。<br>创建BaseListDialogFragment类继承BaseDialogFragment，创建展示样式，位置，选择模式的属性，列表适配器和按键监听。这里的监听有两个，多选时，除了对item的选择监听外，还需要对顶部的确定和返回监听。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> HORIZONTAL = <span class="number">0</span>;</div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> VERTICAL = <span class="number">1</span>;</div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> GRID=<span class="number">2</span>;</div><div class="line"><span class="keyword">protected</span> <span class="keyword">int</span> orientation;</div><div class="line"><span class="keyword">private</span> DialogListAdapter dialogListAdapter;</div><div class="line"><span class="keyword">private</span> DialogListAdapter.OnItemClickListener onItemClickListener;</div><div class="line"><span class="keyword">private</span> ClickListener clickListener;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BOTTOM=Gravity.BOTTOM;<span class="comment">//底部</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CENTER=Gravity.CENTER;<span class="comment">//中间</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TOP=Gravity.TOP;<span class="comment">//顶部</span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ClickListener</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">clickSure</span><span class="params">(List&lt;Item&gt; selectItems)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">clickBack</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>外部注册监听：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> BaseListDialogFragment <span class="title">setOnItemClickListener</span><span class="params">(DialogListAdapter.OnItemClickListener onItemClickListener)</span> </span>&#123;</div><div class="line">       <span class="keyword">this</span>.onItemClickListener = onItemClickListener;</div><div class="line">       <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="comment">//只在多选时有效</span></div><div class="line">   <span class="function"><span class="keyword">public</span> BaseListDialogFragment <span class="title">setClickListener</span><span class="params">(ClickListener clickListener)</span> </span>&#123;</div><div class="line">       <span class="keyword">this</span>.clickListener = clickListener;</div><div class="line">       <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>对于列表项，需要添加数据源和适配器，数据源我们需要封装一个Item类，通过传入这个List<item>进行设置。</item></p>
+<h3 id="封装item类"><a href="#封装item类" class="headerlink" title="封装item类"></a>封装item类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</div><div class="line">    <span class="keyword">private</span> String title;</div><div class="line">    <span class="keyword">private</span> Drawable icon;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> check;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Item</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Item</span><span class="params">(<span class="keyword">int</span> id, String title, Drawable icon)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.id = id;</div><div class="line">        <span class="keyword">this</span>.title = title;</div><div class="line">        <span class="keyword">this</span>.icon = icon;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> id;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.id = id;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTitle</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> title;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTitle</span><span class="params">(String title)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.title = title;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Drawable <span class="title">getIcon</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> icon;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setIcon</span><span class="params">(Drawable icon)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.icon = icon;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isCheck</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> check;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCheck</span><span class="params">(<span class="keyword">boolean</span> check)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.check = check;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="定义适配器"><a href="#定义适配器" class="headerlink" title="定义适配器"></a>定义适配器</h3><p>列表采用RecyclerView，适配器与RecyclerView的一致，由于展示样式不同，定义两种holder，对应不同的item布局。<br>图标文字上下排列的holder，水平列表根据数据个数设置item的宽度，网格列表则根据设置的每排显示个数来设置，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TopHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</div><div class="line">       <span class="keyword">private</span> TextView item;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="title">TopHolder</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">           <span class="keyword">super</span>(view);</div><div class="line"></div><div class="line">           LinearLayout.LayoutParams params = <span class="keyword">new</span> LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);</div><div class="line">           <span class="keyword">if</span>(orientation == HORIZONTAL)&#123;</div><div class="line">               params.width = getScreenWidth(context) / mItems.size();</div><div class="line">           &#125;<span class="keyword">else</span>&#123;</div><div class="line">               params.width = getScreenWidth(context) / rowNum;</div><div class="line">           &#125;</div><div class="line">           params.setMargins(<span class="number">0</span>, padding, <span class="number">0</span>, padding);</div><div class="line">           item = <span class="keyword">new</span> TextView(view.getContext());</div><div class="line">           item.setLayoutParams(params);</div><div class="line">           item.setMaxLines(<span class="number">1</span>);</div><div class="line">           item.setEllipsize(TextUtils.TruncateAt.END);</div><div class="line">           item.setGravity(Gravity.CENTER);</div><div class="line">           item.setTextColor(ContextCompat.getColor(view.getContext(), R.color.black));</div><div class="line">           item.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.font_14));</div><div class="line">           item.setCompoundDrawablePadding(topPadding);</div><div class="line"></div><div class="line">           TypedValue typedValue = <span class="keyword">new</span> TypedValue();</div><div class="line">           view.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, <span class="keyword">true</span>);</div><div class="line">           item.setBackgroundResource(typedValue.resourceId);</div><div class="line"></div><div class="line">           ((LinearLayout) view).addView(item);</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">private</span> Drawable <span class="title">icon</span><span class="params">(Drawable drawable)</span> </span>&#123;</div><div class="line">           <span class="keyword">if</span> (drawable != <span class="keyword">null</span>) &#123;</div><div class="line">               Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();</div><div class="line">               Drawable resizeIcon = <span class="keyword">new</span> BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(bitmap, topIcon, topIcon, <span class="keyword">true</span>));</div><div class="line">               Drawable.ConstantState state = resizeIcon.getConstantState();</div><div class="line">               resizeIcon = DrawableCompat.wrap(state == <span class="keyword">null</span> ? resizeIcon : state.newDrawable().mutate());</div><div class="line">               <span class="keyword">return</span> resizeIcon;</div><div class="line">           &#125;</div><div class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>图标文字左右排列的代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LeftHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</div><div class="line">       <span class="keyword">private</span> TextView item;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="title">LeftHolder</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">           <span class="keyword">super</span>(view);</div><div class="line"></div><div class="line">           LinearLayout.LayoutParams params = <span class="keyword">new</span> LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);</div><div class="line">           view.setLayoutParams(params);</div><div class="line">           params.setMargins(padding, padding, padding, padding);</div><div class="line">           item = <span class="keyword">new</span> TextView(view.getContext());</div><div class="line">           item.setLayoutParams(params);</div><div class="line">           item.setMaxLines(<span class="number">1</span>);</div><div class="line">           item.setEllipsize(TextUtils.TruncateAt.END);</div><div class="line">           item.setGravity(Gravity.CENTER_VERTICAL);</div><div class="line">           item.setTextColor(ContextCompat.getColor(view.getContext(), R.color.black));</div><div class="line">           item.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.font_14));</div><div class="line">           item.setCompoundDrawablePadding(leftPadding);</div><div class="line"></div><div class="line">           TypedValue typedValue = <span class="keyword">new</span> TypedValue();</div><div class="line">           view.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, <span class="keyword">true</span>);</div><div class="line">           item.setBackgroundResource(typedValue.resourceId);</div><div class="line"></div><div class="line">           ((LinearLayout) view).addView(item);</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">private</span> Drawable <span class="title">icon</span><span class="params">(Drawable drawable)</span> </span>&#123;</div><div class="line">           <span class="keyword">if</span> (drawable != <span class="keyword">null</span>) &#123;</div><div class="line">               Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();</div><div class="line"></div><div class="line">               Drawable resizeIcon = <span class="keyword">new</span> BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(bitmap, leftIcon, leftIcon, <span class="keyword">true</span>));</div><div class="line">               Drawable.ConstantState state = resizeIcon.getConstantState();</div><div class="line">               resizeIcon = DrawableCompat.wrap(state == <span class="keyword">null</span> ? resizeIcon : state.newDrawable().mutate());</div><div class="line">               <span class="keyword">return</span> resizeIcon;</div><div class="line">           &#125;</div><div class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>根据展示样式，创建不同的holder，网格和水平列表采用图标文字上下排列的方式，垂直列表采用图标文字左右排列的方式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> RecyclerView.<span class="function">ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (orientation == GRID)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> TopHolder(<span class="keyword">new</span> LinearLayout(parent.getContext()));</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (orientation == HORIZONTAL)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> TopHolder(<span class="keyword">new</span> LinearLayout(parent.getContext()));</div><div class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">new</span> LeftHolder(<span class="keyword">new</span> LinearLayout(parent.getContext()));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>同样，根据展示样式，进行不同的数据捆绑和按键监听，需要根据选择模式，进行颜色变化的处理：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(RecyclerView.ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        <span class="keyword">final</span> Item item = mItems.get(position);</div><div class="line"></div><div class="line">        <span class="keyword">final</span> TopHolder topHolder;</div><div class="line">        <span class="keyword">final</span> LeftHolder leftHolder;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (orientation == GRID) &#123;</div><div class="line">            topHolder = (TopHolder) holder;</div><div class="line"></div><div class="line">            topHolder.item.setText(item.getTitle());</div><div class="line">            topHolder.item.setCompoundDrawablesWithIntrinsicBounds(<span class="keyword">null</span>, topHolder.icon(item.getIcon()), <span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line">            topHolder.item.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">                <span class="meta">@Override</span></div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">                    <span class="keyword">if</span> (itemClickListener != <span class="keyword">null</span>) &#123;</div><div class="line">                        <span class="keyword">if</span>(multipleChoice)&#123;</div><div class="line">                            <span class="keyword">if</span>(item.isCheck())&#123;</div><div class="line">                                item.setCheck(<span class="keyword">false</span>);</div><div class="line">                                topHolder.item.setTextColor(context.getResources().getColor(baseListDialogFragment.getItemTextColor()));</div><div class="line">                                topHolder.item.setBackgroundColor(context.getResources().getColor(R.color.transparent));</div><div class="line">                                selectItems.remove(item);</div><div class="line">                            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                                item.setCheck(<span class="keyword">true</span>);</div><div class="line">                                topHolder.item.setTextColor(context.getResources().getColor(baseListDialogFragment.getSelectItemTextColor()));</div><div class="line">                                topHolder.item.setBackgroundColor(context.getResources().getColor(baseListDialogFragment.getSelectItemBackgoundColor()));</div><div class="line">                                selectItems.add(item);</div><div class="line">                            &#125;</div><div class="line"></div><div class="line">                        &#125;</div><div class="line">                        itemClickListener.click(item,baseListDialogFragment);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (orientation == HORIZONTAL) &#123;</div><div class="line">            topHolder = (TopHolder) holder;</div><div class="line"></div><div class="line">            topHolder.item.setText(item.getTitle());</div><div class="line">            topHolder.item.setCompoundDrawablesWithIntrinsicBounds(<span class="keyword">null</span>, topHolder.icon(item.getIcon()), <span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line">            topHolder.item.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">                <span class="meta">@Override</span></div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">                    <span class="keyword">if</span> (itemClickListener != <span class="keyword">null</span>) &#123;</div><div class="line">                        <span class="keyword">if</span> (multipleChoice)&#123;</div><div class="line">                            <span class="keyword">if</span>(item.isCheck())&#123;</div><div class="line">                                item.setCheck(<span class="keyword">false</span>);</div><div class="line">                                topHolder.item.setTextColor(context.getResources().getColor(baseListDialogFragment.getItemTextColor()));</div><div class="line">                                topHolder.item.setBackgroundColor(context.getResources().getColor(R.color.transparent));</div><div class="line">                                selectItems.remove(item);</div><div class="line">                            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                                item.setCheck(<span class="keyword">true</span>);</div><div class="line">                                topHolder.item.setTextColor(context.getResources().getColor(baseListDialogFragment.getSelectItemTextColor()));</div><div class="line">                                topHolder.item.setBackgroundColor(context.getResources().getColor(baseListDialogFragment.getSelectItemBackgoundColor()));</div><div class="line">                                selectItems.add(item);</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                        itemClickListener.click(item,baseListDialogFragment);</div><div class="line"></div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            leftHolder = (LeftHolder) holder;</div><div class="line"></div><div class="line">            leftHolder.item.setText(item.getTitle());</div><div class="line">            leftHolder.item.setCompoundDrawablesWithIntrinsicBounds(leftHolder.icon(item.getIcon()), <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line">            leftHolder.item.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">                <span class="meta">@Override</span></div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">                    <span class="keyword">if</span> (itemClickListener != <span class="keyword">null</span>) &#123;</div><div class="line">                        <span class="keyword">if</span> (multipleChoice)&#123;</div><div class="line">                            <span class="keyword">if</span>(item.isCheck())&#123;</div><div class="line">                                item.setCheck(<span class="keyword">false</span>);</div><div class="line">                                leftHolder.item.setTextColor(context.getResources().getColor(baseListDialogFragment.getItemTextColor()));</div><div class="line">                                leftHolder.item.setBackgroundColor(context.getResources().getColor(R.color.transparent));</div><div class="line">                                selectItems.remove(item);</div><div class="line">                            &#125;<span class="keyword">else</span>&#123;</div><div class="line"></div><div class="line">                                item.setCheck(<span class="keyword">true</span>);</div><div class="line">                                leftHolder.item.setTextColor(context.getResources().getColor(baseListDialogFragment.getSelectItemTextColor()));</div><div class="line">                                leftHolder.item.setBackgroundColor(context.getResources().getColor(baseListDialogFragment.getSelectItemBackgoundColor()));</div><div class="line">                                selectItems.add(item);</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                        itemClickListener.click(item,baseListDialogFragment);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>添加数据源和适配器，设置recyclerview的layoutmanager，水平和垂直列表使用LinearLayoutManager，网格列表使用GridLayoutManager。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addItems</span><span class="params">(List&lt;Item&gt; items, RecyclerView dialog_list)</span> </span>&#123;</div><div class="line"></div><div class="line">       LinearLayout.LayoutParams params = <span class="keyword">new</span> LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);</div><div class="line">       RecyclerView.LayoutManager manager;</div><div class="line">       dialogListAdapter = <span class="keyword">new</span> DialogListAdapter(getActivity().getApplicationContext(), items, orientation,getMultipleChoice(),<span class="keyword">this</span>);</div><div class="line">       dialogListAdapter.setOrientation(orientation);</div><div class="line">       dialogListAdapter.setItemClick(onItemClickListener);</div><div class="line">       dialogListAdapter.setRowNum(getRowNum());</div><div class="line">       <span class="keyword">if</span> (orientation == HORIZONTAL)</div><div class="line">           manager = <span class="keyword">new</span> LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, <span class="keyword">false</span>);</div><div class="line">       <span class="keyword">else</span> <span class="keyword">if</span> (orientation == GRID)</div><div class="line">           manager = <span class="keyword">new</span> GridLayoutManager(getActivity().getApplicationContext(), getRowNum());</div><div class="line">       <span class="keyword">else</span></div><div class="line">           manager = <span class="keyword">new</span> LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">       dialog_list.setLayoutParams(params);</div><div class="line">       dialog_list.setLayoutManager(manager);</div><div class="line">       dialog_list.setAdapter(dialogListAdapter);</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>初始化弹窗设置ui和监听：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> Dialog <span class="title">setDialog</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">      Dialog dlg;</div><div class="line">      dlg= <span class="keyword">new</span> Dialog(getActivity(), animation);</div><div class="line">      dlg.setContentView(view);</div><div class="line">      setCancelable(<span class="keyword">true</span>);</div><div class="line">      dlg.setCanceledOnTouchOutside(<span class="keyword">true</span>);</div><div class="line">      dlg.getWindow().setGravity(getGravity());</div><div class="line">      dlg.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);</div><div class="line">      RelativeLayout rl_title= (RelativeLayout) view.findViewById(R.id.rl_title);</div><div class="line">      <span class="keyword">if</span>(getTitleBarColor()!= DEFAULT_COLOR)&#123;</div><div class="line">          rl_title.setBackgroundColor(getResources().getColor(getTitleBarColor()));</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      TextView text_list_title = (TextView) view.findViewById(R.id.text_list_title);</div><div class="line">      text_list_title.setText(getListTitleText());</div><div class="line"></div><div class="line">      <span class="keyword">if</span> (getListTitleColor() != DEFAULT_COLOR) &#123;</div><div class="line">          text_list_title.setTextColor(getResources().getColor(getListTitleColor()));</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">if</span>(getMultipleChoice())&#123;</div><div class="line">          TextView text_list_sure = (TextView) view.findViewById(R.id.text_list_sure);</div><div class="line">          TextView text_list_back = (TextView) view.findViewById(R.id.text_list_back);</div><div class="line">          text_list_sure.setText(getSureText());</div><div class="line">          text_list_back.setText(getBackText());</div><div class="line">          text_list_back.setVisibility(View.VISIBLE);</div><div class="line">          text_list_sure.setVisibility(View.VISIBLE);</div><div class="line">          <span class="keyword">if</span> (getBackTextTitleColor() != DEFAULT_COLOR) &#123;</div><div class="line">              text_list_sure.setTextColor(getResources().getColor(getSureTextTitleColor()));</div><div class="line">          &#125;</div><div class="line"></div><div class="line">          <span class="keyword">if</span> (getSureTextTitleColor() != DEFAULT_COLOR) &#123;</div><div class="line">              text_list_back.setTextColor(getResources().getColor(getBackTextTitleColor()));</div><div class="line">          &#125;</div><div class="line"></div><div class="line">          text_list_sure.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">              <span class="meta">@Override</span></div><div class="line">              <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">                  clickListener.clickSure(dialogListAdapter.getSelectItems());</div><div class="line">                  dismiss();</div><div class="line">              &#125;</div><div class="line">          &#125;);</div><div class="line"></div><div class="line"></div><div class="line">          text_list_back.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">              <span class="meta">@Override</span></div><div class="line">              <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">                  clickListener.clickBack();</div><div class="line">                  dismiss();</div><div class="line">              &#125;</div><div class="line">          &#125;);</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      RecyclerView dialog_list = (RecyclerView) view.findViewById(R.id.dialog_list);</div><div class="line">      <span class="keyword">if</span>(getListColor()!=DEFAULT_COLOR)&#123;</div><div class="line">          dialog_list.setBackgroundColor(getResources().getColor(getListColor()));</div><div class="line">      &#125;</div><div class="line">      addItems(getDataList(), dialog_list);</div><div class="line"></div><div class="line">      <span class="keyword">return</span> dlg;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>抽象自定义ui方法，待子类实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getListTitleText</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getBackText</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getSureText</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getListTitleColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getBackTextTitleColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getSureTextTitleColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">getMultipleChoice</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getGravity</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getTitleBarColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> List&lt;Item&gt; <span class="title">getDataList</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getListColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getRowNum</span><span class="params">()</span></span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getItemTextColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getSelectItemTextColor</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getSelectItemBackgoundColor</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure></p>
+<p>同样，封装一个列表窗子类，传入布局文件，这里也可以根据需求自己做扩展，传入不同的布局文件，但要保证控件id相同。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LoadDialogFragment <span class="title">newInstance</span><span class="params">()</span></span>&#123;</div><div class="line">     LoadDialogFragment fragment=<span class="keyword">new</span> LoadDialogFragment();</div><div class="line">     Bundle bundle = <span class="keyword">new</span> Bundle();</div><div class="line">     bundle.putInt(TAG_ARG, R.layout.dialog_load);</div><div class="line">     fragment.setArguments(bundle);<span class="comment">//把参数传递给该DialogFragment</span></div><div class="line"></div><div class="line">     <span class="keyword">return</span> fragment;</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>列表窗效果图：<br>垂直列表<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB4.png" alt="垂直列表"><br>网格列表<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB6.png" alt="网格列表"><br>水平列表<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%88%A9%E7%94%A8dialogfragment%E5%B0%81%E8%A3%85%E5%BC%B9%E7%AA%97%E5%B7%A5%E5%85%B7%E7%B1%BB5.png" alt="水平列表"><br>布局文件是同一个，代码如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></div><div class="line"></div><div class="line">    &gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">RelativeLayout</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/rl_title"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"45dp"</span>&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/text_list_back"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"取消"</span></div><div class="line">            <span class="attr">android:layout_marginLeft</span>=<span class="string">"12dp"</span></div><div class="line">            <span class="attr">android:layout_centerVertical</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:layout_alignParentLeft</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:visibility</span>=<span class="string">"gone"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"@color/colorAccent"</span></div><div class="line">            <span class="attr">android:textSize</span>=<span class="string">"14sp"</span> /&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/text_list_title"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_centerHorizontal</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"分享到"</span></div><div class="line">            <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"@color/black"</span></div><div class="line">            <span class="attr">android:textSize</span>=<span class="string">"16sp"</span> /&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/text_list_sure"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"确认"</span></div><div class="line">            <span class="attr">android:layout_marginRight</span>=<span class="string">"12dp"</span></div><div class="line">            <span class="attr">android:layout_centerVertical</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:layout_alignParentRight</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"@color/colorAccent"</span></div><div class="line">            <span class="attr">android:visibility</span>=<span class="string">"gone"</span></div><div class="line">            <span class="attr">android:textSize</span>=<span class="string">"14sp"</span> /&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">            <span class="attr">android:layout_alignParentBottom</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:src</span>=<span class="string">"@color/default_line"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"1px"</span> /&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></div><div class="line"></div><div class="line">     <span class="tag">&lt;<span class="name">android.support.v7.widget.RecyclerView</span></span></div><div class="line">         <span class="attr">android:id</span>=<span class="string">"@+id/dialog_list"</span></div><div class="line">         <span class="attr">android:background</span>=<span class="string">"@color/white"</span></div><div class="line">         <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">         <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>&gt;</div><div class="line"></div><div class="line">     <span class="tag">&lt;/<span class="name">android.support.v7.widget.RecyclerView</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>也是向外暴露ui设置和接口，具体代码这里就不贴了。</p>
+<h2 id="列表弹窗的使用"><a href="#列表弹窗的使用" class="headerlink" title="列表弹窗的使用"></a>列表弹窗的使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">List&lt;Item&gt; items = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"></div><div class="line">       items.add(<span class="keyword">new</span> Item(<span class="number">1</span>, <span class="string">"通讯录"</span>, getResources().getDrawable(R.mipmap.icon_content_phone)));</div><div class="line">       items.add(<span class="keyword">new</span> Item(<span class="number">2</span>, <span class="string">"好友"</span>, getResources().getDrawable(R.mipmap.icon_friend)));</div><div class="line">       items.add(<span class="keyword">new</span> Item(<span class="number">3</span>, <span class="string">"朋友圈"</span>, getResources().getDrawable(R.mipmap.icon_moments)));</div><div class="line">       items.add(<span class="keyword">new</span> Item(<span class="number">4</span>, <span class="string">"微信"</span>, getResources().getDrawable(R.mipmap.icon_wechat)));</div><div class="line">       items.add(<span class="keyword">new</span> Item(<span class="number">5</span>, <span class="string">"微博"</span>, getResources().getDrawable(R.mipmap.icon_weibo)));</div><div class="line">       ListDialogFragment.newInstance(orientation)</div><div class="line">               .setListTitleText(<span class="string">"分享到"</span>)</div><div class="line">               .setListTitleColor(R.color.black)</div><div class="line">               .setBackText(<span class="string">"返回"</span>)</div><div class="line">               .setSureText(<span class="string">"确定"</span>)</div><div class="line">               .setRowNum(<span class="number">3</span>)   <span class="comment">//仅在网格布局有效</span></div><div class="line">               .setBackTextTitleColor(R.color.colorAccent)</div><div class="line">               .setSureTextTitleColor(R.color.colorAccent)</div><div class="line">               .setItems(items)</div><div class="line">               .setTitleBarColor(R.color.white)</div><div class="line">               .setListColor(R.color.white)</div><div class="line">               .setItemTextColor(R.color.black)</div><div class="line">               .setMultipleChoice(multipleChoice)</div><div class="line">               .setSelectBackgroundColor(R.color.white)</div><div class="line">               .setSelectItemTextColor(R.color.colorAccent)</div><div class="line">               .setGravity(gravity)</div><div class="line">               .setClickListener(<span class="keyword">new</span> BaseListDialogFragment.ClickListener() &#123; <span class="comment">//只在多选时有效</span></div><div class="line">                   <span class="meta">@Override</span></div><div class="line">                   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clickSure</span><span class="params">(List&lt;Item&gt; selectItems)</span> </span>&#123;</div><div class="line">                       <span class="keyword">if</span>(selectItems.size()&gt;<span class="number">0</span>)&#123;</div><div class="line">                           String selectStr=<span class="string">""</span>;</div><div class="line">                           Iterator&lt;Item&gt; it=selectItems.iterator();</div><div class="line">                           <span class="keyword">while</span>(it.hasNext())&#123;</div><div class="line">                               selectStr+=<span class="string">" "</span>+it.next().getTitle();</div><div class="line">                           &#125;</div><div class="line">                           Toast.makeText(context, <span class="string">"选择了"</span>+selectStr, Toast.LENGTH_SHORT).show();</div><div class="line"></div><div class="line">                       &#125;<span class="keyword">else</span>&#123;</div><div class="line">                           Toast.makeText(context, <span class="string">"点击了确定"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">                       &#125;</div><div class="line">                   &#125;</div><div class="line"></div><div class="line">                   <span class="meta">@Override</span></div><div class="line">                   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clickBack</span><span class="params">()</span> </span>&#123;</div><div class="line">                       Toast.makeText(context, <span class="string">"点击了取消"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">                   &#125;</div><div class="line">               &#125;)</div><div class="line">               .setOnItemClickListener(<span class="keyword">new</span> DialogListAdapter.OnItemClickListener() &#123;</div><div class="line">                   <span class="meta">@Override</span></div><div class="line">                   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">click</span><span class="params">(Item item, BaseListDialogFragment baseListDialogFragment)</span> </span>&#123;</div><div class="line">                       Toast.makeText(context, item.getTitle(), Toast.LENGTH_SHORT).show();</div><div class="line">                       <span class="keyword">if</span>(!multipleChoice)&#123;</div><div class="line">                           baseListDialogFragment.dismiss();</div><div class="line">                       &#125;</div><div class="line"></div><div class="line">                   &#125;</div><div class="line">               &#125;)</div><div class="line">               .setDialogAnimation(animation)</div><div class="line">               .showDialog(getFragmentManager());</div></pre></td></tr></table></figure>
+<p>到此，弹窗工具类就封装完成了~<a href="https://github.com/jessieeeee/DialogUtil" target="_blank" rel="external">源码传送门</a>。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/custom-view/" rel="tag"># custom view</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/06/SearchView/" rel="next" title="封装自己的searchview">
+                <i class="fa fa-chevron-left"></i> 封装自己的searchview
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/09/KotlinStudy1/" rel="prev" title="kotlin学习日志1-语法学习">
+                kotlin学习日志1-语法学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="Jessie Kate" />
+            
+              <p class="site-author-name" itemprop="name">Jessie Kate</p>
+              <p class="site-description motion-element" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#封装dialog-lib"><span class="nav-number">1.</span> <span class="nav-text">封装dialog lib</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建一个弹窗基类"><span class="nav-number">1.1.</span> <span class="nav-text">创建一个弹窗基类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#封装提示弹窗"><span class="nav-number">1.2.</span> <span class="nav-text">封装提示弹窗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提示弹窗的使用"><span class="nav-number">1.3.</span> <span class="nav-text">提示弹窗的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#封装加载弹窗"><span class="nav-number">1.4.</span> <span class="nav-text">封装加载弹窗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加载弹窗的使用"><span class="nav-number">1.5.</span> <span class="nav-text">加载弹窗的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#封装选择列表窗"><span class="nav-number">1.6.</span> <span class="nav-text">封装选择列表窗</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#封装item类"><span class="nav-number">1.6.1.</span> <span class="nav-text">封装item类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义适配器"><span class="nav-number">1.6.2.</span> <span class="nav-text">定义适配器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列表弹窗的使用"><span class="nav-number">1.7.</span> <span class="nav-text">列表弹窗的使用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz',
+        appKey: 'h0CQIfed08e67roNpfhTzHOH',
+        placeholder: '在这里写下你的评论吧～',
+        avatar:'wavatar',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz", "h0CQIfed08e67roNpfhTzHOH");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

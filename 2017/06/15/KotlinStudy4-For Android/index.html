@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="study log,kotlin," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="kotlin在AndroidStudio的环境配置java代码转化kotlinAndroidStudio中，help-&amp;gt;FindAction-&amp;gt;Convert Java File to Kotlin File如果快捷键是android studio默认的(ctrl+shift+A) 可视化操作 android studio中，Tools-&amp;gt;Kotlin-&amp;gt;Configure">
+<meta name="keywords" content="study log,kotlin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kotlin学习日志4 - 在android中的应用">
+<meta property="og:url" content="http://yoursite.com/2017/06/15/KotlinStudy4-For Android/index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="kotlin在AndroidStudio的环境配置java代码转化kotlinAndroidStudio中，help-&amp;gt;FindAction-&amp;gt;Convert Java File to Kotlin File如果快捷键是android studio默认的(ctrl+shift+A) 可视化操作 android studio中，Tools-&amp;gt;Kotlin-&amp;gt;Configure">
+<meta property="og:updated_time" content="2018-10-15T11:06:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kotlin学习日志4 - 在android中的应用">
+<meta name="twitter:description" content="kotlin在AndroidStudio的环境配置java代码转化kotlinAndroidStudio中，help-&amp;gt;FindAction-&amp;gt;Convert Java File to Kotlin File如果快捷键是android studio默认的(ctrl+shift+A) 可视化操作 android studio中，Tools-&amp;gt;Kotlin-&amp;gt;Configure">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/15/KotlinStudy4-For Android/"/>
+
+
+
+
+
+  <title>kotlin学习日志4 - 在android中的应用 | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/15/KotlinStudy4-For Android/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kotlin学习日志4 - 在android中的应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-15T14:58:08+08:00">
+                2017-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/15/KotlinStudy4-For Android/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/06/15/KotlinStudy4-For Android/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/06/15/KotlinStudy4-For Android/" class="leancloud_visitors" data-flag-title="kotlin学习日志4 - 在android中的应用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="kotlin在AndroidStudio的环境配置"><a href="#kotlin在AndroidStudio的环境配置" class="headerlink" title="kotlin在AndroidStudio的环境配置"></a>kotlin在AndroidStudio的环境配置</h1><h2 id="java代码转化kotlin"><a href="#java代码转化kotlin" class="headerlink" title="java代码转化kotlin"></a>java代码转化kotlin</h2><p>AndroidStudio中，help-&gt;FindAction-&gt;Convert Java File to Kotlin File<br>如果快捷键是android studio默认的(ctrl+shift+A)</p>
+<h2 id="可视化操作"><a href="#可视化操作" class="headerlink" title="可视化操作"></a>可视化操作</h2><ol>
+<li>android studio中，Tools-&gt;Kotlin-&gt;Configure kotlin in project-&gt;Android with Gradle</li>
+<li>选择所有模块配置还是单模块配置</li>
+<li>选择kotlin版本号<h2 id="直接修改代码"><a href="#直接修改代码" class="headerlink" title="直接修改代码"></a>直接修改代码</h2></li>
+<li><p>修改项目根目录下的build.gradle文件</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    ext.kotlin_version = <span class="string">'1.1.2-5'</span></div><div class="line">    ext.anko_version= <span class="string">'0.8.2'</span></div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath <span class="string">'com.android.tools.build:gradle:2.3.3'</span></div><div class="line">        classpath <span class="string">"org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"</span></div><div class="line">        classpath <span class="string">"org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"</span></div><div class="line">        <span class="comment">// <span class="doctag">NOTE:</span> Do not place your application dependencies here; they belong</span></div><div class="line">        <span class="comment">// in the individual module build.gradle files</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">repositories &#123;</div><div class="line">    mavenCentral()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改app下的build.gradle文件</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">apply <span class="string">plugin:</span> <span class="string">'com.android.application'</span></div><div class="line">apply <span class="string">plugin:</span> <span class="string">'kotlin-android'</span></div><div class="line">apply <span class="string">plugin:</span> <span class="string">'kotlin-android-extensions'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    compileSdkVersion <span class="number">25</span></div><div class="line">    buildToolsVersion <span class="string">"25.0.3"</span></div><div class="line">    defaultConfig &#123;</div><div class="line">        applicationId <span class="string">"kotlinstudy.jessie.com.kotlinstudy"</span></div><div class="line">        minSdkVersion <span class="number">15</span></div><div class="line">        targetSdkVersion <span class="number">25</span></div><div class="line">        versionCode <span class="number">1</span></div><div class="line">        versionName <span class="string">"1.0"</span></div><div class="line">        testInstrumentationRunner <span class="string">"android.support.test.runner.AndroidJUnitRunner"</span></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            minifyEnabled <span class="literal">false</span></div><div class="line">            proguardFiles getDefaultProguardFile(<span class="string">'proguard-android.txt'</span>), <span class="string">'proguard-rules.pro'</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    compileOptions &#123;</div><div class="line">        sourceCompatibility JavaVersion.VERSION_1_7</div><div class="line">        targetCompatibility JavaVersion.VERSION_1_7</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    compile fileTree(<span class="string">include:</span> [<span class="string">'*.jar'</span>], <span class="string">dir:</span> <span class="string">'libs'</span>)</div><div class="line">    androidTestCompile(<span class="string">'com.android.support.test.espresso:espresso-core:2.2.2'</span>, &#123;</div><div class="line">        exclude <span class="string">group:</span> <span class="string">'com.android.support'</span>, <span class="string">module:</span> <span class="string">'support-annotations'</span></div><div class="line">    &#125;)</div><div class="line">    compile <span class="string">'com.android.support:appcompat-v7:25.3.1'</span></div><div class="line">    compile <span class="string">'com.android.support.constraint:constraint-layout:1.0.2'</span></div><div class="line">    testCompile <span class="string">'junit:junit:4.12'</span></div><div class="line">    compile <span class="string">"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"</span></div><div class="line">    compile <span class="string">"org.jetbrains.anko:anko-common:$anko_version"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="findViewById"><a href="#findViewById" class="headerlink" title="findViewById"></a>findViewById</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> forecastList: RecyclerView = find(R.id.forecast_list)</div></pre></td></tr></table></figure>
+<h1 id="activity的跳转"><a href="#activity的跳转" class="headerlink" title="activity的跳转"></a>activity的跳转</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">startActivity&lt;DetailActivity&gt;(DetailActivity.ID to it.id,</div><div class="line">                  DetailActivity.CITY_NAME to weekForecast.city)</div></pre></td></tr></table></figure>
+<h1 id="数据类的封装"><a href="#数据类的封装" class="headerlink" title="数据类的封装"></a>数据类的封装</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">ForecastList</span></span>(<span class="keyword">val</span> id: <span class="built_in">Long</span>, <span class="keyword">val</span> city: String, <span class="keyword">val</span> country: String,</div><div class="line">        <span class="keyword">val</span> dailyForecast: List&lt;Forecast&gt;) &#123;</div><div class="line"></div><div class="line">    <span class="keyword">val</span> size: <span class="built_in">Int</span></div><div class="line">        <span class="keyword">get</span>() = dailyForecast.size</div><div class="line"></div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">get</span><span class="params">(position: <span class="type">Int</span>)</span></span> = dailyForecast[position]</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Forecast</span></span>(<span class="keyword">val</span> id: <span class="built_in">Long</span>, <span class="keyword">val</span> date: <span class="built_in">Long</span>, <span class="keyword">val</span> description: String, <span class="keyword">val</span> high: <span class="built_in">Int</span>,</div><div class="line">        <span class="keyword">val</span> low: <span class="built_in">Int</span>,</div><div class="line">                    <span class="keyword">val</span> iconUrl: String)</div></pre></td></tr></table></figure>
+<h1 id="扩展函数"><a href="#扩展函数" class="headerlink" title="扩展函数"></a>扩展函数</h1><h2 id="dp与px的转换"><a href="#dp与px的转换" class="headerlink" title="dp与px的转换"></a>dp与px的转换</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="built_in">Int</span>.<span class="title">dpToPx</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</div><div class="line">    <span class="keyword">if</span> (toInt() <span class="keyword">in</span> intArrayOf(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)) 	 &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> (<span class="keyword">this</span> * Global.density).toInt() <span class="comment">//这里的Gloabl.density是在应用启动时获取的</span></div><div class="line">&#125;</div><div class="line"><span class="comment">//params.topMargin = 16.dpTpPx()</span></div></pre></td></tr></table></figure>
+<h2 id="设置view的宽高"><a href="#设置view的宽高" class="headerlink" title="设置view的宽高"></a>设置view的宽高</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> View.<span class="title">setSize</span><span class="params">(width: <span class="type">Int</span>, height: <span class="type">Int</span>)</span></span> &#123;</div><div class="line">    <span class="keyword">val</span> params = layoutParams</div><div class="line">    params.width = width</div><div class="line">    params.height = height</div><div class="line">    layoutParams = params</div><div class="line">&#125;</div><div class="line"><span class="comment">//yourView.setSize(100, 100)</span></div></pre></td></tr></table></figure>
+<h2 id="设置imageview的图片加载"><a href="#设置imageview的图片加载" class="headerlink" title="设置imageview的图片加载"></a>设置imageview的图片加载</h2><p>使用glide做图片加载<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">object</span> GlideUtils &#123;</div><div class="line">    <span class="comment">/*</span></div><div class="line">        当fragment或者activity失去焦点或者destroyed的时候，Glide会自动停止加载相关资源，确保资源不会被浪费</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">loadUrlImage</span><span class="params">(context: <span class="type">Context</span>, url: <span class="type">String</span>, imageView: <span class="type">ImageView</span>)</span></span>&#123;</div><div class="line">        <span class="keyword">get</span>(context, url).placeholder(R.drawable.icon_back).error(R.drawable.icon_back).centerCrop().into(</div><div class="line">                <span class="keyword">object</span> : SimpleTarget&lt;GlideDrawable&gt;() &#123;</div><div class="line">                    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onResourceReady</span><span class="params">(resource: <span class="type">GlideDrawable</span>,</span></span></div><div class="line">                                                 glideAnimation: <span class="type">GlideAnimation</span>&lt;<span class="type">in</span> <span class="type">GlideDrawable</span>&gt;) &#123;</div><div class="line">                        imageView.setImageDrawable(resource)</div><div class="line">                    &#125;</div><div class="line">                &#125;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 加载圆形图片</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">loadCircleImage</span><span class="params">(context: <span class="type">Context</span>,url: <span class="type">String</span>,imageView: <span class="type">ImageView</span>)</span></span>&#123;</div><div class="line">        <span class="keyword">get</span>(context, url)</div><div class="line">                .asBitmap()  <span class="comment">//这句不能少，否则下面的方法会报错</span></div><div class="line">                .centerCrop()</div><div class="line">                .into(<span class="keyword">object</span> :BitmapImageViewTarget(imageView)&#123;</div><div class="line">                    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">setResource</span><span class="params">(resource: <span class="type">Bitmap</span>?)</span></span> &#123;</div><div class="line">                        <span class="keyword">super</span>.setResource(resource)</div><div class="line">                        <span class="keyword">var</span> circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.resources, resource)</div><div class="line">                        circularBitmapDrawable.isCircular=<span class="literal">true</span></div><div class="line">                        imageView.setImageDrawable(circularBitmapDrawable)</div><div class="line"></div><div class="line">                    &#125;</div><div class="line">                &#125; )</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">loadRoundImage</span><span class="params">(context: <span class="type">Context</span>,url: <span class="type">String</span>,size:<span class="type">Int</span>,imageView: <span class="type">ImageView</span>)</span></span>&#123;</div><div class="line">        <span class="keyword">get</span>(context, url)</div><div class="line">                .transform(CenterCrop(context),GlideRoundTransform(context, size))</div><div class="line">                .into(imageView)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">get</span><span class="params">(context: <span class="type">Context</span>, url: <span class="type">String</span>)</span></span>: DrawableTypeRequest&lt;String&gt; =  Glide.with(context).load(url)</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> ImageView.<span class="title">loadUrl</span><span class="params">(url: <span class="type">String</span>)</span></span> &#123;</div><div class="line">    GlideUtils.loadUrlImage(context, url, <span class="keyword">this</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="内联函数关闭io流"><a href="#内联函数关闭io流" class="headerlink" title="内联函数关闭io流"></a>内联函数关闭io流</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T : Closeable?&gt;</span> T.<span class="title">use</span><span class="params">(block: (<span class="type">T</span>)</span></span> -&gt; <span class="built_in">Unit</span>) &#123;</div><div class="line">       <span class="keyword">var</span> closed = <span class="literal">false</span></div><div class="line">       <span class="keyword">try</span> &#123;</div><div class="line">           block(<span class="keyword">this</span>)</div><div class="line">       &#125; <span class="keyword">catch</span> (e: Exception) &#123;</div><div class="line">           closed = <span class="literal">true</span></div><div class="line">           <span class="keyword">try</span> &#123;</div><div class="line">               <span class="keyword">this</span>?.close()</div><div class="line">           &#125; <span class="keyword">catch</span> (closeException: Exception) &#123;</div><div class="line">           &#125;</div><div class="line">           <span class="keyword">throw</span> e</div><div class="line">       &#125; <span class="keyword">finally</span> &#123;</div><div class="line">           <span class="keyword">if</span> (!closed) &#123;</div><div class="line">               <span class="keyword">this</span>?.close()</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">   &#125;</div><div class="line"> <span class="comment">// 使用</span></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">testIo</span><span class="params">(bitmap: <span class="type">Bitmap</span>)</span></span> &#123;</div><div class="line">       <span class="keyword">val</span> file = File(<span class="string">"/pic/"</span>)</div><div class="line">       <span class="keyword">val</span> fileOutputStream: FileOutputStream? = FileOutputStream(file)</div><div class="line">       fileOutputStream.use &#123; t -&gt;</div><div class="line">           bitmap.compress(Bitmap.CompressFormat.PNG, <span class="number">100</span>, t)</div><div class="line">       &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="with函数块"><a href="#with函数块" class="headerlink" title="with函数块"></a>with函数块</h1><p>with函数块,用对象作为函数的参数,内部通过 this 指代该对象,直接调用对象的方法或者属性<br>典型用法,在onBindViewHolder中捆绑数据<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> with(model)&#123;</div><div class="line">     <span class="comment">//是否选中</span></div><div class="line">     holder.itemView.checkedCb.isChecked = isSelected</div><div class="line">     <span class="comment">//加载商品图片</span></div><div class="line">     holder.itemView.goodsIconIv.loadUrl(goodsIcon)</div><div class="line">     <span class="comment">//商品描述</span></div><div class="line">     holder.itemView.goodsDescTv.text = goodsDesc</div><div class="line">     <span class="comment">//商品SKU</span></div><div class="line">     holder.itemView.goodsSkuTv.text = goodsSku</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="kotlin代码埋点"><a href="#kotlin代码埋点" class="headerlink" title="kotlin代码埋点"></a>kotlin代码埋点</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T : View&gt;</span> T.<span class="title">clickWithTrack</span><span class="params">(eventName: <span class="type">String</span>, time: <span class="type">Long</span> = <span class="number">600</span>, block: (<span class="type">T</span>)</span></span> -&gt; <span class="built_in">Unit</span>) = <span class="keyword">this</span>.clickWithTrigger(time) &#123;</div><div class="line">    TrackAgent.currentEvent().customEvent(eventName)<span class="comment">//自定义埋点逻辑</span></div><div class="line">    block(it <span class="keyword">as</span> T) <span class="comment">//正常逻辑</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T : View&gt;</span> T.<span class="title">clickWithTrack</span><span class="params">(eventName: <span class="type">String</span>, trackMap: <span class="type">HashMap</span>&lt;<span class="type">String</span>, String&gt;, time: <span class="type">Long</span> = <span class="number">600</span>, block: (<span class="type">T</span>)</span></span> -&gt; <span class="built_in">Unit</span>) = <span class="keyword">this</span>.clickWithTrigger(time) &#123;</div><div class="line">    TrackAgent.currentEvent().customEvent(eventName, trackMap)<span class="comment">//自定义埋点逻辑</span></div><div class="line">    block(it <span class="keyword">as</span> T)<span class="comment">//正常逻辑</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// 使用</span></div><div class="line">view.clickWithTrack(key) &#123;&#125;</div><div class="line">view.clickWithTrack(key,trackMap) &#123;&#125;</div></pre></td></tr></table></figure>
+<h1 id="重复点击过滤"><a href="#重复点击过滤" class="headerlink" title="重复点击过滤"></a>重复点击过滤</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/***</span></div><div class="line"> * 设置有效点击时间范围和点击事件</div><div class="line"> * <span class="doctag">@param</span> delay Long 有效点击时间，默认600毫秒后</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T : View&gt;</span> T.<span class="title">clickWithTrigger</span><span class="params">(time: <span class="type">Long</span> = <span class="number">600</span>, block: (<span class="type">T</span>)</span></span> -&gt; <span class="built_in">Unit</span>)&#123;</div><div class="line">    triggerDelay = time</div><div class="line">    setOnClickListener &#123;</div><div class="line">        <span class="keyword">if</span> (clickEnable()) &#123;</div><div class="line">            block(it <span class="keyword">as</span> T)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* 最后一次点击时间属性扩展</div><div class="line">*/</div><div class="line"><span class="keyword">private</span> <span class="keyword">var</span> &lt;T : View&gt; T.triggerLastTime: <span class="built_in">Long</span></div><div class="line">    <span class="comment">// 从tag取出</span></div><div class="line">    <span class="keyword">get</span>() = <span class="keyword">if</span> (getTag(<span class="number">1123460103</span>) != <span class="literal">null</span>) getTag(<span class="number">1123460103</span>) <span class="keyword">as</span> <span class="built_in">Long</span> <span class="keyword">else</span> <span class="number">0</span></div><div class="line">    <span class="comment">// 保存到tag</span></div><div class="line">    <span class="keyword">set</span>(value) &#123;</div><div class="line">        setTag(<span class="number">1123460103</span>, value)</div><div class="line">    &#125;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* 有效点击时间属性扩展</div><div class="line">*/</div><div class="line"><span class="keyword">private</span> <span class="keyword">var</span> &lt;T : View&gt; T.triggerDelay: <span class="built_in">Long</span></div><div class="line">    <span class="comment">// 从tag取出</span></div><div class="line">    <span class="keyword">get</span>() = <span class="keyword">if</span> (getTag(<span class="number">1123461123</span>) != <span class="literal">null</span>) getTag(<span class="number">1123461123</span>) <span class="keyword">as</span> <span class="built_in">Long</span> <span class="keyword">else</span> <span class="number">-1</span></div><div class="line">    <span class="comment">// 保存到tag</span></div><div class="line">    <span class="keyword">set</span>(value) &#123;</div><div class="line">        setTag(<span class="number">1123461123</span>, value)</div><div class="line">    &#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* 点击是否有效判断</div><div class="line">*/</div><div class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T : View&gt;</span> T.<span class="title">clickEnable</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> &#123;</div><div class="line">    <span class="keyword">var</span> flag = <span class="literal">false</span></div><div class="line">    <span class="keyword">val</span> currentClickTime = System.currentTimeMillis()</div><div class="line">    <span class="keyword">if</span> (currentClickTime - triggerLastTime &gt;= triggerDelay) &#123;</div><div class="line">        flag = <span class="literal">true</span></div><div class="line">    &#125;</div><div class="line">    triggerLastTime = currentClickTime</div><div class="line">    <span class="keyword">return</span> flag</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 使用</span></div><div class="line">view.clickWithTrigger(<span class="number">700</span>) &#123;&#125;</div></pre></td></tr></table></figure>
+<h1 id="sharedPreferences封装"><a href="#sharedPreferences封装" class="headerlink" title="sharedPreferences封装"></a>sharedPreferences封装</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Preference</span>&lt;<span class="type">T</span>&gt;</span>(<span class="keyword">val</span> context: Context, <span class="keyword">val</span> name: String?, <span class="keyword">val</span> <span class="keyword">default</span>: T) : ReadWriteProperty&lt;Any?, T&gt; &#123;</div><div class="line">    <span class="keyword">val</span> prefs <span class="keyword">by</span> lazy &#123;</div><div class="line">        context.getSharedPreferences(<span class="string">"xxxx"</span>, Context.MODE_PRIVATE)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">getValue</span><span class="params">(thisRef: <span class="type">Any</span>?, property: <span class="type">KProperty</span>&lt;*&gt;)</span></span>: T = with(prefs) &#123;</div><div class="line">        <span class="keyword">val</span> res: Any = <span class="keyword">when</span> (<span class="keyword">default</span>) &#123;</div><div class="line">            <span class="keyword">is</span> <span class="built_in">Long</span> -&gt; &#123;</div><div class="line">                getLong(name, <span class="number">0</span>)</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">is</span> String -&gt; &#123;</div><div class="line">                getString(name, <span class="keyword">default</span>)</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">is</span> <span class="built_in">Float</span> -&gt; &#123;</div><div class="line">                getFloat(name, <span class="keyword">default</span>)</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">is</span> <span class="built_in">Int</span> -&gt; &#123;</div><div class="line">                getInt(name, <span class="keyword">default</span>)</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">is</span> <span class="built_in">Boolean</span> -&gt; &#123;</div><div class="line">                getBoolean(name, <span class="keyword">default</span>)</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">else</span> -&gt; &#123;</div><div class="line">                <span class="keyword">throw</span> IllegalArgumentException(<span class="string">"This type can't be saved into Preferences"</span>)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        res <span class="keyword">as</span> T</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">setValue</span><span class="params">(thisRef: <span class="type">Any</span>?, property: <span class="type">KProperty</span>&lt;*&gt;, value: <span class="type">T</span>)</span></span> = with(prefs.edit()) &#123;</div><div class="line">        <span class="keyword">when</span> (value) &#123;</div><div class="line">            <span class="keyword">is</span> <span class="built_in">Long</span> -&gt; putLong(name, value)</div><div class="line">            <span class="keyword">is</span> String -&gt; putString(name, value)</div><div class="line">            <span class="keyword">is</span> <span class="built_in">Float</span> -&gt; putFloat(name, value)</div><div class="line">            <span class="keyword">is</span> <span class="built_in">Int</span> -&gt; putInt(name, value)</div><div class="line">            <span class="keyword">is</span> <span class="built_in">Boolean</span> -&gt; putBoolean(name, value)</div><div class="line">            <span class="keyword">else</span> -&gt; &#123;</div><div class="line">                <span class="keyword">throw</span> IllegalArgumentException(<span class="string">"This type can't be saved into Preferences"</span>)</div><div class="line">            &#125;</div><div class="line">        &#125;.apply()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//调用例子</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">EntranceActivity</span> : <span class="type">BaseActivity</span></span>() &#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> userId: String <span class="keyword">by</span> Preference(<span class="keyword">this</span>, <span class="string">"userId"</span>, <span class="string">""</span>)</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</div><div class="line">        testUserId()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">testUserId</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">if</span> (userId.isEmpty()) &#123;</div><div class="line">            println(<span class="string">"userId is empty"</span>)</div><div class="line">            userId = <span class="string">"default userId"</span></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            println(<span class="string">"userId is <span class="variable">$userId</span>"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="getExtra封装"><a href="#getExtra封装" class="headerlink" title="getExtra封装"></a>getExtra封装</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ExtrasDelegate</span> &lt;<span class="type">out T</span>&gt;</span>(<span class="keyword">private</span> <span class="keyword">val</span> extraName: String, <span class="keyword">private</span> <span class="keyword">val</span> defaultValue: T)&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> extra: T? = <span class="literal">null</span></div><div class="line"></div><div class="line">    <span class="comment">// 适配AppCompatActivity</span></div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">getValue</span><span class="params">(thisRef: <span class="type">AppCompatActivity</span>, property: <span class="type">KProperty</span>&lt;*&gt;)</span></span>: T &#123;</div><div class="line">        extra = getExtra(extra, extraName, thisRef)</div><div class="line">        <span class="keyword">return</span> extra ?: defaultValue</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 适配Fragment</span></div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">getValue</span><span class="params">(thisRef: <span class="type">Fragment</span>, property: <span class="type">KProperty</span>&lt;*&gt;)</span></span>: T &#123;</div><div class="line">        extra = getExtra(extra, extraName, thisRef)</div><div class="line">        <span class="keyword">return</span> extra ?: defaultValue</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 调用委托类</span></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">extraDelegate</span><span class="params">(extra: <span class="type">String</span>, <span class="keyword">default</span>: <span class="type">T</span>)</span></span> = ExtrasDelegate(extra, <span class="keyword">default</span>)</div><div class="line"></div><div class="line"><span class="comment">// 委托调用入口</span></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">extraDelegate</span><span class="params">(extra: <span class="type">String</span>)</span></span> = extraDelegate(extra, <span class="literal">null</span>)</div><div class="line"></div><div class="line"><span class="comment">// 根据key取值,适配AppCompatActivity</span></div><div class="line"><span class="meta">@Suppress(<span class="meta-string">"UNCHECKED_CAST"</span>)</span></div><div class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">getExtra</span><span class="params">(oldExtra: <span class="type">T</span>?, extraName: <span class="type">String</span>, thisRef: <span class="type">AppCompatActivity</span>)</span></span>: T? =</div><div class="line">        oldExtra ?: thisRef.intent?.extras?.<span class="keyword">get</span>(extraName) <span class="keyword">as</span> T?</div><div class="line"></div><div class="line"><span class="comment">// 根据key取值,适配Fragment</span></div><div class="line"><span class="meta">@Suppress(<span class="meta-string">"UNCHECKED_CAST"</span>)</span></div><div class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">getExtra</span><span class="params">(oldExtra: <span class="type">T</span>?, extraName: <span class="type">String</span>, thisRef: <span class="type">Fragment</span>)</span></span>: T? =</div><div class="line">        oldExtra ?: thisRef.arguments?.<span class="keyword">get</span>(extraName) <span class="keyword">as</span> T?</div><div class="line"></div><div class="line"><span class="comment">// 调用例子</span></div><div class="line">startActivity&lt;GoodsDetailActivity&gt;(GoodsConstant.KEY_GOODS_ID to item.id)</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GoodsDetailActivity</span> : <span class="type">BaseActivity</span></span>() &#123;</div><div class="line"><span class="keyword">private</span> <span class="keyword">val</span> goodsId: <span class="built_in">Int</span>? <span class="keyword">by</span> extraDelegate(GoodsConstant.KEY_GOODS_ID)</div><div class="line">&#125;</div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</div><div class="line">        testGoodsId()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">testGoodsId</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">if</span> (userId.isEmpty()) &#123;</div><div class="line">            println(<span class="string">"goodsId is empty"</span>)</div><div class="line">            userId = <span class="string">"default goodsId"</span></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            println(<span class="string">"goodsId is <span class="variable">$goodsId</span>"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h1 id="Application-的单例"><a href="#Application-的单例" class="headerlink" title="Application 的单例"></a>Application 的单例</h1><p>使用not null 委托模式<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> : <span class="type">Application</span></span>() &#123;</div><div class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</div><div class="line">        <span class="keyword">var</span> instance: App <span class="keyword">by</span> Delegates.notNull()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">()</span></span> &#123;</div><div class="line">            <span class="keyword">super</span>.onCreate()</div><div class="line">            instance = <span class="keyword">this</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="recyclerview的使用"><a href="#recyclerview的使用" class="headerlink" title="recyclerview的使用"></a>recyclerview的使用</h1><p>初始化recyclerview,设置layoutManager和adapter</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">lateinit</span> <span class="keyword">var</span> mAdapter: MyAdapter</div><div class="line">recyclerView.layoutManager = LinearLayoutManager(context)</div><div class="line">mAdapter = MyAdapter(context, mList,&#123; <span class="keyword">data</span>: DataBean -&gt; Toast.makeText(activity,<span class="keyword">data</span>.type, Toast.LENGTH_SHORT).show()&#125;)</div><div class="line">recyclerView.adapter = mAdapter</div></pre></td></tr></table></figure>
+<p>自定义adapter</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span></span>(context: Context, list: ArrayList&lt;DataBean&gt;, <span class="keyword">val</span> itemClick: (DataBean) -&gt; <span class="built_in">Unit</span>) : RecyclerView.Adapter&lt;MyAdapter.MyViewHolder&gt;() &#123;</div><div class="line">    <span class="keyword">var</span> context: Context? = <span class="literal">null</span>;</div><div class="line">    <span class="keyword">var</span> list: ArrayList&lt;DataBean&gt;? = <span class="literal">null</span></div><div class="line">    <span class="keyword">var</span> inflater: LayoutInflater? = <span class="literal">null</span></div><div class="line"></div><div class="line">    init &#123;</div><div class="line">        <span class="keyword">this</span>.context = context</div><div class="line">        <span class="keyword">this</span>.list = list</div><div class="line">        <span class="keyword">this</span>.inflater = LayoutInflater.from(context)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreateViewHolder</span><span class="params">(parent: <span class="type">ViewGroup</span>?, viewType: <span class="type">Int</span>)</span></span>: MyViewHolder &#123;</div><div class="line">        <span class="keyword">return</span> MyViewHolder(inflater?.inflate(R.layout.item_rank, parent, <span class="literal">false</span>), context!!,itemClick)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">getItemCount</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</div><div class="line">        <span class="keyword">return</span> list?.size ?: <span class="number">0</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onBindViewHolder</span><span class="params">(holder: <span class="type">MyViewHolder</span>?, position: <span class="type">Int</span>)</span></span> &#123;</div><div class="line">        <span class="keyword">var</span> photoUrl : String? = list?.<span class="keyword">get</span>(position)?.cover?.feed</div><div class="line">        photoUrl?.let &#123; ImageLoadUtils.display(context!!,holder?.iv_photo, it) &#125;</div><div class="line">        <span class="keyword">var</span> title : String? = list?.<span class="keyword">get</span>(position)?.title</div><div class="line">        holder?.tv_title?.text = title</div><div class="line">        <span class="keyword">var</span> category = list?.<span class="keyword">get</span>(position)?.category</div><div class="line">        <span class="keyword">var</span> duration = list?.<span class="keyword">get</span>(position)?.duration</div><div class="line">        <span class="keyword">var</span> minute =duration?.div(<span class="number">60</span>)</div><div class="line">        <span class="keyword">var</span> second = duration?.minus((minute?.times(<span class="number">60</span>)) <span class="keyword">as</span> <span class="built_in">Long</span> )</div><div class="line">        <span class="keyword">var</span> realMinute : String</div><div class="line">        <span class="keyword">var</span> realSecond : String</div><div class="line">        <span class="keyword">if</span>(minute!!&lt;<span class="number">10</span>)&#123;</div><div class="line">            realMinute = <span class="string">"0"</span>+minute</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            realMinute = minute.toString()</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(second!!&lt;<span class="number">10</span>)&#123;</div><div class="line">            realSecond = <span class="string">"0"</span>+second</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            realSecond = second.toString()</div><div class="line">        &#125;</div><div class="line">        holder?.tv_time?.text = <span class="string">"<span class="variable">$category</span> / <span class="variable">$realMinute</span>'<span class="variable">$realSecond</span>''"</span></div><div class="line">        holder?.itemView?.setOnClickListener &#123;</div><div class="line">            <span class="comment">//跳转视频详情页</span></div><div class="line">            <span class="keyword">var</span> intent : Intent = Intent(context, VideoDetailActivity::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></div><div class="line">            <span class="keyword">var</span> desc = list?.<span class="keyword">get</span>(position)?.description</div><div class="line">            <span class="keyword">var</span> playUrl = list?.<span class="keyword">get</span>(position)?.playUrl</div><div class="line">            <span class="keyword">var</span> blurred = list?.<span class="keyword">get</span>(position)?.cover?.blurred</div><div class="line">            <span class="keyword">var</span> collect = list?.<span class="keyword">get</span>(position)?.consumption?.collectionCount</div><div class="line">            <span class="keyword">var</span> share = list?.<span class="keyword">get</span>(position)?.consumption?.shareCount</div><div class="line">            <span class="keyword">var</span> reply = list?.<span class="keyword">get</span>(position)?.consumption?.replyCount</div><div class="line">            <span class="keyword">var</span> time = System.currentTimeMillis()</div><div class="line">            <span class="keyword">var</span> videoBean  = VideoBean(photoUrl,title,desc,duration,playUrl,category,blurred,collect ,share ,reply,time)</div><div class="line">            <span class="keyword">var</span> url = SPUtils.getInstance(context!!,<span class="string">"beans"</span>).getString(playUrl!!)</div><div class="line">            <span class="keyword">if</span>(url.equals(<span class="string">""</span>))&#123;</div><div class="line">                <span class="keyword">var</span> count = SPUtils.getInstance(context!!,<span class="string">"beans"</span>).getInt(<span class="string">"count"</span>)</div><div class="line">                <span class="keyword">if</span>(count!=<span class="number">-1</span>)&#123;</div><div class="line">                    count = count.inc()</div><div class="line">                &#125;<span class="keyword">else</span>&#123;</div><div class="line">                    count = <span class="number">1</span></div><div class="line">                &#125;</div><div class="line">                SPUtils.getInstance(context!!,<span class="string">"beans"</span>).put(<span class="string">"count"</span>,count)</div><div class="line">                SPUtils.getInstance(context!!,<span class="string">"beans"</span>).put(playUrl!!,playUrl)</div><div class="line">                ObjectSaveUtils.saveObject(context!!,<span class="string">"bean<span class="variable">$count</span>"</span>,videoBean)</div><div class="line">            &#125;</div><div class="line">            intent.putExtra(<span class="string">"data"</span>,videoBean <span class="keyword">as</span> Parcelable)</div><div class="line">            context?.let &#123; context -&gt; context.startActivity(intent) &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    inner <span class="class"><span class="keyword">class</span> <span class="title">MyViewHolder</span></span>(itemView: View?, context: Context, <span class="keyword">val</span> itemClick: (DataBean) -&gt; <span class="built_in">Unit</span>) : RecyclerView.ViewHolder(itemView) &#123;</div><div class="line">        <span class="keyword">var</span> iv_photo: ImageView = itemView?.findViewById(R.id.iv_photo) <span class="keyword">as</span> ImageView</div><div class="line">        <span class="keyword">var</span> tv_title: TextView = itemView?.findViewById(R.id.tv_title) <span class="keyword">as</span> TextView</div><div class="line">        <span class="keyword">var</span> tv_time: TextView = itemView?.findViewById(R.id.tv_time) <span class="keyword">as</span> TextView</div><div class="line">        init &#123;</div><div class="line">            tv_title?.typeface = Typeface.createFromAsset(context?.assets, <span class="string">"fonts/FZLanTingHeiS-L-GB-Regular.TTF"</span>)</div><div class="line">        bind()</div><div class="line">        &#125;</div><div class="line">      <span class="function"><span class="keyword">fun</span> <span class="title">bind</span><span class="params">()</span></span> &#123;</div><div class="line">            itemView.setOnClickListener &#123;</div><div class="line">                itemClick(list?.<span class="keyword">get</span>(layoutPosition) <span class="keyword">as</span> DataBean)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/study-log/" rel="tag"># study log</a>
+          
+            <a href="/tags/kotlin/" rel="tag"># kotlin</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/14/KotlinStudy3/" rel="next" title="kotlin学习日志3-语法学习">
+                <i class="fa fa-chevron-left"></i> kotlin学习日志3-语法学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/28/WeekMonthCalendar/" rel="prev" title="周日历与月日历的实现">
+                周日历与月日历的实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="Jessie Kate" />
+            
+              <p class="site-author-name" itemprop="name">Jessie Kate</p>
+              <p class="site-description motion-element" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kotlin在AndroidStudio的环境配置"><span class="nav-number">1.</span> <span class="nav-text">kotlin在AndroidStudio的环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#java代码转化kotlin"><span class="nav-number">1.1.</span> <span class="nav-text">java代码转化kotlin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可视化操作"><span class="nav-number">1.2.</span> <span class="nav-text">可视化操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#直接修改代码"><span class="nav-number">1.3.</span> <span class="nav-text">直接修改代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#findViewById"><span class="nav-number">2.</span> <span class="nav-text">findViewById</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#activity的跳转"><span class="nav-number">3.</span> <span class="nav-text">activity的跳转</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据类的封装"><span class="nav-number">4.</span> <span class="nav-text">数据类的封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展函数"><span class="nav-number">5.</span> <span class="nav-text">扩展函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dp与px的转换"><span class="nav-number">5.1.</span> <span class="nav-text">dp与px的转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置view的宽高"><span class="nav-number">5.2.</span> <span class="nav-text">设置view的宽高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置imageview的图片加载"><span class="nav-number">5.3.</span> <span class="nav-text">设置imageview的图片加载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#内联函数关闭io流"><span class="nav-number">6.</span> <span class="nav-text">内联函数关闭io流</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#with函数块"><span class="nav-number">7.</span> <span class="nav-text">with函数块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kotlin代码埋点"><span class="nav-number">8.</span> <span class="nav-text">kotlin代码埋点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#重复点击过滤"><span class="nav-number">9.</span> <span class="nav-text">重复点击过滤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sharedPreferences封装"><span class="nav-number">10.</span> <span class="nav-text">sharedPreferences封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#getExtra封装"><span class="nav-number">11.</span> <span class="nav-text">getExtra封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Application-的单例"><span class="nav-number">12.</span> <span class="nav-text">Application 的单例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#recyclerview的使用"><span class="nav-number">13.</span> <span class="nav-text">recyclerview的使用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz',
+        appKey: 'h0CQIfed08e67roNpfhTzHOH',
+        placeholder: '在这里写下你的评论吧～',
+        avatar:'wavatar',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz", "h0CQIfed08e67roNpfhTzHOH");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

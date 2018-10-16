@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="about blog," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介我是JessieK，从学校起开始自学android，很幸运，毕业后顺利从事android开发，学校里为数不多的女coder之一（相信读计算机的女生会深有感触~(￣▽￣)ブ，在浏览博客的时候发现，不少女coder很牛逼的，相信不久的 将来，越来越多的女生会进入到这个行业，成为行业中的精英）有人可能会疑惑，女生从事这个职业的很少，为什么会选择这条路呢？很简单，因为热爱。俗话说搜索引擎是我们最好的">
+<meta name="keywords" content="about blog">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我的第一篇文章">
+<meta property="og:url" content="http://yoursite.com/2017/06/01/MyBlog1/index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="简介我是JessieK，从学校起开始自学android，很幸运，毕业后顺利从事android开发，学校里为数不多的女coder之一（相信读计算机的女生会深有感触~(￣▽￣)ブ，在浏览博客的时候发现，不少女coder很牛逼的，相信不久的 将来，越来越多的女生会进入到这个行业，成为行业中的精英）有人可能会疑惑，女生从事这个职业的很少，为什么会选择这条路呢？很简单，因为热爱。俗话说搜索引擎是我们最好的">
+<meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A21.png">
+<meta property="og:updated_time" content="2017-09-07T15:34:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="我的第一篇文章">
+<meta name="twitter:description" content="简介我是JessieK，从学校起开始自学android，很幸运，毕业后顺利从事android开发，学校里为数不多的女coder之一（相信读计算机的女生会深有感触~(￣▽￣)ブ，在浏览博客的时候发现，不少女coder很牛逼的，相信不久的 将来，越来越多的女生会进入到这个行业，成为行业中的精英）有人可能会疑惑，女生从事这个职业的很少，为什么会选择这条路呢？很简单，因为热爱。俗话说搜索引擎是我们最好的">
+<meta name="twitter:image" content="http://oqujmbgen.bkt.clouddn.com/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A21.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/01/MyBlog1/"/>
+
+
+
+
+
+  <title>我的第一篇文章 | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/01/MyBlog1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">我的第一篇文章</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-01T10:53:32+08:00">
+                2017-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/About/" itemprop="url" rel="index">
+                    <span itemprop="name">About</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/01/MyBlog1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/06/01/MyBlog1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/06/01/MyBlog1/" class="leancloud_visitors" data-flag-title="我的第一篇文章">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>我是JessieK，从学校起开始自学android，很幸运，毕业后顺利从事android开发，学校里为数不多的女coder之一（相信读计算机的女生会深有感触~(<em>￣▽￣</em>)ブ，在浏览博客的时候发现，不少女coder很牛逼的，相信不久的 将来，越来越多的女生会进入到这个行业，成为行业中的精英）有人可能会疑惑，女生从事这个职业的很少，为什么会选择这条路呢？很简单，因为热爱。俗话说搜索引擎是我们最好的老师，跟很多刚入门的小伙伴一样，从学习编程以来，浏览过无数牛人的博客，十分敬仰，他们对代码的热情和敬业精神让我感到深深佩服，很早就希望拥有自己的技术博客，但苦于公司业务多，经常加班，没时间搁置了，现在总算闲下来了，其实闲下来也挺不安的，有种坐吃等死的感觉，作为一个有信仰的coder，学无止境啊，想结合平时的学习和工作，写点文章，准备折腾下自己的博客了。</p>
+<hr>
+<h1 id="博客搭建之路"><a href="#博客搭建之路" class="headerlink" title="博客搭建之路"></a>博客搭建之路</h1><p>说来有些惭愧，由于长久以来从事android开发，对前端的东西并不是很了解，随着小程序和react native的火热，我觉得是有必要去学习的，不过现在也不可能花掉巨大的学习成本后再弄博客吧，我也不想花钱去买收费的云空间，立马让我想到了GitHub，我知道现在的博客框架很多，相信能快速搭建出来，准备找个免费的云空间和博客框架，搭一个博客，只是简单纯粹的写作，经过google以后，发现大多数人都推荐GithubPage+Hexo来搭建免费博客，然后就开始了自己的折腾之旅。</p>
+<h2 id="Hexo是什么？"><a href="#Hexo是什么？" class="headerlink" title="Hexo是什么？"></a>Hexo是什么？</h2><p>Hexo 是一个快速、简洁且高效的博客框架。Hexo使用Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。说白了，就是集各种博客管理插件和多款主题于一身的能快速搭出博客的框架。</p>
+<h2 id="GitHubPage是什么？"><a href="#GitHubPage是什么？" class="headerlink" title="GitHubPage是什么？"></a>GitHubPage是什么？</h2><p>GitHubPage主要的用法有两种。一种是你的 GitHub 用户名建立的 username.github.io，这个是GitHub自动 为每一个用户分配的域名，如果仅仅是建立个人博客的话，这种方法就可以了，另一种是依附项目的 Project Pages。具体用法请参考:<a href="http://www.worldhello.net/gotgithub/03-project-hosting/050-homepage.html" target="_blank" rel="external"> Github Pages官方文档</a></p>
+<h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><pre><code>1. 必须先安装以下环境
+</code></pre><ul>
+<li><a href="https://nodejs.org/en/" target="_blank" rel="external">node.js</a></li>
+<li><a href="https://git-scm.com/" target="_blank" rel="external">git</a></li>
+</ul>
+<p>由于工作原因，我经常是mac和windows来回切换，安装方式有很多，可以用控制台安装，这里面花样就很多了，也可以去官网下载安装包，不管是mac还是windows，需要设置全局变量，保证node.js和git的命令行使用，我是直接在官网下载的安装包，安装完后，已经自动配置好了。</p>
+<ol>
+<li><p>安装Hexo<br>通过npm命令即可安装。</p>
+<p> npm install hexo-cli -g<br> npm install hexo –save</p>
+</li>
+</ol>
+<p>如果命令无法运行，可以尝试更换taobao的npm源<br>npm install -g cnpm –registry=<a href="https://registry.npm.taobao.org" target="_blank" rel="external">https://registry.npm.taobao.org</a><br>创建博客的工程目录文件夹，如blog文件夹。进入该文件夹根目录，利用hexo框架进行初始化。</p>
+<pre><code>$hexo init
+
+$npm install
+</code></pre><p><img src="http://oqujmbgen.bkt.clouddn.com/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A21.png" alt="hexo目录结构"></p>
+<p>其中主要使用的文件夹<br>public是需要上传到github的文件<br>themes为下载的主题文件<br>source为页面文件，包括头像文件，关于页面，所有上传的文章<br>可以先测试一下<br>hexo g<br>hexo s<br>此时控制台打印一个地址<a href="http://localhost:4000/" target="_blank" rel="external">http://localhost:4000/</a><br>mac下使用iterm就可以直接点击跳转<br>windows下使用cmder按住ctrl就可以点击跳转<br>注意，所有hexo命令必须要在初始化后的文件夹根目录下（即执行过 $hexo init的文件夹根目录）<br>常用的Hexo命令<br>新建文章</p>
+<pre><code>$ hexo new &quot;xxx&quot;  可以简写为 $ hexo n
+</code></pre><p>新建页面</p>
+<pre><code>$ hexo new page &quot;xxx&quot; 
+</code></pre><p>生成资源文件</p>
+<pre><code>$ hexo g 
+</code></pre><p>本地预览</p>
+<pre><code>$ hexo s
+</code></pre><p>部署到github</p>
+<pre><code>$ hexo d
+</code></pre><p>还可以使用一些组合命令:<br>生成资源文件并部署</p>
+<pre><code>$ hexo d -g
+</code></pre><p>生成资源文件并预览</p>
+<pre><code>$ hexo s -g 
+</code></pre><ol>
+<li>配置GitHub Page</li>
+</ol>
+<ul>
+<li>我们需要新建一个项目来存放GitHub Page，new repository。（在这里踩过坑，由于采用的是username.github.io来建立博客，所以必须保证填写repository name的时候，格式一定要严格按照username.github.io，且这里的用户名username与GitHub完全一致。）</li>
+</ul>
+<p>如果本机没有生成过ssh密钥（路径 C:/Users/用户名/.ssh/），我们需要生成一对密钥<br>控制台输入以下命令，填写你的邮箱</p>
+<pre><code>$ssh-keygen -t rsa -C &quot;your_email@example.com&quot;
+</code></pre><p>Generating public/private rsa key pair.<br>Enter file in which to save the key (/c/Users/you/.ssh/id_rsa): [Press enter]<br>这个时候直接回车就好，你也可以输入特定的文件名，如/c/Users/you/.ssh/id_rsa来保存</p>
+<p>Enter passphrase (empty for no passphrase): [Type a passphrase]<br>Enter same passphrase again: [Type passphrase again]<br>这个时候不写密码也可以<br>密钥创建成功后，输入</p>
+<pre><code>clip &lt; ~/.ssh/id_rsa.pub
+</code></pre><p>复制你的公钥到剪切板<br>接着，需要在github的设置界面添加你的公钥<br>title：只要自己能区分是哪台电脑的公钥就行<br>key：刚才复制的公钥<br>然后保存</p>
+<p>到blog文件夹根目录找到_config.yml<br>配置文件的最后</p>
+<pre><code>deploy:
+  type:
+</code></pre><p>改为:</p>
+<pre><code>deploy:  
+  type: git
+  repository: http://github.com/yourname/username.github.io.git
+  branch: master
+</code></pre><p>这里的repository地址就是github项目页面的https地址<br>保存后，控制台输入</p>
+<pre><code>$ hexo g
+
+$ hexo d
+</code></pre><p>这里才过坑，报一个错误<br>ERROR Deployer not found: git<br>找不到hexo的git插件，这时我们需要安装这个插件<br>控制台输入</p>
+<pre><code>$ npm install hexo-deployer-git --save
+</code></pre><p>部署成功后就可以通过username.github.io访问了</p>
+<p>Hexo有很多主题可供下载，可以去官网挑选，需要根据该主题的文档进行配置<a href="https://hexo.io/themes/" target="_blank" rel="external">官网主题</a>，同时还有很多博客管理插件，可供下载<a href="https://hexo.io/plugins/" target="_blank" rel="external">官网插件</a><br>我选择了一个star最多的主题NexT，它内置3种外观，而且配置文档十分详细<a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="external">NexT官网</a><br>到此，第一篇文章结束了，我的博客之旅从此开始~</p>
+<p>2017-09-07记</p>
+<p>mac下，hexo任何命令都报错<code>Error: Cannot find module &#39;./build/Release/DTraceProviderBindings&#39;</code></p>
+<p>google了许久，先是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ npm uninstall hexo</div><div class="line">$ npm install hexo --no-optional</div></pre></td></tr></table></figure>
+<p>无效</p>
+<p>接着</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ npm uninstall hexo-cli -g</div><div class="line">$ npm install hexo-cli -g</div></pre></td></tr></table></figure>
+<p>依旧无效</p>
+<p>最后卸载dtrace-provider这个组件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm uninstall dtrace-provider</div></pre></td></tr></table></figure>
+<p>终于正常了</p>
+<p>据说安装 hexo-cli 的时候依赖了该组件</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/about-blog/" rel="tag"># about blog</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/06/SearchView/" rel="prev" title="封装自己的searchview">
+                封装自己的searchview <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="Jessie Kate" />
+            
+              <p class="site-author-name" itemprop="name">Jessie Kate</p>
+              <p class="site-description motion-element" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#博客搭建之路"><span class="nav-number">2.</span> <span class="nav-text">博客搭建之路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo是什么？"><span class="nav-number">2.1.</span> <span class="nav-text">Hexo是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHubPage是什么？"><span class="nav-number">2.2.</span> <span class="nav-text">GitHubPage是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建环境"><span class="nav-number">2.3.</span> <span class="nav-text">搭建环境</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz',
+        appKey: 'h0CQIfed08e67roNpfhTzHOH',
+        placeholder: '在这里写下你的评论吧～',
+        avatar:'wavatar',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz", "h0CQIfed08e67roNpfhTzHOH");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

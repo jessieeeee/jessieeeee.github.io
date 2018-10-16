@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java8," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="java9已经发布一段时间了，AndroidStudio才开始支持Java 8，Java 8是Java的一个重大版本，虽然这些新特性令Java开发人员十分期待，但同时也需要花不少精力去学习，对于android开发者而言了解Java8的新特性是必要的，虽然现在Google力推kotlin，但是Java仍然是排名第一的使用最广泛的语言，社区依旧很活跃，也是处于不断进步和发展中，而且在新特性中我们能看到">
+<meta name="keywords" content="java8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java8新特性学习">
+<meta property="og:url" content="http://yoursite.com/2017/11/12/Java8-NewFeatures/index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="java9已经发布一段时间了，AndroidStudio才开始支持Java 8，Java 8是Java的一个重大版本，虽然这些新特性令Java开发人员十分期待，但同时也需要花不少精力去学习，对于android开发者而言了解Java8的新特性是必要的，虽然现在Google力推kotlin，但是Java仍然是排名第一的使用最广泛的语言，社区依旧很活跃，也是处于不断进步和发展中，而且在新特性中我们能看到">
+<meta property="og:updated_time" content="2018-08-28T11:01:18.579Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java8新特性学习">
+<meta name="twitter:description" content="java9已经发布一段时间了，AndroidStudio才开始支持Java 8，Java 8是Java的一个重大版本，虽然这些新特性令Java开发人员十分期待，但同时也需要花不少精力去学习，对于android开发者而言了解Java8的新特性是必要的，虽然现在Google力推kotlin，但是Java仍然是排名第一的使用最广泛的语言，社区依旧很活跃，也是处于不断进步和发展中，而且在新特性中我们能看到">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/12/Java8-NewFeatures/"/>
+
+
+
+
+
+  <title>java8新特性学习 | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/12/Java8-NewFeatures/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java8新特性学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-12T21:51:24+08:00">
+                2017-11-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/12/Java8-NewFeatures/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/11/12/Java8-NewFeatures/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/11/12/Java8-NewFeatures/" class="leancloud_visitors" data-flag-title="java8新特性学习">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>java9已经发布一段时间了，AndroidStudio才开始支持Java 8，Java 8是Java的一个重大版本，虽然这些新特性令Java开发人员十分期待，但同时也需要花不少精力去学习，对于android开发者而言了解Java8的新特性是必要的，虽然现在Google力推kotlin，但是Java仍然是排名第一的使用最广泛的语言，社区依旧很活跃，也是处于不断进步和发展中，而且在新特性中我们能看到一些kotlin的影子。</p>
+<h1 id="lambda表达式的支持"><a href="#lambda表达式的支持" class="headerlink" title="lambda表达式的支持"></a>lambda表达式的支持</h1><p>格式为：(入参) -&gt; {函数体}</p>
+<h2 id="基本形式："><a href="#基本形式：" class="headerlink" title="基本形式："></a>基本形式：</h2><p>入参和返回值的类型可被编译器推测，入参一个参数不需要括号，无参直接写为<code>（）</code>，函数体多行可加上括号<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; a + b;</div><div class="line">(a, b) -&gt; a - b;</div><div class="line">(<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; &#123; <span class="keyword">return</span> a * b; &#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="用法："><a href="#用法：" class="headerlink" title="用法："></a>用法：</h2><h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>以前的写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (String player : players) &#123;  </div><div class="line">     System.out.print(player + <span class="string">"; "</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>lambda写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">players.forEach((player) -&gt; System.out.print(player + <span class="string">"; "</span>));</div></pre></td></tr></table></figure></p>
+<h3 id="ui回调"><a href="#ui回调" class="headerlink" title="ui回调"></a>ui回调</h3><p>以前的写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">check_all.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">               </div><div class="line">           &#125;</div><div class="line">       &#125;);</div></pre></td></tr></table></figure></p>
+<p>lambda写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">check_all.setOnClickListener(v-&gt;&#123;&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h3><p>以前的写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;  </div><div class="line">    <span class="meta">@Override</span>  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;  </div><div class="line">        System.out.println(<span class="string">"Hello world !"</span>);  </div><div class="line">    &#125;  </div><div class="line">&#125;).start();</div></pre></td></tr></table></figure></p>
+<p>lambda写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> Thread(() -&gt; System.out.println(<span class="string">"Hello world !"</span>)).start();</div></pre></td></tr></table></figure></p>
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><p>以前的写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Arrays.sort(players, <span class="keyword">new</span> Comparator&lt;String&gt;() &#123;  </div><div class="line">    <span class="meta">@Override</span>  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(String s1, String s2)</span> </span>&#123;  </div><div class="line">        <span class="keyword">return</span> (s1.length() - s2.length());  </div><div class="line">    &#125;  </div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>lambda写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.length() - s2.length()));</div></pre></td></tr></table></figure></p>
+<h3 id="结合Stream"><a href="#结合Stream" class="headerlink" title="结合Stream"></a>结合Stream</h3><p>Stream是对集合的包装，通常和lambda一起使用。 使用lambdas可以支持许多操作,如 map, filter, limit, sorted, count, min, max, sum, collect 等等。<br>定义一个类，医生<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Doctor</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</div><div class="line">    <span class="keyword">private</span> String degree;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> salary;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Doctor</span><span class="params">(String name, <span class="keyword">int</span> age, String degree, <span class="keyword">int</span> salary)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">        <span class="keyword">this</span>.age = age;</div><div class="line">        <span class="keyword">this</span>.degree = degree;</div><div class="line">        <span class="keyword">this</span>.salary = salary;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.age = age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDegree</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> degree;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDegree</span><span class="params">(String degree)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.degree = degree;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSalary</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> salary;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSalary</span><span class="params">(<span class="keyword">int</span> salary)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.salary = salary;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>先初始化医生列表，foreach循环输出<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">List&lt;Doctor&gt; doctors =<span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"joe"</span>,<span class="number">20</span>,<span class="string">"bachelor"</span>,<span class="number">2000</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"jack"</span>,<span class="number">23</span>,<span class="string">"bachelor"</span>,<span class="number">2300</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"kris"</span>,<span class="number">27</span>,<span class="string">"Master"</span>,<span class="number">4200</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"bob"</span>,<span class="number">28</span>,<span class="string">"doctor"</span>,<span class="number">5000</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"tom"</span>,<span class="number">26</span>,<span class="string">"Master"</span>,<span class="number">4400</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"jay"</span>,<span class="number">29</span>,<span class="string">"doctor"</span>,<span class="number">5500</span>));</div><div class="line"></div><div class="line"> doctors.forEach(</div><div class="line">         (doctor)-&gt;&#123;</div><div class="line">             System.out.println(doctor.getName());</div><div class="line"></div><div class="line">         &#125;</div><div class="line">         );</div></pre></td></tr></table></figure></p>
+<p>过滤器filter()，过滤出年龄大于25岁且学历为博士的医生<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">doctors.stream().filter( doctor -&gt; doctor.getAge()&gt;<span class="number">25</span>)</div><div class="line">                .filter(doctor -&gt; <span class="string">"doctor"</span>.equals(doctor.getDegree()))</div><div class="line">                .forEach(doctor -&gt; System.out.println(doctor.getName()));</div></pre></td></tr></table></figure></p>
+<p>limit方法，限制结果个数，年龄大于25的前三个医生<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">doctors.stream().filter( doctor -&gt; doctor.getAge()&gt;<span class="number">25</span>)</div><div class="line">              .limit(<span class="number">3</span>)</div><div class="line">              .forEach(doctor -&gt; System.out.println(doctor.getName()));</div></pre></td></tr></table></figure></p>
+<p>sorted方法，按薪水由多到少排序<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">doctors.stream().sorted((d1,d2)-&gt;d2.getSalary()-d1.getSalary())</div><div class="line">        .forEach(</div><div class="line">                (doctor)-&gt;&#123;</div><div class="line">                    System.out.println(doctor.getName());</div><div class="line">                &#125;</div><div class="line">        );</div></pre></td></tr></table></figure></p>
+<p>min和max方法，找出最低和最高的薪水<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Doctor doctor1=doctors.stream().min((d1,d2)-&gt;d1.getSalary()-d2.getSalary()).get();</div><div class="line">System.out.print(doctor1.getName());</div><div class="line"></div><div class="line">Doctor doctor2=doctors.stream().min((d1,d2)-&gt;d1.getSalary()-d2.getSalary()).get();</div><div class="line">System.out.print(doctor2.getName());</div></pre></td></tr></table></figure></p>
+<p>结合 map 方法,使用 collect 方法来将我们的结果集放到一个字符串,一个 Set 中<br>将所有医生的名字拼接在一个string中，用逗号隔开<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">String names=doctors.stream().map(Doctor::getName).collect(joining(<span class="string">","</span>));</div><div class="line">System.out.print(names);</div></pre></td></tr></table></figure></p>
+<p>将所有医生的名字存放到一个set中<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Set&lt;String&gt; doctorSet=doctors.stream().map(Doctor::getName).collect(Collectors.toSet());</div><div class="line">octorSet.forEach((name)-&gt;System.out.println(name));</div></pre></td></tr></table></figure></p>
+<p>summaryStatistics方法获得stream中元素的汇总数据，求和，平均值，最大最小值，个数<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">IntSummaryStatistics statistics=doctors.stream()</div><div class="line">                .mapToInt(doctor-&gt;doctor.getSalary())</div><div class="line">                .summaryStatistics();</div><div class="line">System.out.println(statistics.getSum());</div><div class="line">System.out.println(statistics.getAverage());</div><div class="line">System.out.println(statistics.getMax());</div><div class="line">System.out.println(statistics.getMin());</div><div class="line">System.out.println(statistics.getCount());</div></pre></td></tr></table></figure></p>
+<h1 id="接口的默认方法和静态方法"><a href="#接口的默认方法和静态方法" class="headerlink" title="接口的默认方法和静态方法"></a>接口的默认方法和静态方法</h1><p>默认方法和抽象方法之间的区别在于抽象方法需要实现，而默认方法不需要。接口提供的默认方法可以被接口的实现类继承或者覆写。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">default</span> String <span class="title">defaultMethod</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"this is default method"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> <span class="keyword">implements</span> <span class="title">MyInterface</span></span>&#123;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在接口中可以定义静态方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">default</span> String <span class="title">defaultMethod</span><span class="params">()</span></span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="string">"this is default method"</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="function"><span class="keyword">static</span> String <span class="title">staticMethod</span><span class="params">()</span></span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="string">"this is static method"</span>;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="方法的引用方式"><a href="#方法的引用方式" class="headerlink" title="方法的引用方式"></a>方法的引用方式</h1><p>初始化数组<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Function&lt;Integer, String[]&gt; fun = x -&gt; <span class="keyword">new</span> String[x];</div><div class="line">String[] strs = fun.apply(<span class="number">10</span>);</div><div class="line">System.out.println(strs.length);</div><div class="line">Function&lt;Integer,String[]&gt; fun1 = String[]::<span class="keyword">new</span>;</div><div class="line">strs = fun1.apply(<span class="number">20</span>);</div><div class="line">System.out.println(strs.length);</div></pre></td></tr></table></figure></p>
+<p>构造方法的引用 Class::new只针对无参构造，若该类只有有参构造，需要添加一个无参构造方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Supplier&lt;Student&gt; supplier=Student::<span class="keyword">new</span>;</div><div class="line">Student student=supplier.get();</div><div class="line">student.setName(<span class="string">"小明"</span>);</div><div class="line">System.out.println(student.getName());</div></pre></td></tr></table></figure></p>
+<p>有参构造调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Supplier&lt;Student&gt; supplier=()-&gt;<span class="keyword">new</span> Student(<span class="string">"小张"</span>,<span class="string">"man"</span>,<span class="number">12</span>);</div><div class="line">Student student=supplier.get();</div><div class="line">System.out.println(student.getName());</div></pre></td></tr></table></figure></p>
+<p>静态方法调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Supplier&lt;String&gt; supplier=Student::saying;</div><div class="line">System.out.println(supplier.get());</div></pre></td></tr></table></figure></p>
+<p>成员方法调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Supplier&lt;Student&gt; supplier=Student::<span class="keyword">new</span>;</div><div class="line">Student student=supplier.get();</div><div class="line">Consumer&lt;String&gt; consumer1=student::setName;</div><div class="line">consumer1.accept(<span class="string">"小明"</span>);</div><div class="line">Consumer&lt;Integer&gt; consumer2=student::setAge;</div><div class="line">consumer2.accept(<span class="number">18</span>);</div><div class="line">System.out.println(student.getName()+<span class="string">":"</span>+student.getAge());</div></pre></td></tr></table></figure></p>
+<h1 id="注解的变化"><a href="#注解的变化" class="headerlink" title="注解的变化"></a>注解的变化</h1><h2 id="支持重复注解"><a href="#支持重复注解" class="headerlink" title="支持重复注解"></a>支持重复注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Filter</span>( <span class="string">"filter1"</span> )</div><div class="line"><span class="meta">@Filter</span>( <span class="string">"filter2"</span> )</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Filterable</span> </span>&#123;        </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Filterable.class.getAnnoation(Filters.class)</div></pre></td></tr></table></figure></p>
+<p>控制台输出：<br>filter1<br>filter2</p>
+<h2 id="注解使用范围扩大"><a href="#注解使用范围扩大" class="headerlink" title="注解使用范围扩大"></a>注解使用范围扩大</h2><p>java8可以使用在任何元素上：局部变量、方法、接口、类和泛型，甚至可以用在函数的异常定义上。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Retention</span>( RetentionPolicy.RUNTIME )</div><div class="line"><span class="meta">@Target</span>( &#123; ElementType.TYPE_USE, ElementType.TYPE_PARAMETER &#125; )</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> NonEmpty &#123;        </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Holder</span>&lt; @<span class="title">NonEmpty</span> <span class="title">T</span> &gt; <span class="keyword">extends</span> @<span class="title">NonEmpty</span> <span class="title">Object</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> <span class="keyword">throws</span> @NonEmpty Exception </span>&#123;            </div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@SuppressWarnings</span>( <span class="string">"unused"</span> )</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> Holder&lt; String &gt; holder = <span class="keyword">new</span> <span class="meta">@NonEmpty</span> Holder&lt; String &gt;();        </div><div class="line">    <span class="meta">@NonEmpty</span> Collection&lt; <span class="meta">@NonEmpty</span> String &gt; strings = <span class="keyword">new</span> ArrayList&lt;&gt;();        </div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<h1 id="Map新增方法"><a href="#Map新增方法" class="headerlink" title="Map新增方法"></a>Map新增方法</h1><p>初始化一个map<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Map&lt;Integer, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">map.put(<span class="number">1</span>, <span class="string">"Tom"</span>);</div><div class="line">map.put(<span class="number">2</span>, <span class="string">"Bob"</span>);</div><div class="line">map.put(<span class="number">3</span>, <span class="string">"Jack"</span>);</div></pre></td></tr></table></figure></p>
+<h2 id="forEach-遍历"><a href="#forEach-遍历" class="headerlink" title="forEach 遍历"></a>forEach 遍历</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">map.forEach((key,value)-&gt;System.out.println(key+<span class="string">":"</span>+value));</div></pre></td></tr></table></figure>
+<h2 id="getOrDefault"><a href="#getOrDefault" class="headerlink" title="getOrDefault"></a>getOrDefault</h2><p>如果指定的key存在，则返回该key对应的value，如果不存在，则返回指定的值。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">System.out.println(map.getOrDefault(<span class="number">4</span>, <span class="string">"name"</span>));</div></pre></td></tr></table></figure></p>
+<h2 id="replaceAll修改所有的value值"><a href="#replaceAll修改所有的value值" class="headerlink" title="replaceAll修改所有的value值"></a>replaceAll修改所有的value值</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//所有value前面加上一个编号</span></div><div class="line">map.replaceAll((key,value)-&gt;<span class="string">"20000"</span>+key+value);</div><div class="line">map.forEach((key,value)-&gt;System.out.println(key+<span class="string">":"</span>+value));</div></pre></td></tr></table></figure>
+<h2 id="putIfAbsent返回key对应的value，如果value为空则填入一个值"><a href="#putIfAbsent返回key对应的value，如果value为空则填入一个值" class="headerlink" title="putIfAbsent返回key对应的value，如果value为空则填入一个值"></a>putIfAbsent返回key对应的value，如果value为空则填入一个值</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">map.putIfAbsent(<span class="number">3</span>, <span class="string">"xiaoming"</span>);</div><div class="line">map.putIfAbsent(<span class="number">4</span>, <span class="string">"xiaoming"</span>);</div><div class="line"><span class="comment">//Jack</span></div><div class="line">System.out.println(map.get(<span class="number">3</span>));</div><div class="line"><span class="comment">//xiaoming</span></div><div class="line">System.out.println(map.get(<span class="number">4</span>));</div></pre></td></tr></table></figure>
+<h2 id="remove指定元素删除"><a href="#remove指定元素删除" class="headerlink" title="remove指定元素删除"></a>remove指定元素删除</h2><p>如果key获取的value值与给的value值相等，则删除这个元素<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">map.remove(<span class="number">1</span>, <span class="string">"Bob"</span>);</div><div class="line"><span class="comment">// 未删除成功， 输出 Tom</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div><div class="line"></div><div class="line">map.remove(<span class="number">2</span>, <span class="string">"Bob"</span>);</div><div class="line"><span class="comment">// 删除成功，输出 null</span></div><div class="line">System.out.println(map.get(<span class="number">2</span>))</div></pre></td></tr></table></figure></p>
+<h2 id="replace替换"><a href="#replace替换" class="headerlink" title="replace替换"></a>replace替换</h2><p>如果key获取的value值与给的value值相等，则把这个value替换成一个新的value<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">map.replace(<span class="number">3</span>, <span class="string">"Tom"</span>, <span class="string">"Joe"</span>);</div><div class="line"><span class="comment">// 未替换成功，输出 Jack</span></div><div class="line">System.out.println(map.get(<span class="number">3</span>));</div><div class="line">map.replace(<span class="number">1</span>, <span class="string">"Tom"</span>, <span class="string">"Joe"</span>);</div><div class="line"><span class="comment">// 替换成功， 输出 Joe</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div></pre></td></tr></table></figure></p>
+<p>如果map中存在key，则替换成value值，替换成功返回旧值，否则返回null<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//输出Tom</span></div><div class="line">System.out.println( map.replace(<span class="number">1</span>, <span class="string">"Joe"</span>));</div><div class="line"><span class="comment">//输出Joe</span></div><div class="line">System.out.println( map.get(<span class="number">1</span>));</div><div class="line"><span class="comment">//输出null</span></div><div class="line">System.out.println( map.replace(<span class="number">4</span>, <span class="string">"Joe"</span>));</div><div class="line"><span class="comment">//输出null</span></div><div class="line">System.out.println( map.get(<span class="number">4</span>));</div></pre></td></tr></table></figure></p>
+<h2 id="computeIfAbsent"><a href="#computeIfAbsent" class="headerlink" title="computeIfAbsent"></a>computeIfAbsent</h2><p>如果指定的key不存在，则可通过key计算value为新的值<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">map.computeIfAbsent(<span class="number">1</span>,key-&gt;key+<span class="string">"newName"</span>);</div><div class="line"><span class="comment">//输出Tom</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div><div class="line">map.computeIfAbsent(<span class="number">4</span>,key-&gt;key+<span class="string">"newName"</span>);</div><div class="line"><span class="comment">//输出4newName</span></div><div class="line">System.out.println(map.get(<span class="number">4</span>));</div></pre></td></tr></table></figure></p>
+<h2 id="computeIfPresent"><a href="#computeIfPresent" class="headerlink" title="computeIfPresent"></a>computeIfPresent</h2><p>如果指定的key存在，则根据key和value计算一个新的newValue, 如果这个newValue不为null，则设置key新的值为这个newValue, 如果newValue为null, 则删除该key的值<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">map.computeIfPresent(<span class="number">1</span>, (key, value) -&gt; key + <span class="string">"新的值:"</span> + value);</div><div class="line"><span class="comment">// 输出1新的值:Tom</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div><div class="line"></div><div class="line">map.computeIfPresent(<span class="number">2</span>, (key, value) -&gt; <span class="keyword">null</span>);</div><div class="line"><span class="comment">// 输出 null</span></div><div class="line">System.out.println(map.get(<span class="number">2</span>));</div></pre></td></tr></table></figure></p>
+<h2 id="compute"><a href="#compute" class="headerlink" title="compute"></a>compute</h2><p>如果指定的key不存在，则设置指定的value值，否则根据key和value计算一个新的newValue, 如果这个newValue不为null，则设置key新的值为这个newValue, 如果newValue为null, 则删除该key的值。<br>这个解释有点长，容易绕，实际上用if-else可以很简单的表达<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span>(!key.exist())&#123;</div><div class="line">   map.computeIfAbsent(key,key-&gt;key+<span class="string">"newValue"</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">else</span>&#123;</div><div class="line">   map.computeIfPresent(key, (key, value) -&gt; key + <span class="string">"新的值:"</span> + value);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>所以就是if key不存在，调computeIfAbsent，否则调computeIfPresent<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">map.compute(<span class="number">4</span>,(key,value)-&gt;key+<span class="string">":"</span>+value+<span class="string">"新的值"</span>);</div><div class="line"><span class="comment">//输出 4:null新的值</span></div><div class="line">System.out.println(map.get(<span class="number">4</span>));</div><div class="line">map.compute(<span class="number">1</span>,(key,value)-&gt;key+<span class="string">":"</span>+<span class="string">"新的值"</span>);</div><div class="line"><span class="comment">//输出 1:新的值</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div></pre></td></tr></table></figure></p>
+<h2 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h2><p>如果指定的key不存在，直接设置指定值，如果存在根据旧的value，指定值计算出新的值newValue, 如果这个newValue不为空，设置key的新值newValue，如果newValue为null, 则删除该key。最后返回当前最新的值<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">  <span class="comment">//输出 指定的名字</span></div><div class="line">System.out.println(map.merge(<span class="number">4</span>,<span class="string">"指定的名字"</span>,(oldValue,assignValue)-&gt;oldValue+<span class="string">","</span>+assignValue));</div><div class="line"><span class="comment">//输出 Tom,指定的名字</span></div><div class="line">System.out.println(map.merge(<span class="number">1</span>,<span class="string">"指定的名字"</span>,(oldValue,assignValue)-&gt;oldValue+<span class="string">","</span>+assignValue));</div><div class="line"><span class="comment">//输出 null</span></div><div class="line">System.out.println(map.merge(<span class="number">1</span>,<span class="string">"指定的名字"</span>,(oldValue,assignValue)-&gt;<span class="keyword">null</span>));</div></pre></td></tr></table></figure></p>
+<h1 id="空指针判断类Optional"><a href="#空指针判断类Optional" class="headerlink" title="空指针判断类Optional"></a>空指针判断类Optional</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">String str1=<span class="keyword">null</span>;</div><div class="line">String str2=<span class="string">"abc"</span>;</div><div class="line"><span class="comment">//创建初始化Optional对象，可为空的</span></div><div class="line">Optional&lt;String&gt; optionalStr1=Optional.ofNullable(str1);</div><div class="line"><span class="comment">//创建初始化Optional对象，不可为空，会抛异常</span></div><div class="line">Optional&lt;String&gt; optionalStr2=Optional.of(str2);</div><div class="line">System.out.println(<span class="string">"第一个参数是否存在"</span>+optionalStr1.isPresent());</div><div class="line">System.out.println(<span class="string">"第二个参数是否存在"</span>+optionalStr2.isPresent());</div><div class="line"><span class="comment">//不存在时返回默认值，存在时返回该值</span></div><div class="line">String getStr1=optionalStr1.orElse(<span class="string">"这个值不存在的默认值"</span>);</div><div class="line"><span class="comment">//返回该值，该值必须存在</span></div><div class="line">String getStr2=optionalStr2.get();</div><div class="line">System.out.println(getStr1);</div><div class="line">System.out.println(getStr2);</div></pre></td></tr></table></figure>
+<h1 id="日期和时间Joda-Time的支持"><a href="#日期和时间Joda-Time的支持" class="headerlink" title="日期和时间Joda-Time的支持"></a>日期和时间Joda-Time的支持</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取当前的日期时间</span></div><div class="line">LocalDateTime currentTime = LocalDateTime.now();</div><div class="line">System.out.println(<span class="string">"当前时间: "</span> + currentTime);</div><div class="line"><span class="comment">// 获取当前日期</span></div><div class="line">LocalDate currentDate = currentTime.toLocalDate();</div><div class="line">System.out.println(<span class="string">"当前日期: "</span> + currentDate);</div><div class="line">System.out.println(<span class="string">"年"</span>+currentDate.getYear()+<span class="string">"月"</span>+currentDate.getMonthOfYear()+<span class="string">"日"</span>+currentDate.getDayOfMonth());</div><div class="line"><span class="comment">// 修改当前时间的月份和年份</span></div><div class="line">currentDate.withYear(<span class="number">2013</span>).withMonthOfYear(<span class="number">3</span>);</div><div class="line">System.out.println(<span class="string">"修改后的日期: "</span> + currentDate);</div><div class="line"><span class="comment">// 日期格式化</span></div><div class="line">System.out.println(currentDate.toString(<span class="string">"yyyy-MM-dd"</span>));</div><div class="line"><span class="comment">// 修改时区</span></div><div class="line">DateTimeZone zoneEurope = DateTimeZone.forID(<span class="string">"Europe/London"</span>);</div><div class="line">DateTime dtLondon = <span class="keyword">new</span> DateTime().withZone(zoneEurope);</div><div class="line">System.out.println(<span class="string">"修改时区: "</span> + dtLondon);</div><div class="line">DateTimeZone currentZone = DateTimeZone.getDefault();</div><div class="line">DateTime dtCurrent = <span class="keyword">new</span> DateTime().withZone(currentZone);</div><div class="line">System.out.println(<span class="string">"当期时区: "</span> + dtCurrent);</div></pre></td></tr></table></figure>
+<h1 id="base64支持"><a href="#base64支持" class="headerlink" title="base64支持"></a>base64支持</h1><p>基本编解码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// 使用基本编码</span></div><div class="line">        String base64encodedString = Base64.getEncoder().encodeToString(<span class="string">"这是待编码的字符串"</span>.getBytes(<span class="string">"utf-8"</span>));</div><div class="line">        System.out.println(<span class="string">"Base64编码后"</span> + base64encodedString);</div><div class="line">        <span class="comment">// 解码</span></div><div class="line">        <span class="keyword">byte</span>[] base64decodedBytes = Base64.getDecoder().decode(base64encodedString);</div><div class="line">        System.out.println(<span class="string">"原始字符串: "</span> + <span class="keyword">new</span> String(base64decodedBytes, <span class="string">"utf-8"</span>));</div><div class="line">        <span class="comment">//使用url编码</span></div><div class="line">        String base64encodedUrl = Base64.getUrlEncoder().encodeToString(<span class="string">"这是待编码的字符串"</span>.getBytes(<span class="string">"utf-8"</span>));</div><div class="line">        System.out.println(<span class="string">"Base64 URL编码:"</span> + base64encodedUrl);</div><div class="line">        <span class="comment">//生成随机uuid</span></div><div class="line">        StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1</span>; ++i) &#123;</div><div class="line">            stringBuilder.append(UUID.randomUUID().toString());</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//使用mime编码</span></div><div class="line">        <span class="keyword">byte</span>[] mimeBytes = stringBuilder.toString().getBytes(<span class="string">"utf-8"</span>);</div><div class="line">        String mimeEncodedString = Base64.getMimeEncoder().encodeToString(mimeBytes);</div><div class="line">        System.out.println(<span class="string">"Base64 MIME编码:"</span> + mimeEncodedString);</div><div class="line">    &#125;<span class="keyword">catch</span>(UnsupportedEncodingException e)&#123;</div><div class="line">        System.out.println(<span class="string">"Error :"</span> + e.getMessage());</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java8/" rel="tag"># java8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/02/Genymotion-issue/" rel="next" title="genymotion 踩坑记录">
+                <i class="fa fa-chevron-left"></i> genymotion 踩坑记录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/01/RxJavaStudy/" rel="prev" title="RxJava学习">
+                RxJava学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="Jessie Kate" />
+            
+              <p class="site-author-name" itemprop="name">Jessie Kate</p>
+              <p class="site-description motion-element" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#lambda表达式的支持"><span class="nav-number">1.</span> <span class="nav-text">lambda表达式的支持</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本形式："><span class="nav-number">1.1.</span> <span class="nav-text">基本形式：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用法："><span class="nav-number">1.2.</span> <span class="nav-text">用法：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#for循环"><span class="nav-number">1.2.1.</span> <span class="nav-text">for循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ui回调"><span class="nav-number">1.2.2.</span> <span class="nav-text">ui回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建线程"><span class="nav-number">1.2.3.</span> <span class="nav-text">创建线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排序"><span class="nav-number">1.2.4.</span> <span class="nav-text">排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结合Stream"><span class="nav-number">1.2.5.</span> <span class="nav-text">结合Stream</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#接口的默认方法和静态方法"><span class="nav-number">2.</span> <span class="nav-text">接口的默认方法和静态方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法的引用方式"><span class="nav-number">3.</span> <span class="nav-text">方法的引用方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注解的变化"><span class="nav-number">4.</span> <span class="nav-text">注解的变化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#支持重复注解"><span class="nav-number">4.1.</span> <span class="nav-text">支持重复注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注解使用范围扩大"><span class="nav-number">4.2.</span> <span class="nav-text">注解使用范围扩大</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Map新增方法"><span class="nav-number">5.</span> <span class="nav-text">Map新增方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#forEach-遍历"><span class="nav-number">5.1.</span> <span class="nav-text">forEach 遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getOrDefault"><span class="nav-number">5.2.</span> <span class="nav-text">getOrDefault</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#replaceAll修改所有的value值"><span class="nav-number">5.3.</span> <span class="nav-text">replaceAll修改所有的value值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#putIfAbsent返回key对应的value，如果value为空则填入一个值"><span class="nav-number">5.4.</span> <span class="nav-text">putIfAbsent返回key对应的value，如果value为空则填入一个值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#remove指定元素删除"><span class="nav-number">5.5.</span> <span class="nav-text">remove指定元素删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#replace替换"><span class="nav-number">5.6.</span> <span class="nav-text">replace替换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#computeIfAbsent"><span class="nav-number">5.7.</span> <span class="nav-text">computeIfAbsent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#computeIfPresent"><span class="nav-number">5.8.</span> <span class="nav-text">computeIfPresent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compute"><span class="nav-number">5.9.</span> <span class="nav-text">compute</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#merge"><span class="nav-number">5.10.</span> <span class="nav-text">merge</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#空指针判断类Optional"><span class="nav-number">6.</span> <span class="nav-text">空指针判断类Optional</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日期和时间Joda-Time的支持"><span class="nav-number">7.</span> <span class="nav-text">日期和时间Joda-Time的支持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#base64支持"><span class="nav-number">8.</span> <span class="nav-text">base64支持</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz',
+        appKey: 'h0CQIfed08e67roNpfhTzHOH',
+        placeholder: '在这里写下你的评论吧～',
+        avatar:'wavatar',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz", "h0CQIfed08e67roNpfhTzHOH");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
