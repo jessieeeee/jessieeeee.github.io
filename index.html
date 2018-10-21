@@ -261,6 +261,178 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/21/Presentation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/21/Presentation/" itemprop="url">Presentation实现双屏异显</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-21T21:06:44+08:00">
+                2018-10-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/21/Presentation/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/21/Presentation/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/10/21/Presentation/" class="leancloud_visitors" data-flag-title="Presentation实现双屏异显">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。</p>
+<hr>
+<p>Presentation是一个特殊的dialog，可以在辅屏上显示与主屏不一样的内容，设置里面也可以把“模拟第二屏”的功能打开，运行的时候会在左上角显示一个小窗口来显示第二屏的显示内容，Presentation在创建的时候需要和Display对象相关联，关联之前需要先获取显示设备，DisplayManager或MediaRouter都可以来获取显示设备。下面用最简单的两个例子来介绍，在主屏和辅屏上都显示一个不同内容的TextView文本。</p>
+<h1 id="设置权限"><a href="#设置权限" class="headerlink" title="设置权限"></a>设置权限</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_ALERT_WINDOW"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_OVERLAY_WINDOW"</span> /&gt;</span></div></pre></td></tr></table></figure>
+<h1 id="DisplayManager实现"><a href="#DisplayManager实现" class="headerlink" title="DisplayManager实现"></a>DisplayManager实现</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPresentation</span> <span class="keyword">extends</span> <span class="title">Presentation</span> </span>&#123;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="title">MyPresentation</span><span class="params">(Context outerContext, Display display)</span> </span>&#123;</div><div class="line">           <span class="keyword">super</span>(outerContext,display);</div><div class="line"></div><div class="line">       &#125;</div><div class="line">       <span class="meta">@Override</span></div><div class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">           <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">           setContentView(R.layout.second_screen);</div><div class="line"></div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> MyPresentation myPresentation;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">        DisplayManager manager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);</div><div class="line">        Display[] displays = manager.getDisplays();</div><div class="line">        <span class="keyword">if</span> (presentationDisplays.length &gt; <span class="number">1</span>) &#123;</div><div class="line">            <span class="comment">// displays[0] 主屏 displays[1] 辅屏</span></div><div class="line">            myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>,displays[<span class="number">1</span>]);</div><div class="line">            myPresentation.getWindow().setType(</div><div class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</div><div class="line">            myPresentation.show();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span> </span>&#123;</div><div class="line">        onDestroy();</div><div class="line">        <span class="comment">//完全退出应用，取消双屏异显</span></div><div class="line">        Intent startMain = <span class="keyword">new</span> Intent(Intent.ACTION_MAIN);</div><div class="line">        startMain.addCategory(Intent.CATEGORY_HOME);</div><div class="line">        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div><div class="line">        startActivity(startMain);</div><div class="line">        System.exit(<span class="number">0</span>);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>这里的activity_main和second_screen就是一个xml布局，放了一个不同内容的TextView文本，代码就不贴了，可以看到DisplayManager的getDisplays方法可以返回一个可显示的Display数组，也就是当前可以连接的屏幕列表，第一个元素是主屏的Display对象，第二个元素是辅屏的Display对象，然后把辅屏的Display对象传入到Presentation的构造函数中绑定，设置窗口类型就可以展示了。</p>
+<h1 id="MediaRouter实现"><a href="#MediaRouter实现" class="headerlink" title="MediaRouter实现"></a>MediaRouter实现</h1><p>这里就只贴辅屏的Display对象获取并传入到Presentation的构造函数中绑定的代码，因为其余部分都是一样的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">MediaRouter mediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);</div><div class="line">MediaRouter.RouteInfo route = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);</div><div class="line"><span class="keyword">if</span>(route != <span class="keyword">null</span>) &#123;</div><div class="line">    Display display = route.getPresentationDisplay();</div><div class="line">    <span class="keyword">if</span> (display != <span class="keyword">null</span>) &#123;</div><div class="line">        myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>, display);</div><div class="line">        myPresentation.getWindow().setType(</div><div class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</div><div class="line">        myPresentation.show();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>MediaRouter与DisplayManager不同的是MediaRouter会直接绑定周围最合适的设备。总的来说，这两个API实现的思路大致相同，都是要自定义Presentation，获取到一个辅屏的Display对象传入到Presentation的构造函数中进行绑定，Presentation初始化完成后设置窗口类型然后展示。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/25/PuppeteerStart/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1294,12 +1466,12 @@
 <p>整个数据类</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">AppState</span> </span>&#123;</div><div class="line">  @observable count;</div><div class="line">  @observable name;</div><div class="line">  @computed get msg() &#123;</div><div class="line">    <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span> say count is <span class="subst">$&#123;<span class="keyword">this</span>.count&#125;</span>`</span>;</div><div class="line">  &#125;</div><div class="line">  @action add() &#123;</div><div class="line">    <span class="keyword">this</span>.count += <span class="number">1</span>;</div><div class="line">  &#125;</div><div class="line">  @action changeName(name) &#123;</div><div class="line">    <span class="keyword">this</span>.name = name;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 返回json格式化数据</span></div><div class="line">  toJson() &#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      <span class="attr">count</span>: <span class="keyword">this</span>.count,</div><div class="line">      <span class="attr">name</span>: <span class="keyword">this</span>.name,</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="在组件中使用"><a href="#在组件中使用" class="headerlink" title="在组件中使用"></a>在组件中使用</h2><p>在index中注入数据类的实例对象，通过props传入到内部组件</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> AppState <span class="keyword">from</span> <span class="string">'./store/app-state'</span>;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Root</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</div><div class="line">    render() &#123;</div><div class="line">      <span class="keyword">return</span> (</div><div class="line">        &lt;Provider appState=&#123;new AppState()&#125;&gt;</div><div class="line">          &lt;App /&gt;</div><div class="line">        &lt;/Provider&gt;</div><div class="line">      );</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> AppState <span class="keyword">from</span> <span class="string">'./store/app-state'</span>;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Root</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</div><div class="line">    render() &#123;</div><div class="line">      <span class="keyword">return</span> (</div><div class="line">        <span class="xml"><span class="tag">&lt;<span class="name">Provider</span> <span class="attr">appState</span>=<span class="string">&#123;new</span> <span class="attr">AppState</span>()&#125;&gt;</span></span></div><div class="line">          <span class="tag">&lt;<span class="name">App</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">Provider</span>&gt;</span></div><div class="line">      );</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
 <p>在组件内监听，用@observer标记组件，@inject(‘appState’)注入数据类，通过props获取到数据类实例</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></div><div class="line"><span class="keyword">import</span> &#123;</div><div class="line">  observer,</div><div class="line">  inject,</div><div class="line">&#125; <span class="keyword">from</span> <span class="string">'mobx-react'</span>;</div><div class="line"><span class="keyword">import</span> PropTypes <span class="keyword">from</span> <span class="string">'prop-types'</span>;</div><div class="line"><span class="keyword">import</span> &#123; AppState &#125; <span class="keyword">from</span> <span class="string">'../../store/app-state'</span>;</div><div class="line"></div><div class="line">@inject(<span class="string">'appState'</span>) @observer</div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">TopicList</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</div><div class="line">  <span class="keyword">constructor</span>() &#123;</div><div class="line">    <span class="keyword">super</span>();</div><div class="line">    <span class="keyword">this</span>.changeName = <span class="keyword">this</span>.changeName.bind(<span class="keyword">this</span>);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  componentDidMount() &#123;</div><div class="line">    <span class="comment">// do something here</span></div><div class="line"></div><div class="line">  &#125;</div><div class="line"></div><div class="line">  changeName(event) &#123;</div><div class="line">    <span class="keyword">this</span>.props.appState.changeName(event.target.value);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  render() &#123;</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      &lt;div&gt;</div><div class="line">        &lt;input type="text" onChange=&#123;this.changeName&#125; /&gt;</div><div class="line">        &lt;span&gt;&#123;this.props.appState.msg&#125;&lt;/span&gt;</div><div class="line">      &lt;/div&gt;</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">TopicList.propTypes = &#123;</div><div class="line">  appState: PropTypes.instanceOf(AppState),</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></div><div class="line"><span class="keyword">import</span> &#123;</div><div class="line">  observer,</div><div class="line">  inject,</div><div class="line">&#125; <span class="keyword">from</span> <span class="string">'mobx-react'</span>;</div><div class="line"><span class="keyword">import</span> PropTypes <span class="keyword">from</span> <span class="string">'prop-types'</span>;</div><div class="line"><span class="keyword">import</span> &#123; AppState &#125; <span class="keyword">from</span> <span class="string">'../../store/app-state'</span>;</div><div class="line"></div><div class="line">@inject(<span class="string">'appState'</span>) @observer</div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">TopicList</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</div><div class="line">  <span class="keyword">constructor</span>() &#123;</div><div class="line">    <span class="keyword">super</span>();</div><div class="line">    <span class="keyword">this</span>.changeName = <span class="keyword">this</span>.changeName.bind(<span class="keyword">this</span>);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  componentDidMount() &#123;</div><div class="line">    <span class="comment">// do something here</span></div><div class="line"></div><div class="line">  &#125;</div><div class="line"></div><div class="line">  changeName(event) &#123;</div><div class="line">    <span class="keyword">this</span>.props.appState.changeName(event.target.value);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  render() &#123;</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">onChange</span>=<span class="string">&#123;this.changeName&#125;</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;this.props.appState.msg&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">TopicList.propTypes = &#123;</div><div class="line">  appState: PropTypes.instanceOf(AppState),</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 <h1 id="利用高阶组件封装组件的base层"><a href="#利用高阶组件封装组件的base层" class="headerlink" title="利用高阶组件封装组件的base层"></a>利用高阶组件封装组件的base层</h1><p>高阶组件Higher Order Component简称HOC，是一个使用函数来实现的类工厂，接收一个React.Component的参数，这个参数必须传，我们可以定义为WrappedComponent，代表被包裹的组件，返回一个React.Component的对象，就是包裹后的新组件。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">export</span> <span class="keyword">const</span> HighOrderComponent = <span class="function">(<span class="params">WrappedComponent, title</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="title">HOC</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</div><div class="line">        <span class="comment">// 公共state初始化</span></div><div class="line">        <span class="keyword">constructor</span>(props) &#123;</div><div class="line">            <span class="keyword">super</span>(props);</div><div class="line">            <span class="keyword">this</span>.state = &#123;</div><div class="line">                <span class="attr">username</span>: <span class="string">''</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 公共逻辑处理</span></div><div class="line">        componentWillMount() &#123;</div><div class="line">            <span class="keyword">let</span> username = localStorage.getItem(<span class="string">'username'</span>);</div><div class="line">            <span class="keyword">this</span>.setState(&#123;</div><div class="line">                <span class="attr">username</span>: username</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 界面渲染的公共部分</span></div><div class="line">        render() &#123;</div><div class="line">            <span class="keyword">return</span>(</div><div class="line">                &lt;div&gt;</div><div class="line">                    &lt;View&gt;&#123;title&#125;&lt;/View&gt;</div><div class="line">                    &lt;WrappedComponent &#123;...this.props&#125; username=&#123;this.state.username&#125;&gt;&lt;/WrappedComponent&gt;</div><div class="line">                &lt;/div&gt;</div><div class="line">            )</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>我们可以在这个类中操作props，对props的增删改查，可以通过Refs访问到组件实例，对state做处理，也可以用其他的组件包裹WrappedComponent。作为组件的base层，在这里处理公共逻辑，使用的时候传入被包裹的组件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Index</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</div><div class="line">    render() &#123;</div><div class="line">        <span class="keyword">return</span>(</div><div class="line">            &lt;View&gt;</div><div class="line">                &lt;Text&gt;Hi &#123;this.props.username&#125;&lt;/Text&gt;</div><div class="line">            &lt;/View&gt;</div><div class="line">        )</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">export</span> <span class="keyword">const</span> HighOrderIndex = HighOrderComponent(Index, <span class="string">'Index title'</span>);</div></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">export</span> <span class="keyword">const</span> HighOrderComponent = <span class="function">(<span class="params">WrappedComponent, title</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="title">HOC</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</div><div class="line">        <span class="comment">// 公共state初始化</span></div><div class="line">        <span class="keyword">constructor</span>(props) &#123;</div><div class="line">            <span class="keyword">super</span>(props);</div><div class="line">            <span class="keyword">this</span>.state = &#123;</div><div class="line">                <span class="attr">username</span>: <span class="string">''</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 公共逻辑处理</span></div><div class="line">        componentWillMount() &#123;</div><div class="line">            <span class="keyword">let</span> username = localStorage.getItem(<span class="string">'username'</span>);</div><div class="line">            <span class="keyword">this</span>.setState(&#123;</div><div class="line">                <span class="attr">username</span>: username</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 界面渲染的公共部分</span></div><div class="line">        render() &#123;</div><div class="line">            <span class="keyword">return</span>(</div><div class="line">                <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></div><div class="line">                    <span class="tag">&lt;<span class="name">View</span>&gt;</span>&#123;title&#125;<span class="tag">&lt;/<span class="name">View</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">WrappedComponent</span> &#123;<span class="attr">...this.props</span>&#125; <span class="attr">username</span>=<span class="string">&#123;this.state.username&#125;</span>&gt;</span><span class="tag">&lt;/<span class="name">WrappedComponent</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">            )</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们可以在这个类中操作props，对props的增删改查，可以通过Refs访问到组件实例，对state做处理，也可以用其他的组件包裹WrappedComponent。作为组件的base层，在这里处理公共逻辑，使用的时候传入被包裹的组件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Index</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</div><div class="line">    render() &#123;</div><div class="line">        <span class="keyword">return</span>(</div><div class="line">            <span class="xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span></span></div><div class="line">                <span class="tag">&lt;<span class="name">Text</span>&gt;</span>Hi &#123;this.props.username&#125;<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">View</span>&gt;</span></div><div class="line">        )</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">export</span> <span class="keyword">const</span> HighOrderIndex = HighOrderComponent(Index, <span class="string">'Index title'</span>);</div></pre></td></tr></table></figure></p>
 
           
         
@@ -2035,215 +2207,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/12/Java8-NewFeatures/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/12/Java8-NewFeatures/" itemprop="url">java8新特性学习</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-12T21:51:24+08:00">
-                2017-11-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/11/12/Java8-NewFeatures/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2017/11/12/Java8-NewFeatures/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2017/11/12/Java8-NewFeatures/" class="leancloud_visitors" data-flag-title="java8新特性学习">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>java9已经发布一段时间了，AndroidStudio才开始支持Java 8，Java 8是Java的一个重大版本，虽然这些新特性令Java开发人员十分期待，但同时也需要花不少精力去学习，对于android开发者而言了解Java8的新特性是必要的，虽然现在Google力推kotlin，但是Java仍然是排名第一的使用最广泛的语言，社区依旧很活跃，也是处于不断进步和发展中，而且在新特性中我们能看到一些kotlin的影子。</p>
-<h1 id="lambda表达式的支持"><a href="#lambda表达式的支持" class="headerlink" title="lambda表达式的支持"></a>lambda表达式的支持</h1><p>格式为：(入参) -&gt; {函数体}</p>
-<h2 id="基本形式："><a href="#基本形式：" class="headerlink" title="基本形式："></a>基本形式：</h2><p>入参和返回值的类型可被编译器推测，入参一个参数不需要括号，无参直接写为<code>（）</code>，函数体多行可加上括号<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; a + b;</div><div class="line">(a, b) -&gt; a - b;</div><div class="line">(<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; &#123; <span class="keyword">return</span> a * b; &#125;;</div></pre></td></tr></table></figure></p>
-<h2 id="用法："><a href="#用法：" class="headerlink" title="用法："></a>用法：</h2><h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>以前的写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (String player : players) &#123;  </div><div class="line">     System.out.print(player + <span class="string">"; "</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>lambda写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">players.forEach((player) -&gt; System.out.print(player + <span class="string">"; "</span>));</div></pre></td></tr></table></figure></p>
-<h3 id="ui回调"><a href="#ui回调" class="headerlink" title="ui回调"></a>ui回调</h3><p>以前的写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">check_all.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">               </div><div class="line">           &#125;</div><div class="line">       &#125;);</div></pre></td></tr></table></figure></p>
-<p>lambda写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">check_all.setOnClickListener(v-&gt;&#123;&#125;);</div></pre></td></tr></table></figure></p>
-<h3 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h3><p>以前的写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;  </div><div class="line">    <span class="meta">@Override</span>  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;  </div><div class="line">        System.out.println(<span class="string">"Hello world !"</span>);  </div><div class="line">    &#125;  </div><div class="line">&#125;).start();</div></pre></td></tr></table></figure></p>
-<p>lambda写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> Thread(() -&gt; System.out.println(<span class="string">"Hello world !"</span>)).start();</div></pre></td></tr></table></figure></p>
-<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><p>以前的写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Arrays.sort(players, <span class="keyword">new</span> Comparator&lt;String&gt;() &#123;  </div><div class="line">    <span class="meta">@Override</span>  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(String s1, String s2)</span> </span>&#123;  </div><div class="line">        <span class="keyword">return</span> (s1.length() - s2.length());  </div><div class="line">    &#125;  </div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
-<p>lambda写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.length() - s2.length()));</div></pre></td></tr></table></figure></p>
-<h3 id="结合Stream"><a href="#结合Stream" class="headerlink" title="结合Stream"></a>结合Stream</h3><p>Stream是对集合的包装，通常和lambda一起使用。 使用lambdas可以支持许多操作,如 map, filter, limit, sorted, count, min, max, sum, collect 等等。<br>定义一个类，医生<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Doctor</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</div><div class="line">    <span class="keyword">private</span> String degree;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> salary;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Doctor</span><span class="params">(String name, <span class="keyword">int</span> age, String degree, <span class="keyword">int</span> salary)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">        <span class="keyword">this</span>.age = age;</div><div class="line">        <span class="keyword">this</span>.degree = degree;</div><div class="line">        <span class="keyword">this</span>.salary = salary;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.age = age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDegree</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> degree;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDegree</span><span class="params">(String degree)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.degree = degree;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSalary</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> salary;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSalary</span><span class="params">(<span class="keyword">int</span> salary)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.salary = salary;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>先初始化医生列表，foreach循环输出<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">List&lt;Doctor&gt; doctors =<span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"joe"</span>,<span class="number">20</span>,<span class="string">"bachelor"</span>,<span class="number">2000</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"jack"</span>,<span class="number">23</span>,<span class="string">"bachelor"</span>,<span class="number">2300</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"kris"</span>,<span class="number">27</span>,<span class="string">"Master"</span>,<span class="number">4200</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"bob"</span>,<span class="number">28</span>,<span class="string">"doctor"</span>,<span class="number">5000</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"tom"</span>,<span class="number">26</span>,<span class="string">"Master"</span>,<span class="number">4400</span>));</div><div class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"jay"</span>,<span class="number">29</span>,<span class="string">"doctor"</span>,<span class="number">5500</span>));</div><div class="line"></div><div class="line"> doctors.forEach(</div><div class="line">         (doctor)-&gt;&#123;</div><div class="line">             System.out.println(doctor.getName());</div><div class="line"></div><div class="line">         &#125;</div><div class="line">         );</div></pre></td></tr></table></figure></p>
-<p>过滤器filter()，过滤出年龄大于25岁且学历为博士的医生<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">doctors.stream().filter( doctor -&gt; doctor.getAge()&gt;<span class="number">25</span>)</div><div class="line">                .filter(doctor -&gt; <span class="string">"doctor"</span>.equals(doctor.getDegree()))</div><div class="line">                .forEach(doctor -&gt; System.out.println(doctor.getName()));</div></pre></td></tr></table></figure></p>
-<p>limit方法，限制结果个数，年龄大于25的前三个医生<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">doctors.stream().filter( doctor -&gt; doctor.getAge()&gt;<span class="number">25</span>)</div><div class="line">              .limit(<span class="number">3</span>)</div><div class="line">              .forEach(doctor -&gt; System.out.println(doctor.getName()));</div></pre></td></tr></table></figure></p>
-<p>sorted方法，按薪水由多到少排序<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">doctors.stream().sorted((d1,d2)-&gt;d2.getSalary()-d1.getSalary())</div><div class="line">        .forEach(</div><div class="line">                (doctor)-&gt;&#123;</div><div class="line">                    System.out.println(doctor.getName());</div><div class="line">                &#125;</div><div class="line">        );</div></pre></td></tr></table></figure></p>
-<p>min和max方法，找出最低和最高的薪水<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Doctor doctor1=doctors.stream().min((d1,d2)-&gt;d1.getSalary()-d2.getSalary()).get();</div><div class="line">System.out.print(doctor1.getName());</div><div class="line"></div><div class="line">Doctor doctor2=doctors.stream().min((d1,d2)-&gt;d1.getSalary()-d2.getSalary()).get();</div><div class="line">System.out.print(doctor2.getName());</div></pre></td></tr></table></figure></p>
-<p>结合 map 方法,使用 collect 方法来将我们的结果集放到一个字符串,一个 Set 中<br>将所有医生的名字拼接在一个string中，用逗号隔开<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">String names=doctors.stream().map(Doctor::getName).collect(joining(<span class="string">","</span>));</div><div class="line">System.out.print(names);</div></pre></td></tr></table></figure></p>
-<p>将所有医生的名字存放到一个set中<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Set&lt;String&gt; doctorSet=doctors.stream().map(Doctor::getName).collect(Collectors.toSet());</div><div class="line">octorSet.forEach((name)-&gt;System.out.println(name));</div></pre></td></tr></table></figure></p>
-<p>summaryStatistics方法获得stream中元素的汇总数据，求和，平均值，最大最小值，个数<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">IntSummaryStatistics statistics=doctors.stream()</div><div class="line">                .mapToInt(doctor-&gt;doctor.getSalary())</div><div class="line">                .summaryStatistics();</div><div class="line">System.out.println(statistics.getSum());</div><div class="line">System.out.println(statistics.getAverage());</div><div class="line">System.out.println(statistics.getMax());</div><div class="line">System.out.println(statistics.getMin());</div><div class="line">System.out.println(statistics.getCount());</div></pre></td></tr></table></figure></p>
-<h1 id="接口的默认方法和静态方法"><a href="#接口的默认方法和静态方法" class="headerlink" title="接口的默认方法和静态方法"></a>接口的默认方法和静态方法</h1><p>默认方法和抽象方法之间的区别在于抽象方法需要实现，而默认方法不需要。接口提供的默认方法可以被接口的实现类继承或者覆写。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">default</span> String <span class="title">defaultMethod</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"this is default method"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> <span class="keyword">implements</span> <span class="title">MyInterface</span></span>&#123;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在接口中可以定义静态方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">default</span> String <span class="title">defaultMethod</span><span class="params">()</span></span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="string">"this is default method"</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="function"><span class="keyword">static</span> String <span class="title">staticMethod</span><span class="params">()</span></span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="string">"this is static method"</span>;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h1 id="方法的引用方式"><a href="#方法的引用方式" class="headerlink" title="方法的引用方式"></a>方法的引用方式</h1><p>初始化数组<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Function&lt;Integer, String[]&gt; fun = x -&gt; <span class="keyword">new</span> String[x];</div><div class="line">String[] strs = fun.apply(<span class="number">10</span>);</div><div class="line">System.out.println(strs.length);</div><div class="line">Function&lt;Integer,String[]&gt; fun1 = String[]::<span class="keyword">new</span>;</div><div class="line">strs = fun1.apply(<span class="number">20</span>);</div><div class="line">System.out.println(strs.length);</div></pre></td></tr></table></figure></p>
-<p>构造方法的引用 Class::new只针对无参构造，若该类只有有参构造，需要添加一个无参构造方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Supplier&lt;Student&gt; supplier=Student::<span class="keyword">new</span>;</div><div class="line">Student student=supplier.get();</div><div class="line">student.setName(<span class="string">"小明"</span>);</div><div class="line">System.out.println(student.getName());</div></pre></td></tr></table></figure></p>
-<p>有参构造调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Supplier&lt;Student&gt; supplier=()-&gt;<span class="keyword">new</span> Student(<span class="string">"小张"</span>,<span class="string">"man"</span>,<span class="number">12</span>);</div><div class="line">Student student=supplier.get();</div><div class="line">System.out.println(student.getName());</div></pre></td></tr></table></figure></p>
-<p>静态方法调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Supplier&lt;String&gt; supplier=Student::saying;</div><div class="line">System.out.println(supplier.get());</div></pre></td></tr></table></figure></p>
-<p>成员方法调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Supplier&lt;Student&gt; supplier=Student::<span class="keyword">new</span>;</div><div class="line">Student student=supplier.get();</div><div class="line">Consumer&lt;String&gt; consumer1=student::setName;</div><div class="line">consumer1.accept(<span class="string">"小明"</span>);</div><div class="line">Consumer&lt;Integer&gt; consumer2=student::setAge;</div><div class="line">consumer2.accept(<span class="number">18</span>);</div><div class="line">System.out.println(student.getName()+<span class="string">":"</span>+student.getAge());</div></pre></td></tr></table></figure></p>
-<h1 id="注解的变化"><a href="#注解的变化" class="headerlink" title="注解的变化"></a>注解的变化</h1><h2 id="支持重复注解"><a href="#支持重复注解" class="headerlink" title="支持重复注解"></a>支持重复注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Filter</span>( <span class="string">"filter1"</span> )</div><div class="line"><span class="meta">@Filter</span>( <span class="string">"filter2"</span> )</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Filterable</span> </span>&#123;        </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Filterable.class.getAnnoation(Filters.class)</div></pre></td></tr></table></figure></p>
-<p>控制台输出：<br>filter1<br>filter2</p>
-<h2 id="注解使用范围扩大"><a href="#注解使用范围扩大" class="headerlink" title="注解使用范围扩大"></a>注解使用范围扩大</h2><p>java8可以使用在任何元素上：局部变量、方法、接口、类和泛型，甚至可以用在函数的异常定义上。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Retention</span>( RetentionPolicy.RUNTIME )</div><div class="line"><span class="meta">@Target</span>( &#123; ElementType.TYPE_USE, ElementType.TYPE_PARAMETER &#125; )</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> NonEmpty &#123;        </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Holder</span>&lt; @<span class="title">NonEmpty</span> <span class="title">T</span> &gt; <span class="keyword">extends</span> @<span class="title">NonEmpty</span> <span class="title">Object</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> <span class="keyword">throws</span> @NonEmpty Exception </span>&#123;            </div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@SuppressWarnings</span>( <span class="string">"unused"</span> )</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> Holder&lt; String &gt; holder = <span class="keyword">new</span> <span class="meta">@NonEmpty</span> Holder&lt; String &gt;();        </div><div class="line">    <span class="meta">@NonEmpty</span> Collection&lt; <span class="meta">@NonEmpty</span> String &gt; strings = <span class="keyword">new</span> ArrayList&lt;&gt;();        </div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<h1 id="Map新增方法"><a href="#Map新增方法" class="headerlink" title="Map新增方法"></a>Map新增方法</h1><p>初始化一个map<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Map&lt;Integer, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">map.put(<span class="number">1</span>, <span class="string">"Tom"</span>);</div><div class="line">map.put(<span class="number">2</span>, <span class="string">"Bob"</span>);</div><div class="line">map.put(<span class="number">3</span>, <span class="string">"Jack"</span>);</div></pre></td></tr></table></figure></p>
-<h2 id="forEach-遍历"><a href="#forEach-遍历" class="headerlink" title="forEach 遍历"></a>forEach 遍历</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">map.forEach((key,value)-&gt;System.out.println(key+<span class="string">":"</span>+value));</div></pre></td></tr></table></figure>
-<h2 id="getOrDefault"><a href="#getOrDefault" class="headerlink" title="getOrDefault"></a>getOrDefault</h2><p>如果指定的key存在，则返回该key对应的value，如果不存在，则返回指定的值。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">System.out.println(map.getOrDefault(<span class="number">4</span>, <span class="string">"name"</span>));</div></pre></td></tr></table></figure></p>
-<h2 id="replaceAll修改所有的value值"><a href="#replaceAll修改所有的value值" class="headerlink" title="replaceAll修改所有的value值"></a>replaceAll修改所有的value值</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//所有value前面加上一个编号</span></div><div class="line">map.replaceAll((key,value)-&gt;<span class="string">"20000"</span>+key+value);</div><div class="line">map.forEach((key,value)-&gt;System.out.println(key+<span class="string">":"</span>+value));</div></pre></td></tr></table></figure>
-<h2 id="putIfAbsent返回key对应的value，如果value为空则填入一个值"><a href="#putIfAbsent返回key对应的value，如果value为空则填入一个值" class="headerlink" title="putIfAbsent返回key对应的value，如果value为空则填入一个值"></a>putIfAbsent返回key对应的value，如果value为空则填入一个值</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">map.putIfAbsent(<span class="number">3</span>, <span class="string">"xiaoming"</span>);</div><div class="line">map.putIfAbsent(<span class="number">4</span>, <span class="string">"xiaoming"</span>);</div><div class="line"><span class="comment">//Jack</span></div><div class="line">System.out.println(map.get(<span class="number">3</span>));</div><div class="line"><span class="comment">//xiaoming</span></div><div class="line">System.out.println(map.get(<span class="number">4</span>));</div></pre></td></tr></table></figure>
-<h2 id="remove指定元素删除"><a href="#remove指定元素删除" class="headerlink" title="remove指定元素删除"></a>remove指定元素删除</h2><p>如果key获取的value值与给的value值相等，则删除这个元素<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">map.remove(<span class="number">1</span>, <span class="string">"Bob"</span>);</div><div class="line"><span class="comment">// 未删除成功， 输出 Tom</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div><div class="line"></div><div class="line">map.remove(<span class="number">2</span>, <span class="string">"Bob"</span>);</div><div class="line"><span class="comment">// 删除成功，输出 null</span></div><div class="line">System.out.println(map.get(<span class="number">2</span>))</div></pre></td></tr></table></figure></p>
-<h2 id="replace替换"><a href="#replace替换" class="headerlink" title="replace替换"></a>replace替换</h2><p>如果key获取的value值与给的value值相等，则把这个value替换成一个新的value<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">map.replace(<span class="number">3</span>, <span class="string">"Tom"</span>, <span class="string">"Joe"</span>);</div><div class="line"><span class="comment">// 未替换成功，输出 Jack</span></div><div class="line">System.out.println(map.get(<span class="number">3</span>));</div><div class="line">map.replace(<span class="number">1</span>, <span class="string">"Tom"</span>, <span class="string">"Joe"</span>);</div><div class="line"><span class="comment">// 替换成功， 输出 Joe</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div></pre></td></tr></table></figure></p>
-<p>如果map中存在key，则替换成value值，替换成功返回旧值，否则返回null<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//输出Tom</span></div><div class="line">System.out.println( map.replace(<span class="number">1</span>, <span class="string">"Joe"</span>));</div><div class="line"><span class="comment">//输出Joe</span></div><div class="line">System.out.println( map.get(<span class="number">1</span>));</div><div class="line"><span class="comment">//输出null</span></div><div class="line">System.out.println( map.replace(<span class="number">4</span>, <span class="string">"Joe"</span>));</div><div class="line"><span class="comment">//输出null</span></div><div class="line">System.out.println( map.get(<span class="number">4</span>));</div></pre></td></tr></table></figure></p>
-<h2 id="computeIfAbsent"><a href="#computeIfAbsent" class="headerlink" title="computeIfAbsent"></a>computeIfAbsent</h2><p>如果指定的key不存在，则可通过key计算value为新的值<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">map.computeIfAbsent(<span class="number">1</span>,key-&gt;key+<span class="string">"newName"</span>);</div><div class="line"><span class="comment">//输出Tom</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div><div class="line">map.computeIfAbsent(<span class="number">4</span>,key-&gt;key+<span class="string">"newName"</span>);</div><div class="line"><span class="comment">//输出4newName</span></div><div class="line">System.out.println(map.get(<span class="number">4</span>));</div></pre></td></tr></table></figure></p>
-<h2 id="computeIfPresent"><a href="#computeIfPresent" class="headerlink" title="computeIfPresent"></a>computeIfPresent</h2><p>如果指定的key存在，则根据key和value计算一个新的newValue, 如果这个newValue不为null，则设置key新的值为这个newValue, 如果newValue为null, 则删除该key的值<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">map.computeIfPresent(<span class="number">1</span>, (key, value) -&gt; key + <span class="string">"新的值:"</span> + value);</div><div class="line"><span class="comment">// 输出1新的值:Tom</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div><div class="line"></div><div class="line">map.computeIfPresent(<span class="number">2</span>, (key, value) -&gt; <span class="keyword">null</span>);</div><div class="line"><span class="comment">// 输出 null</span></div><div class="line">System.out.println(map.get(<span class="number">2</span>));</div></pre></td></tr></table></figure></p>
-<h2 id="compute"><a href="#compute" class="headerlink" title="compute"></a>compute</h2><p>如果指定的key不存在，则设置指定的value值，否则根据key和value计算一个新的newValue, 如果这个newValue不为null，则设置key新的值为这个newValue, 如果newValue为null, 则删除该key的值。<br>这个解释有点长，容易绕，实际上用if-else可以很简单的表达<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span>(!key.exist())&#123;</div><div class="line">   map.computeIfAbsent(key,key-&gt;key+<span class="string">"newValue"</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">else</span>&#123;</div><div class="line">   map.computeIfPresent(key, (key, value) -&gt; key + <span class="string">"新的值:"</span> + value);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>所以就是if key不存在，调computeIfAbsent，否则调computeIfPresent<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">map.compute(<span class="number">4</span>,(key,value)-&gt;key+<span class="string">":"</span>+value+<span class="string">"新的值"</span>);</div><div class="line"><span class="comment">//输出 4:null新的值</span></div><div class="line">System.out.println(map.get(<span class="number">4</span>));</div><div class="line">map.compute(<span class="number">1</span>,(key,value)-&gt;key+<span class="string">":"</span>+<span class="string">"新的值"</span>);</div><div class="line"><span class="comment">//输出 1:新的值</span></div><div class="line">System.out.println(map.get(<span class="number">1</span>));</div></pre></td></tr></table></figure></p>
-<h2 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h2><p>如果指定的key不存在，直接设置指定值，如果存在根据旧的value，指定值计算出新的值newValue, 如果这个newValue不为空，设置key的新值newValue，如果newValue为null, 则删除该key。最后返回当前最新的值<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">  <span class="comment">//输出 指定的名字</span></div><div class="line">System.out.println(map.merge(<span class="number">4</span>,<span class="string">"指定的名字"</span>,(oldValue,assignValue)-&gt;oldValue+<span class="string">","</span>+assignValue));</div><div class="line"><span class="comment">//输出 Tom,指定的名字</span></div><div class="line">System.out.println(map.merge(<span class="number">1</span>,<span class="string">"指定的名字"</span>,(oldValue,assignValue)-&gt;oldValue+<span class="string">","</span>+assignValue));</div><div class="line"><span class="comment">//输出 null</span></div><div class="line">System.out.println(map.merge(<span class="number">1</span>,<span class="string">"指定的名字"</span>,(oldValue,assignValue)-&gt;<span class="keyword">null</span>));</div></pre></td></tr></table></figure></p>
-<h1 id="空指针判断类Optional"><a href="#空指针判断类Optional" class="headerlink" title="空指针判断类Optional"></a>空指针判断类Optional</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">String str1=<span class="keyword">null</span>;</div><div class="line">String str2=<span class="string">"abc"</span>;</div><div class="line"><span class="comment">//创建初始化Optional对象，可为空的</span></div><div class="line">Optional&lt;String&gt; optionalStr1=Optional.ofNullable(str1);</div><div class="line"><span class="comment">//创建初始化Optional对象，不可为空，会抛异常</span></div><div class="line">Optional&lt;String&gt; optionalStr2=Optional.of(str2);</div><div class="line">System.out.println(<span class="string">"第一个参数是否存在"</span>+optionalStr1.isPresent());</div><div class="line">System.out.println(<span class="string">"第二个参数是否存在"</span>+optionalStr2.isPresent());</div><div class="line"><span class="comment">//不存在时返回默认值，存在时返回该值</span></div><div class="line">String getStr1=optionalStr1.orElse(<span class="string">"这个值不存在的默认值"</span>);</div><div class="line"><span class="comment">//返回该值，该值必须存在</span></div><div class="line">String getStr2=optionalStr2.get();</div><div class="line">System.out.println(getStr1);</div><div class="line">System.out.println(getStr2);</div></pre></td></tr></table></figure>
-<h1 id="日期和时间Joda-Time的支持"><a href="#日期和时间Joda-Time的支持" class="headerlink" title="日期和时间Joda-Time的支持"></a>日期和时间Joda-Time的支持</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取当前的日期时间</span></div><div class="line">LocalDateTime currentTime = LocalDateTime.now();</div><div class="line">System.out.println(<span class="string">"当前时间: "</span> + currentTime);</div><div class="line"><span class="comment">// 获取当前日期</span></div><div class="line">LocalDate currentDate = currentTime.toLocalDate();</div><div class="line">System.out.println(<span class="string">"当前日期: "</span> + currentDate);</div><div class="line">System.out.println(<span class="string">"年"</span>+currentDate.getYear()+<span class="string">"月"</span>+currentDate.getMonthOfYear()+<span class="string">"日"</span>+currentDate.getDayOfMonth());</div><div class="line"><span class="comment">// 修改当前时间的月份和年份</span></div><div class="line">currentDate.withYear(<span class="number">2013</span>).withMonthOfYear(<span class="number">3</span>);</div><div class="line">System.out.println(<span class="string">"修改后的日期: "</span> + currentDate);</div><div class="line"><span class="comment">// 日期格式化</span></div><div class="line">System.out.println(currentDate.toString(<span class="string">"yyyy-MM-dd"</span>));</div><div class="line"><span class="comment">// 修改时区</span></div><div class="line">DateTimeZone zoneEurope = DateTimeZone.forID(<span class="string">"Europe/London"</span>);</div><div class="line">DateTime dtLondon = <span class="keyword">new</span> DateTime().withZone(zoneEurope);</div><div class="line">System.out.println(<span class="string">"修改时区: "</span> + dtLondon);</div><div class="line">DateTimeZone currentZone = DateTimeZone.getDefault();</div><div class="line">DateTime dtCurrent = <span class="keyword">new</span> DateTime().withZone(currentZone);</div><div class="line">System.out.println(<span class="string">"当期时区: "</span> + dtCurrent);</div></pre></td></tr></table></figure>
-<h1 id="base64支持"><a href="#base64支持" class="headerlink" title="base64支持"></a>base64支持</h1><p>基本编解码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// 使用基本编码</span></div><div class="line">        String base64encodedString = Base64.getEncoder().encodeToString(<span class="string">"这是待编码的字符串"</span>.getBytes(<span class="string">"utf-8"</span>));</div><div class="line">        System.out.println(<span class="string">"Base64编码后"</span> + base64encodedString);</div><div class="line">        <span class="comment">// 解码</span></div><div class="line">        <span class="keyword">byte</span>[] base64decodedBytes = Base64.getDecoder().decode(base64encodedString);</div><div class="line">        System.out.println(<span class="string">"原始字符串: "</span> + <span class="keyword">new</span> String(base64decodedBytes, <span class="string">"utf-8"</span>));</div><div class="line">        <span class="comment">//使用url编码</span></div><div class="line">        String base64encodedUrl = Base64.getUrlEncoder().encodeToString(<span class="string">"这是待编码的字符串"</span>.getBytes(<span class="string">"utf-8"</span>));</div><div class="line">        System.out.println(<span class="string">"Base64 URL编码:"</span> + base64encodedUrl);</div><div class="line">        <span class="comment">//生成随机uuid</span></div><div class="line">        StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1</span>; ++i) &#123;</div><div class="line">            stringBuilder.append(UUID.randomUUID().toString());</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//使用mime编码</span></div><div class="line">        <span class="keyword">byte</span>[] mimeBytes = stringBuilder.toString().getBytes(<span class="string">"utf-8"</span>);</div><div class="line">        String mimeEncodedString = Base64.getMimeEncoder().encodeToString(mimeBytes);</div><div class="line">        System.out.println(<span class="string">"Base64 MIME编码:"</span> + mimeEncodedString);</div><div class="line">    &#125;<span class="keyword">catch</span>(UnsupportedEncodingException e)&#123;</div><div class="line">        System.out.println(<span class="string">"Error :"</span> + e.getMessage());</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2298,7 +2261,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2320,7 +2283,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
