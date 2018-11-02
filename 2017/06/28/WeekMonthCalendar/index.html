@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
@@ -86,12 +86,12 @@
 <meta property="og:url" content="http://yoursite.com/2017/06/28/WeekMonthCalendar/index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="最近公司的项目有个这样的需求，在页面的顶部显示周日历，可左右水平滑动切换当前显示的周，默认选择日为今日，也可以点击选择查看日，查看当日的行程列表，显示在界面下方。周日历的左侧有个按钮可点击进入月日历，自动定位到当前选择日，月日历是可垂直滑动查看的，两个日历的可查看范围为当前月的前3个月和后6个月，都需要在有行程安排的日期下绘制行字。大概整理一下思路，周日历可采用自定义viewpager来实现，上">
-<meta property="og:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%91%A8%E6%97%A5%E5%8E%86%E4%B8%8E%E6%9C%88%E6%97%A5%E5%8E%86%E7%9A%84%E8%81%94%E5%8A%A8%E5%AE%9E%E7%8E%B0.gif">
-<meta property="og:updated_time" content="2017-09-16T15:52:15.000Z">
+<meta property="og:image" content="http://yoursite.com/images/WeekAndMonthCalendar.gif">
+<meta property="og:updated_time" content="2018-11-02T15:38:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="周日历与月日历的实现">
 <meta name="twitter:description" content="最近公司的项目有个这样的需求，在页面的顶部显示周日历，可左右水平滑动切换当前显示的周，默认选择日为今日，也可以点击选择查看日，查看当日的行程列表，显示在界面下方。周日历的左侧有个按钮可点击进入月日历，自动定位到当前选择日，月日历是可垂直滑动查看的，两个日历的可查看范围为当前月的前3个月和后6个月，都需要在有行程安排的日期下绘制行字。大概整理一下思路，周日历可采用自定义viewpager来实现，上">
-<meta name="twitter:image" content="http://oqujmbgen.bkt.clouddn.com/%E5%91%A8%E6%97%A5%E5%8E%86%E4%B8%8E%E6%9C%88%E6%97%A5%E5%8E%86%E7%9A%84%E8%81%94%E5%8A%A8%E5%AE%9E%E7%8E%B0.gif">
+<meta name="twitter:image" content="http://yoursite.com/images/WeekAndMonthCalendar.gif">
 
 
 
@@ -127,7 +127,7 @@
 
 
 
-  <title>周日历与月日历的实现 | JessieK's blog</title>
+  <title>周日历与月日历的实现 | JessieK's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -146,7 +146,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -377,7 +377,7 @@
         <hr>
 <p>最近公司的项目有个这样的需求，在页面的顶部显示周日历，可左右水平滑动切换当前显示的周，默认选择日为今日，也可以点击选择查看日，查看当日的行程列表，显示在界面下方。周日历的左侧有个按钮可点击进入月日历，自动定位到当前选择日，月日历是可垂直滑动查看的，两个日历的可查看范围为当前月的前3个月和后6个月，都需要在有行程安排的日期下绘制行字。大概整理一下思路，周日历可采用自定义viewpager来实现，上部分的星期几标识可使用gridview来实现。月日历可采用自定义的recyclerview来实现，每个月为一个item，每个item为一个自定义的view，采用canvas来绘制。</p>
 <hr>
-<p>最终效果图gif:<br><img src="http://oqujmbgen.bkt.clouddn.com/%E5%91%A8%E6%97%A5%E5%8E%86%E4%B8%8E%E6%9C%88%E6%97%A5%E5%8E%86%E7%9A%84%E8%81%94%E5%8A%A8%E5%AE%9E%E7%8E%B0.gif" alt="image"></p>
+<p>最终效果图gif:<br><img src="/images/WeekAndMonthCalendar.gif" alt="image"></p>
 <h1 id="weekCalendar的自定义实现"><a href="#weekCalendar的自定义实现" class="headerlink" title="weekCalendar的自定义实现"></a>weekCalendar的自定义实现</h1><h2 id="自定义LinearLayout"><a href="#自定义LinearLayout" class="headerlink" title="自定义LinearLayout"></a>自定义LinearLayout</h2><p>顶部的星期几采用gridview来实现，然后动态添加到自定义的LinearLayout，代码如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> GridView <span class="title">getDaysNames</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">       daysName = <span class="keyword">new</span> GridView(getContext());</div><div class="line">       daysName.setSelector(<span class="keyword">new</span> StateListDrawable());</div><div class="line">       daysName.setNumColumns(<span class="number">7</span>);</div><div class="line"></div><div class="line">       daysName.setAdapter(<span class="keyword">new</span> BaseAdapter() &#123;</div><div class="line">           <span class="keyword">private</span> String[] days = &#123;<span class="string">"日"</span>,<span class="string">"一"</span>,<span class="string">"二"</span>,<span class="string">"三"</span>,<span class="string">"四"</span>,<span class="string">"五"</span>,<span class="string">"六"</span>&#125;;</div><div class="line"></div><div class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123;</div><div class="line">               <span class="keyword">return</span> days.length;</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">public</span> String <span class="title">getItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">               <span class="keyword">return</span> days[position];</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getItemId</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">               <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">           &#125;</div><div class="line"></div><div class="line">           <span class="meta">@SuppressLint</span>(<span class="string">"InflateParams"</span>)</div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span> </span>&#123;</div><div class="line">               <span class="keyword">if</span> (convertView == <span class="keyword">null</span>) &#123;</div><div class="line">                   LayoutInflater inflater = LayoutInflater.from(getContext());</div><div class="line">                   convertView = inflater.inflate(R.layout.week_day_grid_item, <span class="keyword">null</span>);</div><div class="line">               &#125;</div><div class="line">               TextView day = (TextView) convertView.findViewById(R.id.daytext);</div><div class="line">               day.setText(days[position]);</div><div class="line">               <span class="keyword">if</span> (typedArray != <span class="keyword">null</span>) &#123;</div><div class="line">                   day.setTextColor(typedArray.getColor(R.styleable.WeekCalendar_weekTextColor,</div><div class="line">                           Color.WHITE));</div><div class="line">                   day.setTextSize(TypedValue.COMPLEX_UNIT_PX, typedArray.getDimension(R.styleable</div><div class="line">                           .WeekCalendar_weekTextSize, day.getTextSize()));</div><div class="line">               &#125;</div><div class="line">               <span class="keyword">return</span> convertView;</div><div class="line">           &#125;</div><div class="line">       &#125;);</div><div class="line">       <span class="keyword">return</span> daysName;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
 <p>在控件初始化时调用，代码如下:</p>
@@ -897,7 +897,7 @@
         showTime(Counter);
       }
     });
-  </script>
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 

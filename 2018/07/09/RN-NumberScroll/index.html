@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
@@ -86,10 +86,12 @@
 <meta property="og:url" content="http://yoursite.com/2018/07/09/RN-NumberScroll/index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="自从在github上开源了高仿韩寒的one一个项目之后，空闲时间仍旧保持项目的更新和维护，目前公司没有react-native的项目，但我一直对react-native很有兴趣，所以打算一直维护下去并借此机会学习相关的技术。one一个是资讯类的app，主界面是由3个分页组成的，底部有导航栏，是一个比较大众化的展示方式，其中one分页是用日期作为顶部标题，手指每向左滑动一次就往前翻页，向右滑动一次">
-<meta property="og:updated_time" content="2018-10-29T16:43:31.743Z">
+<meta property="og:image" content="http://yoursite.com/images/react-native-number-scroll.gif">
+<meta property="og:updated_time" content="2018-11-02T16:08:37.010Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="react-native 实现数字滚动动画">
 <meta name="twitter:description" content="自从在github上开源了高仿韩寒的one一个项目之后，空闲时间仍旧保持项目的更新和维护，目前公司没有react-native的项目，但我一直对react-native很有兴趣，所以打算一直维护下去并借此机会学习相关的技术。one一个是资讯类的app，主界面是由3个分页组成的，底部有导航栏，是一个比较大众化的展示方式，其中one分页是用日期作为顶部标题，手指每向左滑动一次就往前翻页，向右滑动一次">
+<meta name="twitter:image" content="http://yoursite.com/images/react-native-number-scroll.gif">
 
 
 
@@ -125,7 +127,7 @@
 
 
 
-  <title>react-native 实现数字滚动动画 | JessieK's blog</title>
+  <title>react-native 实现数字滚动动画 | JessieK's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -144,7 +146,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -354,7 +356,7 @@
 <p>自从在github上开源了高仿韩寒的one一个项目之后，空闲时间仍旧保持项目的更新和维护，目前公司没有react-native的项目，但我一直对react-native很有兴趣，所以打算一直维护下去并借此机会学习相关的技术。one一个是资讯类的app，主界面是由3个分页组成的，底部有导航栏，是一个比较大众化的展示方式，其中one分页是用日期作为顶部标题，手指每向左滑动一次就往前翻页，向右滑动一次就往后翻页，每天的展示内容就是一页列表，标题就会随着手指的翻页而刷新，显示当前展示内容的发布日期，这里的日期刷新就是一个数字滚动的动画效果。</p>
 <hr>
 <p>先上效果图：</p>
-<p>react-native-number-scroll.gif</p>
+<p><img src="/images/react-native-number-scroll.gif" alt="效果图"></p>
 <h1 id="绘制思路如下："><a href="#绘制思路如下：" class="headerlink" title="绘制思路如下："></a>绘制思路如下：</h1><ol>
 <li>设置表示数字范围的数字数组</li>
 <li>测量数字的绘制高度 </li>
@@ -877,7 +879,7 @@
         showTime(Counter);
       }
     });
-  </script>
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
