@@ -1095,7 +1095,7 @@
 <h3 id="安装privoxy"><a href="#安装privoxy" class="headerlink" title="安装privoxy"></a>安装privoxy</h3><p>sudo apt-get install privoxy</p>
 <h3 id="配置privoxy"><a href="#配置privoxy" class="headerlink" title="配置privoxy"></a>配置privoxy</h3><p>打开/etc/privoxy/config<br>取消listen-address localhost:8118的代码注释<br>找到5.2节<br>加入一句<br>forward-socks5 / 127.0.0.1:1080 .<br>重启privoxy服务<br>sudo /etc/init.d/privoxy restart<br>开机自启privoxy服务<br>sudo /etc/init.d/privoxy start加入到/etc/rc.local文件中的exit 0这句之前<br>在profile中写入http代理<br>export http_proxy=”127.0.0.1:8118”<br>export https_proxy=”127.0.0.1:8118”</p>
 <h1 id="Ubuntu软件集合"><a href="#Ubuntu软件集合" class="headerlink" title="Ubuntu软件集合"></a>Ubuntu软件集合</h1><p>chrome 开发者必备浏览器，自带有firefox<br>Typora markdown编辑器<br>Shutter 截图<br>electronic wechat 微信<br>快速启动ULauncher<br>Redshift 自动调节屏幕色温<br>Android studio android开发者都懂<br>Webstorm 前端开发利器<br>vscode 微软出的开发神器，轻量级<br>mpv 播放器<br>angrySearch文件搜索<br>ubuntu-tweak 集清理，主题管理，字体管理，热区自定义于一体的软件，可替代ubuntu-tweak-tool，这个软件会默认安装系统自带的浏览器<br>(2018-5-31 新版的ubuntu18移除了unity桌面,这个没啥用了,可换成gnome-tweak-tool)</p>
-<h2 id="ubuntu18-gnome主题定制"><a href="#ubuntu18-gnome主题定制" class="headerlink" title="ubuntu18 gnome主题定制"></a>ubuntu18 gnome主题定制</h2><p><a href="https://www.gnome-look.org/" target="_blank" rel="external">定制资源下载</a><br>光标: 下载解压后放到/usr/share/icons/目录<br>GTK主题: 下载解压后放到/usr/share/themes/目录<br>图标: 下载解压放到/usr/share/icons/目录<br>shell主题: 下载解压放到/usr/share/themes/目录<br>(使用gnome tweak tool-&gt;apperance前面按钮安装zip,会放到~/.local/share/themes下)<br>重启gnome tweak tool,才可在gnome tweak tool中找到</p>
+<h2 id="ubuntu18-gnome主题定制"><a href="#ubuntu18-gnome主题定制" class="headerlink" title="ubuntu18 gnome主题定制"></a>ubuntu18 gnome主题定制</h2><p><a href="https://www.gnome-look.org/" target="_blank" rel="external">定制资源下载</a><br>光标: 下载解压后放到/usr/share/icons/目录<br>GTK主题: 下载解压后放到/usr/share/themes/目录<br>图标: 下载解压放到/usr/share/icons/目录<br>shell主题: 下载解压放到/usr/share/themes/目录 (需要安装gnome shell extension)<br>(使用gnome tweak tool-&gt;apperance前面按钮安装zip,会放到~/.local/share/themes下)<br>重启gnome tweak tool,才可在gnome tweak tool中找到</p>
 <h1 id="wps-金山wps有linux版"><a href="#wps-金山wps有linux版" class="headerlink" title="wps 金山wps有linux版"></a>wps 金山wps有linux版</h1><p>安装后进入，报字体缺失<br>下载字体包<br>百度云<a href="http://pan.baidu.com/s/1nuS5U5b" target="_blank" rel="external">http://pan.baidu.com/s/1nuS5U5b</a> 密码：p4vz</p>
 <ol>
 <li>解压</li>
@@ -1117,6 +1117,29 @@
 <h1 id="拾色器"><a href="#拾色器" class="headerlink" title="拾色器"></a>拾色器</h1><p>前端开发，app开发必不可少的工具<br><a href="https://kryogenix.org/code/pick/" target="_blank" rel="external">https://kryogenix.org/code/pick/</a></p>
 <h1 id="系统备份"><a href="#系统备份" class="headerlink" title="系统备份"></a>系统备份</h1><p>辛苦折腾的系统最好做个备份 ,remastersys这个系统备份工具是不错，但是备份文件大于4g就会备份失败，官方文档也说了这个问题是iso9660的限制，目前无解。<br>后来发现一个更好用的工具，Timeshift类似mac上的TimeMachine，按备份时间点创建快照，对快照可进行管理，有备份计划等功能，可以实现增强备份和完整备份。</p>
 <p>目前就总结到这里，后面如果发现更好用的软件，插件，坑点会持续更新～</p>
+<p>2018.11.11爬坑<br>Android studio真机调试会报一个错，发现设备无法被识别<br><code>error insufficient permissions for device user in plugdev group are your udev rules wrong</code><br>解决方案：</p>
+<ol>
+<li>lsusb命令查出所有通过usb连接pc的设备，找出那个正在调试的读不出型号的设备<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Bus 001 Device 004: ID 0424:2514 Standard Microsystems Corp. USB 2.0 Hub</div><div class="line">Bus 001 Device 003: ID 1bcf:2984 Sunplus Innovation Technology Inc.</div><div class="line">Bus 001 Device 006: ID 2717:9039</div><div class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</div><div class="line">Bus 003 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub</div><div class="line">Bus 002 Device 002: ID 046d:c077 Logitech, Inc.</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>注意ID后XXXX:XXXX的参数，前一个是idVendor，后一个是idProduct</p>
+<ol>
+<li>创建adb_usb.ini文件，写入idVendor到~/.android/adb_usb.ini，内容格式为<code>0xidVendor</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo 0x2717&gt; ~/.android/adb_usb.ini</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这一步官网上没有提到，导致后面<code>android.rules</code>文件一直报<code>SUBSYSTEM==&quot;usb&quot;</code>有错</p>
+<ol>
+<li><p>创建文件并写入以下内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo vim /etc/udev/rules.d/70-android.rules</div><div class="line">SUBSYSTEM==&quot;usb&quot;, ATTRS&#123;idVendor&#125;==&quot;2717&quot;, ATTRS&#123;idProduct&#125;==&quot;9039&quot;,MODE=&quot;0666&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>给配置文件添加权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo chmod a+rx /etc/udev/rules.d/70-android.rules</div></pre></td></tr></table></figure>
+</li>
+<li><p>重新加载规则文件，重启adb服务并查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">udevadm control --reload-rules</div><div class="line">adb kill-server &amp;&amp; adb start-server</div><div class="line">adb devices</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>此时设备已经可以识别了</p>
 
           
         
