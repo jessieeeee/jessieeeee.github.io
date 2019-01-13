@@ -1300,7 +1300,9 @@
 <h1 id="拾色器"><a href="#拾色器" class="headerlink" title="拾色器"></a>拾色器</h1><p>前端开发，app开发必不可少的工具<br><a href="https://kryogenix.org/code/pick/" target="_blank" rel="external">https://kryogenix.org/code/pick/</a></p>
 <h1 id="系统备份"><a href="#系统备份" class="headerlink" title="系统备份"></a>系统备份</h1><p>辛苦折腾的系统最好做个备份 ,remastersys这个系统备份工具是不错，但是备份文件大于4g就会备份失败，官方文档也说了这个问题是iso9660的限制，目前无解。<br>后来发现一个更好用的工具，Timeshift类似mac上的TimeMachine，按备份时间点创建快照，对快照可进行管理，有备份计划等功能，可以实现增强备份和完整备份。</p>
 <p>目前就总结到这里，后面如果发现更好用的软件，插件，坑点会持续更新～</p>
-<p>2018.11.11爬坑<br>Android studio真机调试会报一个错，发现设备无法被识别<br><code>error insufficient permissions for device user in plugdev group are your udev rules wrong</code><br>解决方案：</p>
+<ul>
+<li>2018.11.11爬坑<br>Android studio真机调试会报一个错，发现设备无法被识别<br><code>error insufficient permissions for device user in plugdev group are your udev rules wrong</code><br>解决方案：</li>
+</ul>
 <ol>
 <li>lsusb命令查出所有通过usb连接pc的设备，找出那个正在调试的读不出型号的设备<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Bus 001 Device 004: ID 0424:2514 Standard Microsystems Corp. USB 2.0 Hub</div><div class="line">Bus 001 Device 003: ID 1bcf:2984 Sunplus Innovation Technology Inc.</div><div class="line">Bus 001 Device 006: ID 2717:9039</div><div class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</div><div class="line">Bus 003 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub</div><div class="line">Bus 002 Device 002: ID 046d:c077 Logitech, Inc.</div></pre></td></tr></table></figure>
 </li>
@@ -1311,15 +1313,18 @@
 </li>
 </ol>
 <p>这一步官网上没有提到，导致后面<code>android.rules</code>文件一直报<code>SUBSYSTEM==&quot;usb&quot;</code>有错</p>
+<ul>
+<li>以下步骤可以解决Android studio无法识别设备XXXX[null]的问题</li>
+</ul>
 <ol>
-<li><p>创建文件并写入以下内容</p>
+<li><p>添加Usb设备配置文件，创建文件并写入以下内容</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo vim /etc/udev/rules.d/70-android.rules</div><div class="line">SUBSYSTEM==&quot;usb&quot;, ATTRS&#123;idVendor&#125;==&quot;2717&quot;, ATTRS&#123;idProduct&#125;==&quot;9039&quot;,MODE=&quot;0666&quot;</div></pre></td></tr></table></figure>
 </li>
 <li><p>给配置文件添加权限</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo chmod a+rx /etc/udev/rules.d/70-android.rules</div></pre></td></tr></table></figure>
 </li>
-<li><p>重新加载规则文件，重启adb服务并查看</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">udevadm control --reload-rules</div><div class="line">adb kill-server &amp;&amp; adb start-server</div><div class="line">adb devices</div></pre></td></tr></table></figure>
+<li><p>重新加载usb配置规则文件，重启adb服务并查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo udevadm control --reload-rules &amp;&amp; sudo service udev restart &amp;&amp; sudo udevadm trigger</div><div class="line">adb kill-server &amp;&amp; adb start-server</div><div class="line">adb devices</div></pre></td></tr></table></figure>
 </li>
 </ol>
 <p>此时设备已经可以识别了</p>
