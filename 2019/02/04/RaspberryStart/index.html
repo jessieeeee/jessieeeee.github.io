@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="raspberry," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="放假前在公司看到有同事在玩树莓派，觉得挺有意思，之前也曾经了解过，但是一直都没有下定决定买一个玩玩，这次也算是被同事拉下水吧，趁着这次放假的机会，在淘宝上买了个最新的树莓派3B+ 来学习一下，从小白开始树莓派的折腾之旅。想到自己有linux的基础应该上手不会太难，没想到还是踩了不少的坑，在购买的时候淘宝店家说会有技术支持，结果放假了完全不回消息😔，不过遇到的问题还是自己慢慢踩坑爬出来了，在这里">
+<meta name="keywords" content="raspberry">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树莓派折腾记录">
+<meta property="og:url" content="http://yoursite.com/2019/02/04/RaspberryStart/index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="放假前在公司看到有同事在玩树莓派，觉得挺有意思，之前也曾经了解过，但是一直都没有下定决定买一个玩玩，这次也算是被同事拉下水吧，趁着这次放假的机会，在淘宝上买了个最新的树莓派3B+ 来学习一下，从小白开始树莓派的折腾之旅。想到自己有linux的基础应该上手不会太难，没想到还是踩了不少的坑，在购买的时候淘宝店家说会有技术支持，结果放假了完全不回消息😔，不过遇到的问题还是自己慢慢踩坑爬出来了，在这里">
+<meta property="og:updated_time" content="2019-02-10T09:34:02.987Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="树莓派折腾记录">
+<meta name="twitter:description" content="放假前在公司看到有同事在玩树莓派，觉得挺有意思，之前也曾经了解过，但是一直都没有下定决定买一个玩玩，这次也算是被同事拉下水吧，趁着这次放假的机会，在淘宝上买了个最新的树莓派3B+ 来学习一下，从小白开始树莓派的折腾之旅。想到自己有linux的基础应该上手不会太难，没想到还是踩了不少的坑，在购买的时候淘宝店家说会有技术支持，结果放假了完全不回消息😔，不过遇到的问题还是自己慢慢踩坑爬出来了，在这里">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/04/RaspberryStart/"/>
+
+
+
+
+
+  <title>树莓派折腾记录 | JessieK's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/04/RaspberryStart/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">树莓派折腾记录</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-04T23:54:18+08:00">
+                2019-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/04/RaspberryStart/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/04/RaspberryStart/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/02/04/RaspberryStart/" class="leancloud_visitors" data-flag-title="树莓派折腾记录">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>放假前在公司看到有同事在玩树莓派，觉得挺有意思，之前也曾经了解过，但是一直都没有下定决定买一个玩玩，这次也算是被同事拉下水吧，趁着这次放假的机会，在淘宝上买了个最新的树莓派3B+ 来学习一下，从小白开始树莓派的折腾之旅。想到自己有linux的基础应该上手不会太难，没想到还是踩了不少的坑，在购买的时候淘宝店家说会有技术支持，结果放假了完全不回消息😔，不过遇到的问题还是自己慢慢踩坑爬出来了，在这里做个简单的记录。</p>
+<hr>
+<h1 id="折腾树莓派的准备工作"><a href="#折腾树莓派的准备工作" class="headerlink" title="折腾树莓派的准备工作"></a>折腾树莓派的准备工作</h1><h2 id="贴散热贴"><a href="#贴散热贴" class="headerlink" title="贴散热贴"></a>贴散热贴</h2><p>拿到树莓派的主板后，先贴好散热贴，总共3个散热贴，有2个带脚的散热贴和1个不带脚并有树莓标志的散热贴，主要是3个地方，CPU，GPU和内存，其中CPU和GPU在主板的正面，贴两个带脚的散热片，正中有两个近似于正方形的方块，大的是CPU，小的是GPU，而内存在主板的背面，贴不带脚并有树莓标志的散热贴。</p>
+<h2 id="连接风扇"><a href="#连接风扇" class="headerlink" title="连接风扇"></a>连接风扇</h2><p>树莓派的风扇主要有2根连接线，红色和黑色，红色接4针脚，黑色接6针脚，对应树莓派上的两列针脚区域，第二列的第二和第三个针脚。如果树莓派通电，接入后风扇就可以马上转起来。</p>
+<h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><p>将SD卡插入读卡器，用系统烧录工具，Mac为balenaEtcher，下载好官网的debian系统的zip文件，然后烧录到SD卡中。然后把SD卡插入树莓派的SD卡槽，将树莓派接上电源，这时红色灯光常量，代表电源接通正常。树莓派读取SD卡，自动启动系统，系统启动好后绿色灯光闪烁，代表系统已经启动完毕。</p>
+<h2 id="接入局域网"><a href="#接入局域网" class="headerlink" title="接入局域网"></a>接入局域网</h2><p>由于mac无法插入网线直接访问树莓派，可以把树莓派的网线插入到路由器上，我们可以直接在路由器的设备管理界面看到树莓派的IP地址，接下来就可以用命令行工具ssh或者图形化界面vnc远程访问到我们的树莓派。</p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>作为小白，在前期的准备工作也遇到了坑😔，由于系统下错了，下成了虚拟机的树莓派镜像文件（这是个ISO文件）无语的是balenaEtcher烧录系统到SD卡的时候也没有任何报错，导致SD卡插入到SD卡槽后无法正常启动系统（然而我当时并不知道），所以接入到局域网中发现路由器的设备管理界面根本没有看到树莓派这个设备。后面看到树莓派指示灯相关的内容后，才明白原来系统都没跑起来。如果你发现插入SD卡只有红色灯亮，不是没有读到SD卡，就是系统启动失败，同样关机时执行关机命令后，等到绿色灯熄灭才是系统正常关闭，再拔掉电源。下面对常用的树莓派指示灯含义做一个总结：</p>
+<ol>
+<li>绿色灯闪烁，读取到了SD卡并且也正常启动了系统</li>
+<li>红色灯常亮，电源接入正常</li>
+<li>橙色灯亮全双工状态，不亮半双工状态</li>
+</ol>
+<h1 id="shadowsocks配置"><a href="#shadowsocks配置" class="headerlink" title="shadowsocks配置"></a>shadowsocks配置</h1><ol>
+<li>安装python的依赖库<br><code>sudo apt-get install python-pip python-gevent python-m2crypto</code></li>
+<li>利用python安装shadowsocks，注意别忘记sudo，否则可能造成安装路径有问题而无法使用sslocal的命令<br><code>sudo pip install shadowsocks</code> </li>
+<li>修改/usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/openssl.py，将此文件中的52行和111行中的cleanup替换为reset，否则可能执行启动命令报错</li>
+<li><p>创建shadowsocks的配置文件ss_conf.json，需根据shadowsocks服务器的信息替换，内容如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line"><span class="attr">"server"</span>:<span class="string">"server_ip"</span>,</div><div class="line"><span class="attr">"server_port"</span>:server_port,</div><div class="line"><span class="attr">"local_address"</span>:<span class="string">"127.0.0.1"</span>,</div><div class="line"><span class="attr">"local_port"</span>:<span class="number">1080</span>,</div><div class="line"><span class="attr">"password"</span>:<span class="string">"password"</span>,</div><div class="line"><span class="attr">"timeout"</span>:<span class="number">600</span>,</div><div class="line"><span class="attr">"method"</span>:<span class="string">"aes-256-cfb"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>最后执行启动命令<br><code>sudo sslocal -c ./ss_conf.json -d start</code></p>
+<h1 id="开机启动设置"><a href="#开机启动设置" class="headerlink" title="开机启动设置"></a>开机启动设置</h1><p>这个步骤估计是我爬坑时间最长的地方，写入命令到rc.local配置文件中即可实现开机启动的功能，然而到树莓派上始终无法实现。<br><code>sudo systemctl status rc-local</code>可以查看开机启动失败的原因<br>原因在于debian系统中rc.local默认执行的是dash脚本，与bash存在差异导致无法运行。<br><code>ls -l /bin/sh</code>查看当前系统运行的脚本类型。<br><code>sudo dpkg-reconfigure dash</code>选择NO，不使用Dash Shell。<br><code>chmod +x /etc/rc.local</code> 添加执行权限</p>
+<h1 id="折腾摄像头"><a href="#折腾摄像头" class="headerlink" title="折腾摄像头"></a>折腾摄像头</h1><p>我在购买树莓派主板的时候，也购买了官方的摄像头，它是usb接口，插入树莓派的usb接口后，输入命令：<code>ls /dev</code>如果此时能识别到video0的设备时，代表树莓派已识别。<br>此时我们使用<code>lsusb</code>命令同样可以查看这个设备的idVendor和idProduct</p>
+<h2 id="拍摄照片"><a href="#拍摄照片" class="headerlink" title="拍摄照片"></a>拍摄照片</h2><p>拍摄一张照片<br><code>sudo fswebcam image.jpg</code><br>预览<br><code>gpicview image.jpg</code></p>
+<h2 id="搭建视频流服务器"><a href="#搭建视频流服务器" class="headerlink" title="搭建视频流服务器"></a>搭建视频流服务器</h2><h3 id="安装依赖库和编译库"><a href="#安装依赖库和编译库" class="headerlink" title="安装依赖库和编译库"></a>安装依赖库和编译库</h3><p><code>sudo apt install libjpeg8-dev</code><br><code>sudo apt install imagemagic</code><br><code>sudo apt install libv4l-dev</code><br><code>sudo apt install cmake</code></p>
+<h3 id="安装mjpg-streamer"><a href="#安装mjpg-streamer" class="headerlink" title="安装mjpg-streamer"></a>安装mjpg-streamer</h3><p>克隆项目到本地并编译<br><code>sudo git clone https://github.com/jacksonliam/mjpg-streamer.git</code><br><code>cd mjpg-streamer/mjpg-streamer-experimental</code><br><code>make all</code><br><code>sudo make install</code><br>启动流服务器<br><code>./mjpg_streamer -i &quot;./input_uvc.so&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>此时报错，树莓派官方的摄像头不支持v4l的驱动，需安装UV4L兼容驱动，解决方法是<br>添加软件源<br><code>curl https://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add -</code><br>修改apt-get的源列表文件<code>/etc/apt/sources.list</code>，在文件末尾添加<br><code>deb https://www.linux-projects.org/listing/uv4l_repo/raspbian/ wheezy main</code><br>再安装兼容驱动<br><code>sudo rpi-update</code><br><code>sudo apt-get update</code><br><code>sudo apt-get install uv4l uv4l-raspicam</code><br><code>sudo service uv4l_raspicam restart</code><br><code>sudo pkill uv4l</code><br><code>sudo apt-get update</code><br><code>sudo apt install uv4l-uvc</code><br><code>sudo apt install uv4l-xscreen</code><br><code>sudo apt install uv4l-mjpegstream</code><br>启动流服务器<br><code>./mjpg_streamer -i &quot;./input_uvc.so&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>发现仍然报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Unable to set format: 1196444237 res: 640x480</div><div class="line">Init v4L2 failed !! exit fatal</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树莓派官方的摄像头不支持JPEG<br>解决方案1:<br><code>cd mjpg-streamer-experimental/plugins/input_uvc/</code><br><code>sudo vi input_uvc.c</code><br>将<code>format = V4L2_PIX_FMT_MJPEG</code>改为<code>format = V4L2_PIX_FMT_YUYV</code><br>解决方案2:<br>用命令参数-y使用YUV编码<br><code>./mjpg_streamer -i &quot;./input_uvc.so -y&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>此时看到启动信息已经启动，但是有一堆error<br>用命令参数-n来消除error<br><code>./mjpg_streamer -i &quot;./input_uvc.so -y -n&quot; -o &quot;./output_http.so -w ./www&quot;</code></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/raspberry/" rel="tag"># raspberry</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/27/ScrollPage/" rel="next" title="window.scrollTo失效了怎么办？使用puppeteer实现屏幕滑动效果">
+                <i class="fa fa-chevron-left"></i> window.scrollTo失效了怎么办？使用puppeteer实现屏幕滑动效果
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/16/IjkplayerSo/" rel="prev" title="ijkplayer编译so文件支持更多格式">
+                ijkplayer编译so文件支持更多格式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="Jessie Kate" />
+            
+              <p class="site-author-name" itemprop="name">Jessie Kate</p>
+              <p class="site-description motion-element" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#折腾树莓派的准备工作"><span class="nav-number">1.</span> <span class="nav-text">折腾树莓派的准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#贴散热贴"><span class="nav-number">1.1.</span> <span class="nav-text">贴散热贴</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连接风扇"><span class="nav-number">1.2.</span> <span class="nav-text">连接风扇</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装系统"><span class="nav-number">1.3.</span> <span class="nav-text">安装系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接入局域网"><span class="nav-number">1.4.</span> <span class="nav-text">接入局域网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">1.5.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#shadowsocks配置"><span class="nav-number">2.</span> <span class="nav-text">shadowsocks配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开机启动设置"><span class="nav-number">3.</span> <span class="nav-text">开机启动设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#折腾摄像头"><span class="nav-number">4.</span> <span class="nav-text">折腾摄像头</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#拍摄照片"><span class="nav-number">4.1.</span> <span class="nav-text">拍摄照片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建视频流服务器"><span class="nav-number">4.2.</span> <span class="nav-text">搭建视频流服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装依赖库和编译库"><span class="nav-number">4.2.1.</span> <span class="nav-text">安装依赖库和编译库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装mjpg-streamer"><span class="nav-number">4.2.2.</span> <span class="nav-text">安装mjpg-streamer</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz',
+        appKey: 'h0CQIfed08e67roNpfhTzHOH',
+        placeholder: '在这里写下你的评论吧～',
+        avatar:'wavatar',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz", "h0CQIfed08e67roNpfhTzHOH");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
