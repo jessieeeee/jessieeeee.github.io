@@ -609,6 +609,7 @@
 </li>
 </ol>
 <p>mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树莓派官方的摄像头不支持JPEG<br>解决方案1:<br><code>cd mjpg-streamer-experimental/plugins/input_uvc/</code><br><code>sudo vi input_uvc.c</code><br>将<code>format = V4L2_PIX_FMT_MJPEG</code>改为<code>format = V4L2_PIX_FMT_YUYV</code><br>解决方案2:<br>用命令参数-y使用YUV编码<br><code>./mjpg_streamer -i &quot;./input_uvc.so -y&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>此时看到启动信息已经启动，但是有一堆error<br>用命令参数-n来消除error<br><code>./mjpg_streamer -i &quot;./input_uvc.so -y -n&quot; -o &quot;./output_http.so -w ./www&quot;</code></p>
+<p>访问树莓派的ip:8080就可以看到采集的视频了</p>
 
           
         
