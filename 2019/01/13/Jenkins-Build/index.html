@@ -86,46 +86,46 @@
 <meta property="og:url" content="http://yoursite.com/2019/01/13/Jenkins-Build/index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="最近公司想搭建自动化构建平台，由于以前自己在空闲时间折腾过jenkins搭建相关的东西，领导就把这个任务交给了我，虽然以前在自己的电脑上搭建过，由于时间过去太久了，当时又没做记录，搭建的时候还是踩了不少坑，不过在google爸爸的帮助下，翻阅各种资料，最后都爬坑解决，所以这里对再此搭建做一个记录，避免以后遗忘。  连接远程服务器 ssh -p 端口号 服务器用户名@ip 输入密码安装jenkin">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fylbbjevj9j31fa0mwwhn.jpg">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fylbq5m1vej31ev0qc43p.jpg">
-<meta property="og:image" content="https://ww1.sinaimg.cn/large/006LWy2zgy1fylbswx4j0j316r0n076c.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fyld7gm55jj30xx09f751.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fyldeclw5pj30yg0fhdi3.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fyle0kgb04j30qk09st98.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fyle6utuc8j30rc0cgdg8.jpg">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fz5bbqc12yj31g40om14f.jpg">
-<meta property="og:image" content="https://ww1.sinaimg.cn/large/006LWy2zgy1fyle1gna1kj30q30caaaw.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fyle4hao7oj30pz0b0q3i.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fyle3q6ydhj30q50fydgg.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fz5b4jiontj31al0u0tsk.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fz5b2jvit9j31vm0tu7n3.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fz5b9rum2oj31v80egjyz.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fz5bfpllo7j31fx0u017x.jpg">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fylhl1bp5oj30os0lo77e.jpg">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fylhm54mjyj30x40cgq3t.jpg">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fylczte35hj30y906xq3a.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fyld1v9z9pj30y406sjrq.jpg">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fylelvfn79j30y503vglr.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fyleg0e2cwj30co0i8myu.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fyleoramsuj30ek0bfwex.jpg">
-<meta property="og:image" content="https://ww1.sinaimg.cn/large/006LWy2zgy1fyletf9rdbj30y40c2aao.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fylfq19zwfj30wr0ji3zl.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fylezsvjylj30cj0b9aar.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fylf2ur67hj30yb0853yw.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fylf58asykj30cr0bpmxv.jpg">
-<meta property="og:image" content="https://ww1.sinaimg.cn/large/006LWy2zgy1fz5b5jxygej31te0940vr.jpg">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fylfn7t6jcj30vi0ic3zs.jpg">
-<meta property="og:image" content="https://ww4.sinaimg.cn/large/006LWy2zgy1fylg0gxdazj31fg0gc0vm.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fylfvilxs2j31fg0mltba.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fz5b89vbakj31eh0u0tv5.jpg">
-<meta property="og:image" content="https://ww3.sinaimg.cn/large/006LWy2zgy1fylhe643yxj30d206pmxf.jpg">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fylh9s1hnmj30a909zt97.jpg">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fz5b1ybg63j310n0u01kx.jpg">
-<meta property="og:updated_time" content="2019-01-13T14:50:08.000Z">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_5.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_6_1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_6_2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_6_3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_6_4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_6_5.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_6_6.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_6_7.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_6_8.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_6_9.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_7_1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_7_2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_7_3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_8_1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_8_2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_9_1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_9_2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_10_1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_10_2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_10_3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_11_1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_11_2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_11_3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_11_4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_11_5.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_12_1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_12_2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_12_3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_12_4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_12_5.jpg">
+<meta property="og:image" content="http://yoursite.com/images/jenkins_12_6.jpg">
+<meta property="og:updated_time" content="2019-05-17T15:39:00.359Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搭建Jenkins自动化构建环境">
 <meta name="twitter:description" content="最近公司想搭建自动化构建平台，由于以前自己在空闲时间折腾过jenkins搭建相关的东西，领导就把这个任务交给了我，虽然以前在自己的电脑上搭建过，由于时间过去太久了，当时又没做记录，搭建的时候还是踩了不少坑，不过在google爸爸的帮助下，翻阅各种资料，最后都爬坑解决，所以这里对再此搭建做一个记录，避免以后遗忘。  连接远程服务器 ssh -p 端口号 服务器用户名@ip 输入密码安装jenkin">
-<meta name="twitter:image" content="https://ww2.sinaimg.cn/large/006LWy2zgy1fylbbjevj9j31fa0mwwhn.jpg">
+<meta name="twitter:image" content="http://yoursite.com/images/jenkins_1.jpg">
 
 
 
@@ -424,21 +424,21 @@
 <li>JENKINS_HOME:Jenkins的主目录，Jenkins工作目录,储存文件的地址,Jenkins的插件,生成的文件都在这个目录下</li>
 <li>JENKINS_USER:Jenkins的用户，拥有$JENKINS_HOME和/var/log/jenkins的权限</li>
 <li>JENKINS_PORT:Jenkins的端口，默认端口是8080<h2 id="启动jenkins服务"><a href="#启动jenkins服务" class="headerlink" title="启动jenkins服务"></a>启动jenkins服务</h2><code>sudo service jenkins start</code></li>
-<li>此时在浏览器中输入：http://&lt;服务器ip&gt;:8080/ 就可以进入Jenkins界面，8080是默认端口号<h2 id="停止jenkins服务"><a href="#停止jenkins服务" class="headerlink" title="停止jenkins服务"></a>停止jenkins服务</h2><code>sudo service jenkins stop</code><h1 id="创建项目并配置"><a href="#创建项目并配置" class="headerlink" title="创建项目并配置"></a>创建项目并配置</h1><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fylbbjevj9j31fa0mwwhn.jpg" alt=""></li>
+<li>此时在浏览器中输入：http://&lt;服务器ip&gt;:8080/ 就可以进入Jenkins界面，8080是默认端口号<h2 id="停止jenkins服务"><a href="#停止jenkins服务" class="headerlink" title="停止jenkins服务"></a>停止jenkins服务</h2><code>sudo service jenkins stop</code><h1 id="创建项目并配置"><a href="#创建项目并配置" class="headerlink" title="创建项目并配置"></a>创建项目并配置</h1><img src="/images/jenkins_1.jpg" alt=""></li>
 </ul>
 <ol>
-<li>选择New任务，新建一个项目<br><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fylbq5m1vej31ev0qc43p.jpg" alt=""></li>
+<li>选择New任务，新建一个项目<br><img src="/images/jenkins_2.jpg" alt=""></li>
 <li>输入一个项目名称</li>
-<li>选择构建一个自由风格的软件项目，点击左下角的ok<br><img src="https://ww1.sinaimg.cn/large/006LWy2zgy1fylbswx4j0j316r0n076c.jpg" alt=""></li>
-<li>输入项目的文字描述<br><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fyld7gm55jj30xx09f751.jpg" alt=""></li>
-<li>勾选丢弃旧的构建，设置保留的构建天数和保留的最大构建数<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fyldeclw5pj30yg0fhdi3.jpg" alt=""><br>6.勾选参数化构建过程，添加不同类型的参数<br><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fyle0kgb04j30qk09st98.jpg" alt=""></li>
+<li>选择构建一个自由风格的软件项目，点击左下角的ok<br><img src="/images/jenkins_3.jpg" alt=""></li>
+<li>输入项目的文字描述<br><img src="/images/jenkins_4.jpg" alt=""></li>
+<li>勾选丢弃旧的构建，设置保留的构建天数和保留的最大构建数<br><img src="/images/jenkins_5.jpg" alt=""><br>6.勾选参数化构建过程，添加不同类型的参数<br><img src="/images/jenkins_6_1.jpg" alt=""></li>
 </ol>
 <ul>
-<li>布尔值参数<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fyle6utuc8j30rc0cgdg8.jpg" alt=""></li>
-<li>文本参数<br><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fz5bbqc12yj31g40om14f.jpg" alt=""><br><img src="https://ww1.sinaimg.cn/large/006LWy2zgy1fyle1gna1kj30q30caaaw.jpg" alt=""></li>
-<li>选项参数<br><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fyle4hao7oj30pz0b0q3i.jpg" alt=""></li>
-<li>git Parameter<br><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fyle3q6ydhj30q50fydgg.jpg" alt=""></li>
-<li>dynamic Parameter<br>打包前，要配置这些参数，配置界面展示效果如下：<br><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fz5b4jiontj31al0u0tsk.jpg" alt=""><br><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fz5b2jvit9j31vm0tu7n3.jpg" alt=""><br><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fz5b9rum2oj31v80egjyz.jpg" alt=""></li>
+<li>布尔值参数<br><img src="/images/jenkins_6_2.jpg" alt=""></li>
+<li>文本参数<br><img src="/images/jenkins_6_3.jpg" alt=""><br><img src="/images/jenkins_6_4.jpg" alt=""></li>
+<li>选项参数<br><img src="/images/jenkins_6_5.jpg" alt=""></li>
+<li>git Parameter<br><img src="/images/jenkins_6_6.jpg" alt=""></li>
+<li>dynamic Parameter<br>打包前，要配置这些参数，配置界面展示效果如下：<br><img src="/images/jenkins_6_7.jpg" alt=""><br><img src="/images/jenkins_6_8.jpg" alt=""><br><img src="/images/jenkins_6_9.jpg" alt=""></li>
 </ul>
 <ol>
 <li>Source Code Management配置git远程代码仓库</li>
@@ -447,45 +447,45 @@
 <li>复制项目地址并填入Repository URL</li>
 <li>Credentials，点击add，选择jenkins账户（jenkins统一用这个），该账户需加入项目，拥有代码拉取权限</li>
 <li>配置成功后不会有红字错误提示</li>
-<li>有的项目克隆比较慢，可能会有克隆超时导致构建失败的问题，可以把这个超时时间改大一点，需要添加一个配置<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fz5bfpllo7j31fx0u017x.jpg" alt=""></li>
-<li>Additional Behaviours点击Add<br><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fylhl1bp5oj30os0lo77e.jpg" alt=""></li>
-<li>选择Advanced clone behaviours<br><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fylhm54mjyj30x40cgq3t.jpg" alt=""></li>
+<li>有的项目克隆比较慢，可能会有克隆超时导致构建失败的问题，可以把这个超时时间改大一点，需要添加一个配置<br><img src="/images/jenkins_7_1.jpg" alt=""></li>
+<li>Additional Behaviours点击Add<br><img src="/images/jenkins_7_2.jpg" alt=""></li>
+<li>选择Advanced clone behaviours<br><img src="/images/jenkins_7_3.jpg" alt=""></li>
 <li>修改Timeout (in minutes) for clone and fetch operations的值，改大一点60</li>
 </ul>
 <ol>
-<li>Build Triggers配置轮询构建和定时构建<br><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fylczte35hj30y906xq3a.jpg" alt=""><br>定时构建： 无论git中有无提交，均执行定时化的构建任务<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fyld1v9z9pj30y406sjrq.jpg" alt=""><br>轮询构建： 查看git中是否有提交，如果有，则执行构建任务<br>每隔5分钟构建一次<br><code>H/5 * * * *</code><br>每两小时构建一次<br><code>H H/2 * * *</code><br>每天中午下班前定时构建一次<br><code>0 12 * * *</code><br>每天下午下班前定时构建一次<br><code>0 18 * * *</code></li>
-<li>Build Environment设置构建名称<br><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fylelvfn79j30y503vglr.jpg" alt=""></li>
+<li>Build Triggers配置轮询构建和定时构建<br><img src="/images/jenkins_8_1.jpg" alt=""><br>定时构建： 无论git中有无提交，均执行定时化的构建任务<br><img src="/images/jenkins_8_2.jpg" alt=""><br>轮询构建： 查看git中是否有提交，如果有，则执行构建任务<br>每隔5分钟构建一次<br><code>H/5 * * * *</code><br>每两小时构建一次<br><code>H H/2 * * *</code><br>每天中午下班前定时构建一次<br><code>0 12 * * *</code><br>每天下午下班前定时构建一次<br><code>0 18 * * *</code></li>
+<li>Build Environment设置构建名称<br><img src="/images/jenkins_9_1.jpg" alt=""></li>
 </ol>
 <ul>
-<li>勾选Set Build Name，这里填写的参数对应上面设置的参数，保持名称一致<br>打包后展示的效果如下：<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fyleg0e2cwj30co0i8myu.jpg" alt=""></li>
+<li>勾选Set Build Name，这里填写的参数对应上面设置的参数，保持名称一致<br>打包后展示的效果如下：<br><img src="/images/jenkins_9_2.jpg" alt=""></li>
 </ul>
 <ol>
-<li>Build构建方式（Android以gradle为例）<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fyleoramsuj30ek0bfwex.jpg" alt=""></li>
+<li>Build构建方式（Android以gradle为例）<br><img src="/images/jenkins_10_1.jpg" alt=""></li>
 </ol>
 <ul>
-<li>点击add build step，选择Invoke Gradle script<br>勾选Invoke Gradle，选择Gradle Version为gradle4.6<br><img src="https://ww1.sinaimg.cn/large/006LWy2zgy1fyletf9rdbj30y40c2aao.jpg" alt=""></li>
+<li>点击add build step，选择Invoke Gradle script<br>勾选Invoke Gradle，选择Gradle Version为gradle4.6<br><img src="/images/jenkins_10_2.jpg" alt=""></li>
 <li>填写task，配置gradle打包命令<code>clean assemble${BUILD_TYPE} --stacktrace</code>，这里的BUILD_TYPE引用前面配置的</li>
-<li>点击Advanced选项，勾选Pass all job parameters as Project properties，将上面的配置参数全部传入gradle.properties配置文件中，实现参数化打包<br><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fylfq19zwfj30wr0ji3zl.jpg" alt=""></li>
+<li>点击Advanced选项，勾选Pass all job parameters as Project properties，将上面的配置参数全部传入gradle.properties配置文件中，实现参数化打包<br><img src="/images/jenkins_10_3.jpg" alt=""></li>
 </ul>
 <ol>
 <li>Post-build Actions</li>
 </ol>
 <ul>
-<li>点击add Post-build Actions，选择归档成品，提取打包后的apk文件<br><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fylezsvjylj30cj0b9aar.jpg" alt=""></li>
-<li>Files to archive填入过滤规则<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fylf2ur67hj30yb0853yw.jpg" alt=""></li>
+<li>点击add Post-build Actions，选择归档成品，提取打包后的apk文件<br><img src="/images/jenkins_11_1.jpg" alt=""></li>
+<li>Files to archive填入过滤规则<br><img src="/images/jenkins_11_2.jpg" alt=""></li>
 <li>在所有文件中过滤apk文件</li>
-<li>点击add Post-build Actions，配置打包后的邮箱通知<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fylf58asykj30cr0bpmxv.jpg" alt=""><br>一般情况下使用默认配置就可以，直接引用全局配置中已经配置过的参数。<br><img src="https://ww1.sinaimg.cn/large/006LWy2zgy1fz5b5jxygej31te0940vr.jpg" alt=""><br>如果要修改接收人邮箱，编辑Project Recipient List，多个邮箱地址，空格隔开<br>如果要修改发送邮件的内容，可编辑以下几项</li>
+<li>点击add Post-build Actions，配置打包后的邮箱通知<br><img src="/images/jenkins_11_3.jpg" alt=""><br>一般情况下使用默认配置就可以，直接引用全局配置中已经配置过的参数。<br><img src="/images/jenkins_11_4.jpg" alt=""><br>如果要修改接收人邮箱，编辑Project Recipient List，多个邮箱地址，空格隔开<br>如果要修改发送邮件的内容，可编辑以下几项</li>
 <li>Content Type 文本类型，可配置html、纯文本、纯文本和html</li>
 <li>Default Subject 邮件标题</li>
-<li>Default Content 邮件内容<br>打包日志压缩并添加附件，Attach Build Log选择Compress and Attach Build Log<br><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fylfn7t6jcj30vi0ic3zs.jpg" alt=""><br>邮件发送触发器配置，点击Advanced选项，编辑Triggers选项，点击Add Trigger，可以选择触发器类型，不管构建成功失败总是触发（默认），成功时触发，失败时触发</li>
-<li>此时项目配置完毕<h1 id="打包流程"><a href="#打包流程" class="headerlink" title="打包流程"></a>打包流程</h1><img src="https://ww4.sinaimg.cn/large/006LWy2zgy1fylg0gxdazj31fg0gc0vm.jpg" alt=""></li>
+<li>Default Content 邮件内容<br>打包日志压缩并添加附件，Attach Build Log选择Compress and Attach Build Log<br><img src="/images/jenkins_11_5.jpg" alt=""><br>邮件发送触发器配置，点击Advanced选项，编辑Triggers选项，点击Add Trigger，可以选择触发器类型，不管构建成功失败总是触发（默认），成功时触发，失败时触发</li>
+<li>此时项目配置完毕<h1 id="打包流程"><a href="#打包流程" class="headerlink" title="打包流程"></a>打包流程</h1><img src="/images/jenkins_12_1.jpg" alt=""></li>
 </ul>
 <ol>
-<li>选择要打包的项目<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fylfvilxs2j31fg0mltba.jpg" alt=""></li>
-<li>点击Build with Parameters，进入打包前的参数配置流程<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fz5b89vbakj31eh0u0tv5.jpg" alt=""></li>
-<li>配置好打包的参数，点击build开始打包<br><img src="https://ww3.sinaimg.cn/large/006LWy2zgy1fylhe643yxj30d206pmxf.jpg" alt=""></li>
-<li>点击打包进程可查看相关信息<br><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fylh9s1hnmj30a909zt97.jpg" alt=""></li>
-<li>点击Console Output可查看打包日志<br><img src="https://ww2.sinaimg.cn/large/006LWy2zgy1fz5b1ybg63j310n0u01kx.jpg" alt=""></li>
+<li>选择要打包的项目<br><img src="/images/jenkins_12_2.jpg" alt=""></li>
+<li>点击Build with Parameters，进入打包前的参数配置流程<br><img src="/images/jenkins_12_3.jpg" alt=""></li>
+<li>配置好打包的参数，点击build开始打包<br><img src="/images/jenkins_12_4.jpg" alt=""></li>
+<li>点击打包进程可查看相关信息<br><img src="/images/jenkins_12_5.jpg" alt=""></li>
+<li>点击Console Output可查看打包日志<br><img src="/images/jenkins_12_6.jpg" alt=""></li>
 <li>如果配置了邮件通知，打包完成后邮箱会收到一封邮件</li>
 </ol>
 
