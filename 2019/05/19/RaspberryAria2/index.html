@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="DoubleScreen," />
+  <meta name="keywords" content="raspberry," />
 
 
 
@@ -79,17 +79,22 @@
 
 
 
-<meta name="description" content="由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。  Pres">
-<meta name="keywords" content="DoubleScreen">
+<meta name="description" content="又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下">
+<meta name="keywords" content="raspberry">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Presentation实现双屏异显">
-<meta property="og:url" content="http://yoursite.com/2018/10/21/Presentation/index.html">
+<meta property="og:title" content="树莓派+PanDownload(aria2)实现远程下载">
+<meta property="og:url" content="http://yoursite.com/2019/05/19/RaspberryAria2/index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
-<meta property="og:description" content="由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。  Pres">
-<meta property="og:updated_time" content="2018-10-21T14:22:08.547Z">
+<meta property="og:description" content="又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下">
+<meta property="og:image" content="http://yoursite.com/images/RaspberryAria2_1.png">
+<meta property="og:image" content="http://yoursite.com/images/RaspberryAria2_2.png">
+<meta property="og:image" content="http://yoursite.com/images/RaspberryAria2_3.png">
+<meta property="og:image" content="http://yoursite.com/images/RaspberryAria2_4.png">
+<meta property="og:updated_time" content="2019-05-19T13:04:30.777Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Presentation实现双屏异显">
-<meta name="twitter:description" content="由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。  Pres">
+<meta name="twitter:title" content="树莓派+PanDownload(aria2)实现远程下载">
+<meta name="twitter:description" content="又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下">
+<meta name="twitter:image" content="http://yoursite.com/images/RaspberryAria2_1.png">
 
 
 
@@ -119,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/10/21/Presentation/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/05/19/RaspberryAria2/"/>
 
 
 
 
 
-  <title>Presentation实现双屏异显 | JessieK's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>树莓派+PanDownload(aria2)实现远程下载 | JessieK's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -262,7 +267,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/21/Presentation/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/19/RaspberryAria2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
@@ -279,7 +284,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Presentation实现双屏异显</h1>
+          <h1 class="post-title" itemprop="name headline">树莓派+PanDownload(aria2)实现远程下载</h1>
         
 
         <div class="post-meta">
@@ -291,8 +296,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-21T21:06:44+08:00">
-                2018-10-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-19T17:45:57+08:00">
+                2019-05-19
               </time>
             
 
@@ -302,28 +307,6 @@
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -332,8 +315,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/10/21/Presentation/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/21/Presentation/" itemprop="commentCount"></span>
+                <a href="/2019/05/19/RaspberryAria2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/19/RaspberryAria2/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -341,7 +324,7 @@
 
           
           
-             <span id="/2018/10/21/Presentation/" class="leancloud_visitors" data-flag-title="Presentation实现双屏异显">
+             <span id="/2019/05/19/RaspberryAria2/" class="leancloud_visitors" data-flag-title="树莓派+PanDownload(aria2)实现远程下载">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -373,15 +356,36 @@
 
       
         <hr>
-<p>由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。</p>
+<p>又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下载的工具，无奈它的下载速度实在是太慢了，百度云的第三方下载工具PanDownload是基于aria2的，下载速度非常可观，且支持远程下载。我们可以在树莓派上搭建aria2的下载服务器，然后利用PanDownload远程下发下载任务到树莓派上的aria2服务器，即可实现远程下载。</p>
 <hr>
-<p>Presentation是一个特殊的dialog，可以在辅屏上显示与主屏不一样的内容，设置里面也可以把“模拟第二屏”的功能打开，运行的时候会在左上角显示一个小窗口来显示第二屏的显示内容，Presentation在创建的时候需要和Display对象相关联，关联之前需要先获取显示设备，DisplayManager或MediaRouter都可以来获取显示设备。下面用最简单的两个例子来介绍，在主屏和辅屏上都显示一个不同内容的TextView文本。</p>
-<h1 id="设置权限"><a href="#设置权限" class="headerlink" title="设置权限"></a>设置权限</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_ALERT_WINDOW"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_OVERLAY_WINDOW"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<h1 id="DisplayManager实现"><a href="#DisplayManager实现" class="headerlink" title="DisplayManager实现"></a>DisplayManager实现</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPresentation</span> <span class="keyword">extends</span> <span class="title">Presentation</span> </span>&#123;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="title">MyPresentation</span><span class="params">(Context outerContext, Display display)</span> </span>&#123;</div><div class="line">           <span class="keyword">super</span>(outerContext,display);</div><div class="line"></div><div class="line">       &#125;</div><div class="line">       <span class="meta">@Override</span></div><div class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">           <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">           setContentView(R.layout.second_screen);</div><div class="line"></div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> MyPresentation myPresentation;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">        DisplayManager manager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);</div><div class="line">        Display[] displays = manager.getDisplays();</div><div class="line">        <span class="keyword">if</span> (presentationDisplays.length &gt; <span class="number">1</span>) &#123;</div><div class="line">            <span class="comment">// displays[0] 主屏 displays[1] 辅屏</span></div><div class="line">            myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>,displays[<span class="number">1</span>]);</div><div class="line">            myPresentation.getWindow().setType(</div><div class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</div><div class="line">            myPresentation.show();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span> </span>&#123;</div><div class="line">        onDestroy();</div><div class="line">        <span class="comment">//完全退出应用，取消双屏异显</span></div><div class="line">        Intent startMain = <span class="keyword">new</span> Intent(Intent.ACTION_MAIN);</div><div class="line">        startMain.addCategory(Intent.CATEGORY_HOME);</div><div class="line">        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div><div class="line">        startActivity(startMain);</div><div class="line">        System.exit(<span class="number">0</span>);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>这里的activity_main和second_screen就是一个xml布局，放了一个不同内容的TextView文本，代码就不贴了，可以看到DisplayManager的getDisplays方法可以返回一个可显示的Display数组，也就是当前可以连接的屏幕列表，第一个元素是主屏的Display对象，第二个元素是辅屏的Display对象，然后把辅屏的Display对象传入到Presentation的构造函数中绑定，设置窗口类型就可以展示了。</p>
-<h1 id="MediaRouter实现"><a href="#MediaRouter实现" class="headerlink" title="MediaRouter实现"></a>MediaRouter实现</h1><p>这里就只贴辅屏的Display对象获取并传入到Presentation的构造函数中绑定的代码，因为其余部分都是一样的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">MediaRouter mediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);</div><div class="line">MediaRouter.RouteInfo route = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);</div><div class="line"><span class="keyword">if</span>(route != <span class="keyword">null</span>) &#123;</div><div class="line">    Display display = route.getPresentationDisplay();</div><div class="line">    <span class="keyword">if</span> (display != <span class="keyword">null</span>) &#123;</div><div class="line">        myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>, display);</div><div class="line">        myPresentation.getWindow().setType(</div><div class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</div><div class="line">        myPresentation.show();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>MediaRouter与DisplayManager不同的是MediaRouter会直接绑定周围最合适的设备。总的来说，这两个API实现的思路大致相同，都是要自定义Presentation，获取到一个辅屏的Display对象传入到Presentation的构造函数中进行绑定，Presentation初始化完成后设置窗口类型然后展示。</p>
+<h1 id="树莓派搭建aria2服务器"><a href="#树莓派搭建aria2服务器" class="headerlink" title="树莓派搭建aria2服务器"></a>树莓派搭建aria2服务器</h1><p>关于树莓派的准备工作和系统安装这里就不讲了，希望了解的朋友可以查看<a href="https://jessiekate.gitee.io/2019/02/04/RaspberryStart/" target="_blank" rel="external">上一篇</a>，这里主要是说一下关于aria2服务器的搭建流程。</p>
+<h2 id="安装aria2"><a href="#安装aria2" class="headerlink" title="安装aria2"></a>安装aria2</h2><p><code>sudo apt install -y aria2</code></p>
+<h2 id="编写配置文件"><a href="#编写配置文件" class="headerlink" title="编写配置文件"></a>编写配置文件</h2><ul>
+<li>创建配置文件的文件夹<br><code>mkdir -p ~/.config/aria2/</code></li>
+<li><p>vim编写配置文件<br><code>sudo vi ~/.config/aria2/aria2.config</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>后台运行</div><div class="line">daemon=true</div><div class="line"><span class="meta">#</span>设置加密密钥</div><div class="line">rpc-secret=secret</div><div class="line"><span class="meta">#</span>允许rpc</div><div class="line">enable-rpc=true</div><div class="line"><span class="meta">#</span>允许所有来源, web界面跨域权限需要</div><div class="line">rpc-allow-origin-all=true</div><div class="line"><span class="meta">#</span>允许外部访问，false的话只监听本地端口</div><div class="line">rpc-listen-all=true</div><div class="line"><span class="meta">#</span>RPC端口, 仅当默认端口被占用时修改</div><div class="line">rpc-listen-port=6800</div><div class="line"><span class="meta">#</span>最大同时下载数(任务数), 路由建议值: 3</div><div class="line">max-concurrent-downloads=5</div><div class="line"><span class="meta">#</span>断点续传</div><div class="line">continue=true</div><div class="line"><span class="meta">#</span>同服务器连接数</div><div class="line">max-connection-per-server=5</div><div class="line"><span class="meta">#</span>最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要</div><div class="line">min-split-size=10M</div><div class="line"><span class="meta">#</span>单文件最大线程数, 路由建议值: 5</div><div class="line">split=10</div><div class="line"><span class="meta">#</span>下载速度限制</div><div class="line">max-overall-download-limit=0</div><div class="line"><span class="meta">#</span>单文件速度限制</div><div class="line">max-download-limit=0</div><div class="line"><span class="meta">#</span>上传速度限制</div><div class="line">max-overall-upload-limit=0</div><div class="line"><span class="meta">#</span>单文件速度限制</div><div class="line">max-upload-limit=0</div><div class="line"><span class="meta">#</span>文件保存路径</div><div class="line">dir=/home/pi/Downloads</div><div class="line"><span class="meta">#</span>所需时间</div><div class="line">file-allocation=prealloc</div><div class="line"><span class="meta">#</span>不进行证书校验</div><div class="line">check-certificate=false</div><div class="line"><span class="meta">#</span>保存下载会话</div><div class="line">save-session=/home/pi/.config/aria2/aria2.session</div><div class="line">input-file=/home/pi/.config/aria2/aria2.session</div><div class="line"><span class="meta">#</span>断电续传</div><div class="line">save-session-interval=60</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建该会话空白文件<br><code>touch /home/pi/.config/aria2/aria2.session</code></p>
+</li>
+<li>测试下aria2是否启动成功<br><code>aria2c --conf-path=/home/pi/.config/aria2/aria2.config</code></li>
+<li>是否有进程启动<br><code>用 ps aux|grep aria2</code></li>
+<li>结束进程<br><code>kill -9 xxxx</code></li>
+</ul>
+<h1 id="设置aria2服务并开机启动"><a href="#设置aria2服务并开机启动" class="headerlink" title="设置aria2服务并开机启动"></a>设置aria2服务并开机启动</h1><h2 id="编写服务文件"><a href="#编写服务文件" class="headerlink" title="编写服务文件"></a>编写服务文件</h2><p><code>sudo vim /lib/systemd/system/aria.service</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=Aria2 Service</div><div class="line">After=network.target</div><div class="line"></div><div class="line">[Service]</div><div class="line">User=pi</div><div class="line">Type=forking</div><div class="line">ExecStart=/usr/bin/aria2c --conf-path=/home/pi/.config/aria2/aria2.config</div><div class="line"></div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
+<h2 id="设置开机启动"><a href="#设置开机启动" class="headerlink" title="设置开机启动"></a>设置开机启动</h2><p><code>sudo systemctl daemon-reload</code><br><code>sudo systemctl enable aria</code></p>
+<h2 id="查看aria服务状态"><a href="#查看aria服务状态" class="headerlink" title="查看aria服务状态"></a>查看aria服务状态</h2><p><code>sudo systemctl status aria</code> </p>
+<h2 id="启动aria2服务"><a href="#启动aria2服务" class="headerlink" title="启动aria2服务"></a>启动aria2服务</h2><p><code>sudo systemctl start aria</code></p>
+<h2 id="停止aria2服务"><a href="#停止aria2服务" class="headerlink" title="停止aria2服务"></a>停止aria2服务</h2><p><code>sudo systemctl stop aria</code></p>
+<h2 id="重启aria2服务"><a href="#重启aria2服务" class="headerlink" title="重启aria2服务"></a>重启aria2服务</h2><p><code>sudo systemctl restart aria</code></p>
+<h1 id="PanDownload配置"><a href="#PanDownload配置" class="headerlink" title="PanDownload配置"></a>PanDownload配置</h1><p>目前PanDownload只有windows版本，mac 需开启虚拟机使用<br>设置 -&gt; 远程 -&gt; 添加 -&gt; 添加远程主机<br><img src="/images/RaspberryAria2_1.png" alt="效果图"></p>
+<ol>
+<li>勾选开启远程下载模式<br><img src="/images/RaspberryAria2_2.png" alt="效果图"></li>
+<li>填写树莓派下载服务器的ip，填写端口号对应配置文件中的rpc-listen-port和token对应配置文件中的rpc-secret<br><img src="/images/RaspberryAria2_3.png" alt="效果图"></li>
+<li>检测连接，提示连接成功<br><img src="/images/RaspberryAria2_4.png" alt="效果图"></li>
+<li>取消默认下载路径的配置，这样才可以在选择下载文件后弹出远程下载的选择弹窗</li>
+<li>如果提示“下载失败：无法创建文件，给下载文件夹授权，<code>chmod 777 /mnt/download</code></li>
+</ol>
 
       
     </div>
@@ -399,7 +403,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/DoubleScreen/" rel="tag"># DoubleScreen</a>
+            <a href="/tags/raspberry/" rel="tag"># raspberry</a>
           
         </div>
       
@@ -412,8 +416,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/25/PuppeteerStart/" rel="next" title="nodejs爬虫-puppeteer入门">
-                <i class="fa fa-chevron-left"></i> nodejs爬虫-puppeteer入门
+              <a href="/2019/02/16/IjkplayerSo/" rel="next" title="ijkplayer编译so文件支持更多格式">
+                <i class="fa fa-chevron-left"></i> ijkplayer编译so文件支持更多格式
               </a>
             
           </div>
@@ -421,10 +425,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/18/SocketioRn/" rel="prev" title="socket.io+nodejs+mongodb+reactnative 实现简易聊天室">
-                socket.io+nodejs+mongodb+reactnative 实现简易聊天室 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -563,7 +563,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#设置权限"><span class="nav-number">1.</span> <span class="nav-text">设置权限</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DisplayManager实现"><span class="nav-number">2.</span> <span class="nav-text">DisplayManager实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MediaRouter实现"><span class="nav-number">3.</span> <span class="nav-text">MediaRouter实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#树莓派搭建aria2服务器"><span class="nav-number">1.</span> <span class="nav-text">树莓派搭建aria2服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装aria2"><span class="nav-number">1.1.</span> <span class="nav-text">安装aria2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写配置文件"><span class="nav-number">1.2.</span> <span class="nav-text">编写配置文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设置aria2服务并开机启动"><span class="nav-number">2.</span> <span class="nav-text">设置aria2服务并开机启动</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编写服务文件"><span class="nav-number">2.1.</span> <span class="nav-text">编写服务文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置开机启动"><span class="nav-number">2.2.</span> <span class="nav-text">设置开机启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看aria服务状态"><span class="nav-number">2.3.</span> <span class="nav-text">查看aria服务状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动aria2服务"><span class="nav-number">2.4.</span> <span class="nav-text">启动aria2服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止aria2服务"><span class="nav-number">2.5.</span> <span class="nav-text">停止aria2服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重启aria2服务"><span class="nav-number">2.6.</span> <span class="nav-text">重启aria2服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PanDownload配置"><span class="nav-number">3.</span> <span class="nav-text">PanDownload配置</span></a></li></ol></div>
             
 
           </div>

@@ -261,6 +261,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/19/RaspberryAria2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/19/RaspberryAria2/" itemprop="url">树莓派+PanDownload(aria2)实现远程下载</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-19T17:45:57+08:00">
+                2019-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/19/RaspberryAria2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/19/RaspberryAria2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/05/19/RaspberryAria2/" class="leancloud_visitors" data-flag-title="树莓派+PanDownload(aria2)实现远程下载">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下载的工具，无奈它的下载速度实在是太慢了，百度云的第三方下载工具PanDownload是基于aria2的，下载速度非常可观，且支持远程下载。我们可以在树莓派上搭建aria2的下载服务器，然后利用PanDownload远程下发下载任务到树莓派上的aria2服务器，即可实现远程下载。</p>
+<hr>
+<h1 id="树莓派搭建aria2服务器"><a href="#树莓派搭建aria2服务器" class="headerlink" title="树莓派搭建aria2服务器"></a>树莓派搭建aria2服务器</h1><p>关于树莓派的准备工作和系统安装这里就不讲了，希望了解的朋友可以查看<a href="https://jessiekate.gitee.io/2019/02/04/RaspberryStart/" target="_blank" rel="external">上一篇</a>，这里主要是说一下关于aria2服务器的搭建流程。</p>
+<h2 id="安装aria2"><a href="#安装aria2" class="headerlink" title="安装aria2"></a>安装aria2</h2><p><code>sudo apt install -y aria2</code></p>
+<h2 id="编写配置文件"><a href="#编写配置文件" class="headerlink" title="编写配置文件"></a>编写配置文件</h2><ul>
+<li>创建配置文件的文件夹<br><code>mkdir -p ~/.config/aria2/</code></li>
+<li><p>vim编写配置文件<br><code>sudo vi ~/.config/aria2/aria2.config</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>后台运行</div><div class="line">daemon=true</div><div class="line"><span class="meta">#</span>设置加密密钥</div><div class="line">rpc-secret=secret</div><div class="line"><span class="meta">#</span>允许rpc</div><div class="line">enable-rpc=true</div><div class="line"><span class="meta">#</span>允许所有来源, web界面跨域权限需要</div><div class="line">rpc-allow-origin-all=true</div><div class="line"><span class="meta">#</span>允许外部访问，false的话只监听本地端口</div><div class="line">rpc-listen-all=true</div><div class="line"><span class="meta">#</span>RPC端口, 仅当默认端口被占用时修改</div><div class="line">rpc-listen-port=6800</div><div class="line"><span class="meta">#</span>最大同时下载数(任务数), 路由建议值: 3</div><div class="line">max-concurrent-downloads=5</div><div class="line"><span class="meta">#</span>断点续传</div><div class="line">continue=true</div><div class="line"><span class="meta">#</span>同服务器连接数</div><div class="line">max-connection-per-server=5</div><div class="line"><span class="meta">#</span>最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要</div><div class="line">min-split-size=10M</div><div class="line"><span class="meta">#</span>单文件最大线程数, 路由建议值: 5</div><div class="line">split=10</div><div class="line"><span class="meta">#</span>下载速度限制</div><div class="line">max-overall-download-limit=0</div><div class="line"><span class="meta">#</span>单文件速度限制</div><div class="line">max-download-limit=0</div><div class="line"><span class="meta">#</span>上传速度限制</div><div class="line">max-overall-upload-limit=0</div><div class="line"><span class="meta">#</span>单文件速度限制</div><div class="line">max-upload-limit=0</div><div class="line"><span class="meta">#</span>文件保存路径</div><div class="line">dir=/home/pi/Downloads</div><div class="line"><span class="meta">#</span>所需时间</div><div class="line">file-allocation=prealloc</div><div class="line"><span class="meta">#</span>不进行证书校验</div><div class="line">check-certificate=false</div><div class="line"><span class="meta">#</span>保存下载会话</div><div class="line">save-session=/home/pi/.config/aria2/aria2.session</div><div class="line">input-file=/home/pi/.config/aria2/aria2.session</div><div class="line"><span class="meta">#</span>断电续传</div><div class="line">save-session-interval=60</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建该会话空白文件<br><code>touch /home/pi/.config/aria2/aria2.session</code></p>
+</li>
+<li>测试下aria2是否启动成功<br><code>aria2c --conf-path=/home/pi/.config/aria2/aria2.config</code></li>
+<li>是否有进程启动<br><code>用 ps aux|grep aria2</code></li>
+<li>结束进程<br><code>kill -9 xxxx</code></li>
+</ul>
+<h1 id="设置aria2服务并开机启动"><a href="#设置aria2服务并开机启动" class="headerlink" title="设置aria2服务并开机启动"></a>设置aria2服务并开机启动</h1><h2 id="编写服务文件"><a href="#编写服务文件" class="headerlink" title="编写服务文件"></a>编写服务文件</h2><p><code>sudo vim /lib/systemd/system/aria.service</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=Aria2 Service</div><div class="line">After=network.target</div><div class="line"></div><div class="line">[Service]</div><div class="line">User=pi</div><div class="line">Type=forking</div><div class="line">ExecStart=/usr/bin/aria2c --conf-path=/home/pi/.config/aria2/aria2.config</div><div class="line"></div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
+<h2 id="设置开机启动"><a href="#设置开机启动" class="headerlink" title="设置开机启动"></a>设置开机启动</h2><p><code>sudo systemctl daemon-reload</code><br><code>sudo systemctl enable aria</code></p>
+<h2 id="查看aria服务状态"><a href="#查看aria服务状态" class="headerlink" title="查看aria服务状态"></a>查看aria服务状态</h2><p><code>sudo systemctl status aria</code> </p>
+<h2 id="启动aria2服务"><a href="#启动aria2服务" class="headerlink" title="启动aria2服务"></a>启动aria2服务</h2><p><code>sudo systemctl start aria</code></p>
+<h2 id="停止aria2服务"><a href="#停止aria2服务" class="headerlink" title="停止aria2服务"></a>停止aria2服务</h2><p><code>sudo systemctl stop aria</code></p>
+<h2 id="重启aria2服务"><a href="#重启aria2服务" class="headerlink" title="重启aria2服务"></a>重启aria2服务</h2><p><code>sudo systemctl restart aria</code></p>
+<h1 id="PanDownload配置"><a href="#PanDownload配置" class="headerlink" title="PanDownload配置"></a>PanDownload配置</h1><p>目前PanDownload只有windows版本，mac 需开启虚拟机使用<br>设置 -&gt; 远程 -&gt; 添加 -&gt; 添加远程主机<br><img src="/images/RaspberryAria2_1.png" alt="效果图"></p>
+<ol>
+<li>勾选开启远程下载模式<br><img src="/images/RaspberryAria2_2.png" alt="效果图"></li>
+<li>填写树莓派下载服务器的ip，填写端口号对应配置文件中的rpc-listen-port和token对应配置文件中的rpc-secret<br><img src="/images/RaspberryAria2_3.png" alt="效果图"></li>
+<li>检测连接，提示连接成功<br><img src="/images/RaspberryAria2_4.png" alt="效果图"></li>
+<li>取消默认下载路径的配置，这样才可以在选择下载文件后弹出远程下载的选择弹窗</li>
+<li>如果提示“下载失败：无法创建文件，给下载文件夹授权，<code>chmod 777 /mnt/download</code></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/16/IjkplayerSo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -605,9 +776,17 @@
 <li>安装privoxy<br><code>sudo apt install privoxy</code></li>
 <li>修改配置文件<br><code>sudo vi /etc/privoxy/config</code><br>783行，去掉注释<br><code>listen-address 127.0.0.1:8118</code><br>1336行，去掉注释，注意与ss地址端口号保持一致<br><code>forward-socks5t / 127.0.0.1:1080</code></li>
 <li>配置开机启动<br><code>sudo vi /etc/profile</code><br><code>export https_proxy=http://127.0.0.1:8118</code><br><code>export http_proxy=http://127.0.0.1:8118</code></li>
-<li>重启<br><code>sudo systemctl restart privoxy</code><h1 id="开机启动设置"><a href="#开机启动设置" class="headerlink" title="开机启动设置"></a>开机启动设置</h1>这个步骤估计是我爬坑时间最长的地方，写入命令到rc.local配置文件中即可实现开机启动的功能，然而到树莓派上始终无法实现。<br><code>sudo systemctl status rc-local</code>可以查看开机启动失败的原因<br>原因在于debian系统中rc.local默认执行的是dash脚本，与bash存在差异导致无法运行。<br><code>ls -l /bin/sh</code>查看当前系统运行的脚本类型。<br><code>sudo dpkg-reconfigure dash</code>选择NO，不使用Dash Shell。<br><code>chmod +x /etc/rc.local</code> 添加执行权限<h1 id="修改apt源"><a href="#修改apt源" class="headerlink" title="修改apt源"></a>修改apt源</h1>树莓派默认的apt源在英国，速度非常慢，即使我配置了香港的http代理，还是很慢，换成了阿里的源速度还不错。<br>修改apt源的配置文件<br><code>sudo vi /etc/apt/sources.list</code><br>注释掉原来的源，添加<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">deb http://mirrors.aliyun.com/raspbian/raspbian/ jessie main non-free contrib rpi</div><div class="line">deb-src http://mirrors.aliyun.com/raspbian/raspbian/ jessie main non-free contrib rpi</div></pre></td></tr></table></figure>
-</li>
+<li>重启<br><code>sudo systemctl restart privoxy</code><h1 id="开机启动设置"><a href="#开机启动设置" class="headerlink" title="开机启动设置"></a>开机启动设置</h1>这个步骤估计是我爬坑时间最长的地方，写入命令到rc.local配置文件中即可实现开机启动的功能，然而到树莓派上始终无法实现，树莓派已经不支持这种自启方式了。</li>
 </ol>
+<ul>
+<li><p>创建一个文件写入自启命令<br><code>sudo vi /etc/rc.local</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>!/bin/sh -e</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span> rc.local</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span> This script is executed at the end of each multiuser runlevel.</div><div class="line"><span class="meta">#</span> Make sure that the script will "exit 0" on success or any other</div><div class="line"><span class="meta">#</span> value on error.</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span> In order to enable or disable this script just change the execution</div><div class="line"><span class="meta">#</span> bits.</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span> By default this script does nothing.</div><div class="line"><span class="meta"></span></div><div class="line"># Print the IP address</div><div class="line">_IP=$(hostname -I) || true</div><div class="line">if [ "$_IP" ]; then</div><div class="line">  printf "My IP address is %s\n" "$_IP"</div><div class="line">fi</div><div class="line">sudo sslocal -c /etc/ss.json -d start</div><div class="line">exit 0</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建一个服务文件<br><code>sudo vi /lib/systemd/system/rc.local.service</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>  This file is part of systemd.</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span>  systemd is free software; you can redistribute it and/or modify it</div><div class="line"><span class="meta">#</span>  under the terms of the GNU Lesser General Public License as published by</div><div class="line"><span class="meta">#</span>  the Free Software Foundation; either version 2.1 of the License, or</div><div class="line"><span class="meta">#</span>  (at your option) any later version.</div><div class="line"><span class="meta"></span></div><div class="line"># This unit gets pulled automatically into multi-user.target by</div><div class="line"><span class="meta">#</span> systemd-rc-local-generator if /etc/rc.local is executable.</div><div class="line">[Unit]</div><div class="line">Description=/etc/rc.local Compatibility</div><div class="line">ConditionFileIsExecutable=/etc/rc.local</div><div class="line">After=network.target</div><div class="line"></div><div class="line">[Service]</div><div class="line">Type=forking</div><div class="line">ExecStart=/etc/rc.local start</div><div class="line">TimeoutSec=0</div><div class="line">RemainAfterExit=yes</div><div class="line">GuessMainPID=no</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="修改apt源"><a href="#修改apt源" class="headerlink" title="修改apt源"></a>修改apt源</h1><p>树莓派默认的apt源在英国，速度非常慢，即使我配置了香港的http代理，还是很慢，换成了阿里的源速度还不错。<br>修改apt源的配置文件<br><code>sudo vi /etc/apt/sources.list</code><br>注释掉原来的源，添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">deb http://mirrors.aliyun.com/raspbian/raspbian/ jessie main non-free contrib rpi</div><div class="line">deb-src http://mirrors.aliyun.com/raspbian/raspbian/ jessie main non-free contrib rpi</div></pre></td></tr></table></figure></p>
 <p>更新索引清单<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update</div></pre></td></tr></table></figure></p>
 <p>更新依赖库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get upgrade -y</div></pre></td></tr></table></figure></p>
 <h1 id="U盘挂载和卸载"><a href="#U盘挂载和卸载" class="headerlink" title="U盘挂载和卸载"></a>U盘挂载和卸载</h1><h2 id="挂载u盘"><a href="#挂载u盘" class="headerlink" title="挂载u盘"></a>挂载u盘</h2><p><code>sudo mount -o umask=0000 /dev/sda1 ~/Downloads</code><br>-o 配置挂载可选项，umask=0000对所有用户都可读可写可执行<br>/dev/sda1 usb分区路径<br><code>fdisk -l</code>可查看分区<br>~/Downloads 要挂载的文件夹路径</p>
@@ -1956,266 +2135,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/08/Ubuntu-start/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/08/Ubuntu-start/" itemprop="url">搭建Ubuntu下的开发环境</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-08T13:54:00+08:00">
-                2018-07-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Util/" itemprop="url" rel="index">
-                    <span itemprop="name">Util</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/07/08/Ubuntu-start/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/07/08/Ubuntu-start/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2018/07/08/Ubuntu-start/" class="leancloud_visitors" data-flag-title="搭建Ubuntu下的开发环境">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>最近有点闲暇时间，厌倦了windows开发环境，想尝试一下ubuntu下的开发环境。本人Android开发者，也写一点前端，以前家里是mac开发环境，公司是windows开发环境，现在打算把公司的开发环境改为ubuntu，之前也看过ubuntu下搭建Android开发环境的文章，即使这样，也踩了不少的坑，折腾了几天，总算把环境搭建起来了，基本稳定。总的来说ubuntu下的开发环境不像windows和mac那么好搭建，坑点略多，但是搭建成功后运行速度是非常可观的，比起windows快了不少，也不枉费花了这么多时间。接下来总结一下ubuntu下开发的常用软件，插件，以及可能遇到的坑点。</p>
-<hr>
-<h1 id="安装系统遇到的问题"><a href="#安装系统遇到的问题" class="headerlink" title="安装系统遇到的问题"></a>安装系统遇到的问题</h1><p>安装系统流程比较普通，分区方案网上有很多，不过要注意两点</p>
-<h2 id="安装英文版的系统"><a href="#安装英文版的系统" class="headerlink" title="安装英文版的系统"></a>安装英文版的系统</h2><p>即使不习惯英文系统也应该在安装系统时选择英文，安装完了再改回中文，因为如果是安装中文版的系统，文件夹的名称会变成下载，文档，音乐，图片．．．由于ubuntu很多时候用命令行，导致命令行输入经常切换中文不方便，我第一次安装的时候手快选了中文版，以为后面可以改，然而这个目录名是安装系统的时候就建好了的，第二次果断安装英文版</p>
-<h2 id="分区的坑"><a href="#分区的坑" class="headerlink" title="分区的坑"></a>分区的坑</h2><p>ubuntu虽然可以挂载ntfs分区，但是ide在读取工程目录的时候是只读取/下面的，所以根目录的分区一定不能小</p>
-<h1 id="卸载系统自带的软件"><a href="#卸载系统自带的软件" class="headerlink" title="卸载系统自带的软件"></a>卸载系统自带的软件</h1><p>有些软件系统自带，但是并不好用或者不会用到的可以卸载掉<br>以下是卸载清单<br>libreoffice-common libreoffice（可以换 WPS）<br>unity-webapps-common Amazon 链接<br>totem 自带的播放器<br>rhythmbox 自带的音乐播放器<br>empathy 自带的即时聊天应用<br>brasero 自带的光盘刻录器<br>simple-scan 扫描仪<br>gnome-mahjongg 对对碰游戏<br>aisleriot 纸牌游戏<br>gnome-mines 扫雷游戏<br>cheese webcam 应用<br>gnome-sudoku 数独游戏<br>transmission-common BT 客户端<br>gnome-orca 屏幕阅读<br>webbrowser-app 自带的浏览器（这个太难用了，有chrome 和 Firefox）<br>landscape-client-ui-install landscape 远程控制软件<br>deja-dup 备份<br>onboard 屏幕键盘</p>
-<p>下面是可以批量卸载的命令<br><code>sudo apt-get remove unity-webapps-common;sudo apt-get remove totem;sudo apt-get remove rhythmbox;sudo apt-get remove empathy;sudo apt-get remove brasero;sudo apt-get remove simple-scan;sudo apt-get remove gnome-mahjongg;sudo apt-get remove aisleriot;sudo apt-get remove gnome-mines;sudo apt-get remove cheese;sudo apt-get remove transmission-common;sudo apt-get remove gnome-orca;sudo apt-get remove webbrowser-app;sudo apt-get remove gnome-sudoku;sudo apt-get remove landscape-client-ui-install;sudo apt-get remove onboard;sudo apt-get remove deja-dup;sudo apt-get remove libreoffice-common</code></p>
-<p>apt-get remove –purge xxx # 移除应用及配置<br>apt-get autoremove # 移除没用的包</p>
-<h1 id="apt替换阿里源"><a href="#apt替换阿里源" class="headerlink" title="apt替换阿里源"></a>apt替换阿里源</h1><h2 id="图形界面配置"><a href="#图形界面配置" class="headerlink" title="图形界面配置"></a>图形界面配置</h2><p>新手推荐使用图形界面配置： 系统设置 -&gt; 软件和更新 选择下载服务器 -&gt; “mirrors.aliyun.com”</p>
-<h2 id="手动更改"><a href="#手动更改" class="headerlink" title="手动更改"></a>手动更改</h2><p>用你熟悉的编辑器打开：<br>/etc/apt/sources.list<br>替换默认的<br><a href="http://archive.ubuntu.com/为mirrors.aliyun.com" target="_blank" rel="external">http://archive.ubuntu.com/为mirrors.aliyun.com</a><br>以Ubuntu 14.04.5 LTS为例，最后的效果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">deb https://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse</div><div class="line">deb-src https://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse</div><div class="line">deb https://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse</div><div class="line">deb-src https://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse</div><div class="line"></div><div class="line">deb https://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse</div><div class="line">deb-src https://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse</div><div class="line"></div><div class="line">deb https://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse</div><div class="line">deb-src https://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse</div><div class="line">## Not recommended</div><div class="line"># deb https://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse</div><div class="line"># deb-src https://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse</div></pre></td></tr></table></figure></p>
-<p>ubuntu 16.04 配置如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial main</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial main</div><div class="line"></div><div class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main</div><div class="line"></div><div class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial universe</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial universe</div><div class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates universe</div><div class="line"></div><div class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security main</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main</div><div class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe</div></pre></td></tr></table></figure></p>
-<p>ubuntu 18.04(bionic) 配置如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse</div><div class="line"></div><div class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse</div><div class="line"></div><div class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse</div><div class="line"></div><div class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse</div><div class="line"></div><div class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse</div><div class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse</div></pre></td></tr></table></figure></p>
-<h1 id="设置中文输入法"><a href="#设置中文输入法" class="headerlink" title="设置中文输入法"></a>设置中文输入法</h1><p>sudo add-apt-repository ppa:fcitx-team/nightly<br>sudo apt-get update<br>安装fcitx<br>sudo apt-get install fcitx<br>安装fcitx的配置工具<br>sudo apt-get install fcitx-config-gtk<br>安装fcitx的table-all软件包<br>sudo apt-get install fcitx-table-al l<br>安装输入法切换工具<br>sudo apt-get install im-switch<br>设置语言选项：将键盘输入法系统由默认的iBus设置为fcitx<br>安装了搜狗输入法后频繁崩溃，索性就用fcitx自带的，并没觉得有什么不同</p>
-<h1 id="命令行相关"><a href="#命令行相关" class="headerlink" title="命令行相关"></a>命令行相关</h1><p>bash对应配置文件为.bashrc<br>zsh对应配置文件为.zshrc<br>oh-my-zsh是基于zsh的功能做了一个扩展，方便的插件管理、主题自定义，以及漂亮的自动完成效果。比默认的bash好用</p>
-<h2 id="安装zsh"><a href="#安装zsh" class="headerlink" title="安装zsh"></a>安装zsh</h2><p>sudo apt-get install zsh</p>
-<h2 id="安装ohmyzsh"><a href="#安装ohmyzsh" class="headerlink" title="安装ohmyzsh"></a>安装ohmyzsh</h2><h3 id="git源码"><a href="#git源码" class="headerlink" title="git源码"></a>git源码</h3><p>git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh<br>cd oh-my-zsh/tools<br>./install.sh</p>
-<h3 id="curl"><a href="#curl" class="headerlink" title="curl"></a>curl</h3><p>sh -c “$(curl -fsSL <a href="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh" target="_blank" rel="external">https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh</a>)”</p>
-<h3 id="wget"><a href="#wget" class="headerlink" title="wget"></a>wget</h3><p>sh -c “$(wget <a href="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh" target="_blank" rel="external">https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh</a> -O -)”</p>
-<h2 id="修改默认shell"><a href="#修改默认shell" class="headerlink" title="修改默认shell"></a>修改默认shell</h2><p>ubuntu下默认的shell是bash，修改它为zsh&amp;ohmyzsh<br>chsh -s /bin/zsh</p>
-<h2 id="配置主题"><a href="#配置主题" class="headerlink" title="配置主题"></a>配置主题</h2><p>修改~/.zshrc中的ZSH_THEME</p>
-<h2 id="配置插件"><a href="#配置插件" class="headerlink" title="配置插件"></a>配置插件</h2><p>修改~/.zshrc中的plugins=(git bundler osx rake ruby)<br>常用插件<br>wd 快速进入<br>zsh-syntax-highlighting 语法高亮<br>zsh-autosuggestions 历史记录提示<br>svn<br>adb<br>yarn</p>
-<h2 id="图形化svn与git管理工具"><a href="#图形化svn与git管理工具" class="headerlink" title="图形化svn与git管理工具"></a>图形化svn与git管理工具</h2><p>rabbitvcs</p>
-<ol>
-<li><p>添加PPA源<br>sudo add-apt-repository ppa:rabbitvcs/ppa<br>如果导入密钥失败，则在 /etc/apt/sources.list 文件中加入:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">deb http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu **DISTRIBUTION** main</div></pre></td></tr></table></figure>
-</li>
-<li><p>更新源</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update</div></pre></td></tr></table></figure>
-</li>
-<li><p>安装依赖</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install python-nautilus python-configobj python-gtk2 python-glade2 python-svn python-dbus python-dulwich subversion meld</div></pre></td></tr></table></figure>
-</li>
-<li><p>安装RabbitVCS</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install rabbitvcs-cli  rabbitvcs-core rabbitvcs-gedit rabbitvcs-nautilus</div></pre></td></tr></table></figure>
-</li>
-<li><p>重启文件浏览器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">nautilus -q </div><div class="line">nautilus</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="shadowsocks相关"><a href="#shadowsocks相关" class="headerlink" title="shadowsocks相关"></a>shadowsocks相关</h1><p>作为开发者ss是必不可少的，特别是习惯了google的，完全无法忍受没有梯子的日子，ubuntu下配置shadowsocks稍微有些麻烦。<br>首先我们要下载shadowsocks的无图形界面版本，我用过图形界面版qt5，太不稳定了。<br>sudo apt update<br>sudo apt install python-gevent python-pip<br>pip install shadowsocks<br>编辑配置文件<br>vim /etc/ss.json<br>server 服务器地址<br>server_port 端口<br>local_port 本地端口<br>password 密码<br>method 加密方式 跟服务器保持一致<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123; </div><div class="line">&quot;server&quot;:&quot;server_ip&quot;,</div><div class="line">&quot;server_port&quot;:30696,</div><div class="line">&quot;local_port&quot;:1080,</div><div class="line">&quot;password&quot;:&quot;password&quot;,</div><div class="line">&quot;timeout&quot;:600,</div><div class="line">&quot;method&quot;:&quot;rc4-md5&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>ubuntu自带开机启动项设置工具 startupapplications点击add添加<br>name和comment随意填写，command填写为sudo sslocal -c /etc/ss.json -d start<br>配置好了以后，我们需要修改本机代理，windows、mac都是不需要的<br>这里有一个坑点ubuntu18上启动shadowsocks，openssl.py会报错，将此文件中的52行和111行中的cleanup替换为reset，否则可能执行启动命令报错</p>
-<h2 id="全部请求用代理"><a href="#全部请求用代理" class="headerlink" title="全部请求用代理"></a>全部请求用代理</h2><p>SystemSetting-&gt;Network-&gt;-&gt;NetworkProxy<br>Method设置为Ｍanual<br>sockshost 127.0.0.1 1080，然后Apply System Wide</p>
-<h2 id="添加规则，部分代理"><a href="#添加规则，部分代理" class="headerlink" title="添加规则，部分代理"></a>添加规则，部分代理</h2><p>安装genpac<br>sudo apt-get install python-pip<br>sudo pip install genpac<br>使用genpac生成autoproxy.pac规则文件<br>genpac -p “SOCKS5 127.0.0.1:1080” –output=”autoproxy.pac”<br>让系统应用规则<br>SystemSetting-&gt;Network-&gt;NetworkProxy<br>Method设置为Automatic<br>Configuration Url填”file:///home/xxx/autoproxy.pac”，然后Apply System Wide<br>chrome和firefox都要安装Proxy SwitchyOmega插件<br>方便我们设置自动切换规则</p>
-<h2 id="http代理"><a href="#http代理" class="headerlink" title="http代理"></a>http代理</h2><p>如果是命令行，很多只支持http协议的软件或者工具，我们再配置一次http代理</p>
-<h3 id="安装privoxy"><a href="#安装privoxy" class="headerlink" title="安装privoxy"></a>安装privoxy</h3><p>sudo apt-get install privoxy</p>
-<h3 id="配置privoxy"><a href="#配置privoxy" class="headerlink" title="配置privoxy"></a>配置privoxy</h3><p>打开/etc/privoxy/config<br>取消listen-address localhost:8118的代码注释<br>找到5.2节<br>加入一句<br>forward-socks5 / 127.0.0.1:1080 .<br>重启privoxy服务<br>sudo /etc/init.d/privoxy restart<br>开机自启privoxy服务<br>sudo /etc/init.d/privoxy start加入到/etc/rc.local文件中的exit 0这句之前<br>在profile中写入http代理<br>export http_proxy=”127.0.0.1:8118”<br>export https_proxy=”127.0.0.1:8118”</p>
-<h1 id="Ubuntu软件集合"><a href="#Ubuntu软件集合" class="headerlink" title="Ubuntu软件集合"></a>Ubuntu软件集合</h1><p>chrome 开发者必备浏览器，自带有firefox<br>Typora markdown编辑器<br>Deepin Screenshot深度截图(Ubuntu Software中安装)<br>electronic wechat 微信<br>快速启动ULauncher<br>Redshift 自动调节屏幕色温<br>Android studio android开发者都懂<br>Webstorm 前端开发利器<br>vscode 微软出的开发神器，轻量级<br>mpv 播放器<br>angrySearch文件搜索<br>ubuntu-tweak 集清理，主题管理，字体管理，热区自定义于一体的软件，可替代ubuntu-tweak-tool，这个软件会默认安装系统自带的浏览器<br>(2018-5-31 新版的ubuntu18移除了unity桌面,这个没啥用了,可换成gnome-tweak-tool)</p>
-<h2 id="ubuntu18-gnome主题定制"><a href="#ubuntu18-gnome主题定制" class="headerlink" title="ubuntu18 gnome主题定制"></a>ubuntu18 gnome主题定制</h2><p><a href="https://www.gnome-look.org/" target="_blank" rel="external">定制资源下载</a><br>光标: 下载解压后放到/usr/share/icons/目录<br>GTK主题: 下载解压后放到/usr/share/themes/目录<br>图标: 下载解压放到/usr/share/icons/目录<br>shell主题: 下载解压放到/usr/share/themes/目录 (需要安装gnome shell extension)<br>(使用gnome tweak tool-&gt;apperance前面按钮安装zip,会放到~/.local/share/themes下)<br>重启gnome tweak tool,才可在gnome tweak tool中找到</p>
-<h1 id="wps-金山wps有linux版"><a href="#wps-金山wps有linux版" class="headerlink" title="wps 金山wps有linux版"></a>wps 金山wps有linux版</h1><p>安装后进入，报字体缺失<br>下载字体包<br>百度云<a href="http://pan.baidu.com/s/1nuS5U5b" target="_blank" rel="external">http://pan.baidu.com/s/1nuS5U5b</a> 密码：p4vz</p>
-<ol>
-<li>解压</li>
-<li>把wps_symbol_fonts目录拷贝到 /usr/share/fonts/ 目录下</li>
-<li><p>权限添加</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>cd /usr/share/fonts/</div><div class="line"><span class="meta">#</span>chmod 755 wps_symbol_fonts</div><div class="line"><span class="meta">#</span>cd /usr/share/fonts/wps_symbol_fonts</div><div class="line"><span class="meta">#</span>chmod 644 *</div></pre></td></tr></table></figure>
-</li>
-<li><p>生成缓存配置信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>cd /usr/share/fonts/wps_symbol_fonts</div><div class="line"><span class="meta">#</span>mkfontdir</div><div class="line"><span class="meta">#</span>mkfontscale</div><div class="line"><span class="meta">#</span>fc-cache</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="小程序开发工具"><a href="#小程序开发工具" class="headerlink" title="小程序开发工具"></a>小程序开发工具</h1><p>微信开发者工具(微信小程序)linux完美支持<br><a href="https://github.com/cytle/wechat_web_devtools" target="_blank" rel="external">https://github.com/cytle/wechat_web_devtools</a></p>
-<h1 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h1><p>wireshark<br><a href="https://blog.csdn.net/xukai871105/article/details/31008635" target="_blank" rel="external">https://blog.csdn.net/xukai871105/article/details/31008635</a><br>charles也有linux版</p>
-<h1 id="qq-解决方案"><a href="#qq-解决方案" class="headerlink" title="qq 解决方案"></a>qq 解决方案</h1><p>优麒麟qq，表情显示不出来且发送错误，版本很老<br>Wine-QQ-TIM，使用几天后出现电脑无故卡死，输入法切换不了，无法启动等问题<br>Wine真的不好用，还不如虚拟机<br>一番折腾后，还是卸载了qq，珍爱生命，远离qq</p>
-<h1 id="微信-解决方案-（2019-4-15更新）"><a href="#微信-解决方案-（2019-4-15更新）" class="headerlink" title="微信 解决方案 （2019.4.15更新）"></a>微信 解决方案 （2019.4.15更新）</h1><ul>
-<li>目前发现electronic-wechat就是最好的解决方案没有之一，基于web微信用Electron封装并开源<br><a href="https://github.com/geeeeeeeeek/electronic-wechat" target="_blank" rel="external">传送门</a><h1 id="钉钉-解决方案-（2019-4-15更新）"><a href="#钉钉-解决方案-（2019-4-15更新）" class="headerlink" title="钉钉 解决方案 （2019.4.15更新）"></a>钉钉 解决方案 （2019.4.15更新）</h1></li>
-<li>目前发现dingtalk就是最好的解决方案没有之一，基于web钉钉用Electron封装并开源<br><a href="https://github.com/nashaofu/dingtalk" target="_blank" rel="external">传送门</a><h1 id="virtualbox-amp-genymotion"><a href="#virtualbox-amp-genymotion" class="headerlink" title="virtualbox&amp;genymotion"></a>virtualbox&amp;genymotion</h1>虚拟机和Android模拟器<br>在virtualbox下安装win7，解决ubuntu下无法解决的问题<br>安装virtualbox时注意安装ubuntu最新版本，如果开了intel虚拟技术，还是卡开机界面，可能是当前显卡驱动问题，不要选择opensource版本的显卡驱动<br>genymotion尽量选择最新的版本，这里有个坑，如果卡死，内存分配尽量大一点</li>
-</ul>
-<h1 id="拾色器"><a href="#拾色器" class="headerlink" title="拾色器"></a>拾色器</h1><p>前端开发，app开发必不可少的工具<br>Deepin picker 深度取色器(Ubuntu Software中安装)<br>添加快捷键：<br>Settings -&gt; Devices -&gt; Keyboard commond为:/usr/bin/deepin-picker<br>同理，添加截图的快捷键<br>Settings -&gt; Devices -&gt; Keyboard commond为:/usr/bin/deepin-screenshot</p>
-<h1 id="系统备份"><a href="#系统备份" class="headerlink" title="系统备份"></a>系统备份</h1><p>辛苦折腾的系统最好做个备份 ,remastersys这个系统备份工具是不错，但是备份文件大于4g就会备份失败，官方文档也说了这个问题是iso9660的限制，目前无解。<br>后来发现一个更好用的工具，Timeshift类似mac上的TimeMachine，按备份时间点创建快照，对快照可进行管理，有备份计划等功能，可以实现增强备份和完整备份。</p>
-<p>目前就总结到这里，后面如果发现更好用的软件，插件，坑点会持续更新～</p>
-<ul>
-<li>2018.11.11爬坑<br>Android studio真机调试会报一个错，发现设备无法被识别<br><code>error insufficient permissions for device user in plugdev group are your udev rules wrong</code><br>解决方案：</li>
-</ul>
-<ol>
-<li>lsusb命令查出所有通过usb连接pc的设备，找出那个正在调试的读不出型号的设备<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Bus 001 Device 004: ID 0424:2514 Standard Microsystems Corp. USB 2.0 Hub</div><div class="line">Bus 001 Device 003: ID 1bcf:2984 Sunplus Innovation Technology Inc.</div><div class="line">Bus 001 Device 006: ID 2717:9039</div><div class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</div><div class="line">Bus 003 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub</div><div class="line">Bus 002 Device 002: ID 046d:c077 Logitech, Inc.</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>注意ID后XXXX:XXXX的参数，前一个是idVendor，后一个是idProduct</p>
-<ol>
-<li>创建adb_usb.ini文件，写入idVendor到~/.android/adb_usb.ini，内容格式为<code>0xidVendor</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo 0x2717&gt; ~/.android/adb_usb.ini</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>这一步官网上没有提到，导致后面<code>android.rules</code>文件一直报<code>SUBSYSTEM==&quot;usb&quot;</code>有错</p>
-<ul>
-<li>以下步骤可以解决Android studio无法识别设备XXXX[null]的问题</li>
-</ul>
-<ol>
-<li><p>添加Usb设备配置文件，创建文件并写入以下内容</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo vim /etc/udev/rules.d/70-android.rules</div><div class="line">SUBSYSTEM==&quot;usb&quot;, ATTRS&#123;idVendor&#125;==&quot;2717&quot;, ATTRS&#123;idProduct&#125;==&quot;9039&quot;,MODE=&quot;0666&quot;</div></pre></td></tr></table></figure>
-</li>
-<li><p>给配置文件添加权限</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo chmod a+rx /etc/udev/rules.d/70-android.rules</div></pre></td></tr></table></figure>
-</li>
-<li><p>重新加载usb配置规则文件，重启adb服务并查看</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo udevadm control --reload-rules &amp;&amp; sudo service udev restart &amp;&amp; sudo udevadm trigger</div><div class="line">adb kill-server &amp;&amp; adb start-server</div><div class="line">adb devices</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>此时设备已经可以识别了</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2270,7 +2189,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
