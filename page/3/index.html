@@ -261,6 +261,251 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/10/AndroidComponentStudy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/10/AndroidComponentStudy/" itemprop="url">组件化技术学习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-10T10:34:57+08:00">
+                2017-10-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/10/10/AndroidComponentStudy/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/10/10/AndroidComponentStudy/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/10/10/AndroidComponentStudy/" class="leancloud_visitors" data-flag-title="组件化技术学习">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>随着Android技术发展越来越成熟，随着热更新技术的火热，组件化和插件化的技术也得到了一定的关注。特别是对于比较大的项目，人员的增多，代码越来越臃肿，这时候就必须进行模块化的拆分。模块化在Android工程中目前有两种实现方式，一种是组件化，另一种是插件化，其实质都是降低耦合。作为Android开发者，有必要对这两种技术做一个了解，在项目需要重构时或在构建大项目初期时，选择合适的模块化方案，下面就对组件化技术学习做一个总结。目前比较流行的组件化方案是阿里的Atlas，得到app的AndroidComponent，插件化比较流行的方案是滴滴的virtual apk，360的replugin。</p>
+<hr>
+<p>得到团队的AndroidComponent的学习成本较低，对于初学者方便入手，以下记录该框架的学习情况：<br>每个组件都可以看成一个单独的整体，可以按需的和其他组件（包括主项目）整合在一起，从而完成的形成一个app，整体app缺少任何一个组件都是可以正常运行的，并且每个组件可以单独运行。<br>件化和插件化的最大区别（应该也是唯一区别）就是组件化在运行时不具备动态添加和修改组件的功能，但是插件化是可以的。</p>
+<h1 id="依赖库与Component的区别"><a href="#依赖库与Component的区别" class="headerlink" title="依赖库与Component的区别"></a>依赖库与Component的区别</h1><h2 id="依赖库library"><a href="#依赖库library" class="headerlink" title="依赖库library"></a>依赖库library</h2><p>代码被其他组件直接引用。比如网络库module可以认为是一个library。</p>
+<h2 id="Component"><a href="#Component" class="headerlink" title="Component"></a>Component</h2><p>这种module是一个完整的功能模块。比如分享module就是一个Component。<br>统一把library称之为依赖库，把Component称之为组件。组件化也主要是针对Component这种类型。主项目、主module或者Host负责拼装这些组件以形成一个完成app的module，统一称为主项目。</p>
+<h1 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h1><p>app是主项目，负责集成众多组件，控制组件的生命周期<br>xxxComponent 是我们拆分的两个组件，比如shareComponent<br>componentservice 定义了所有的组件提供的服务<br>basicres 定义了全局通用的theme和color等公共资源<br>basiclib 公共的基础库，统一在这里引入，比如一些第三方的库okhttp<br>componentlib 组件化的基础库 Router/UIRouter等都定义在这里<br>build-gradle 组件化编译的gradle插件</p>
+<h1 id="单独调试和发布"><a href="#单独调试和发布" class="headerlink" title="单独调试和发布"></a>单独调试和发布</h1><ol>
+<li>在组件工程下的gradle.properties文件中设置一个isRunAlone的变量来区分不同的场景，build.gradle需要引入一个插件，插件中会判断apply com.android.library还是com.android.application</li>
+<li>在src/main/runalone下面定义单独调试所必须的AndroidManifest.xml、application、入口activity等类</li>
+<li>组件开发并测试完成时，需要发布一个release版本的aar文件到中央仓库，只需要把isRunAlone修改为false，执行module:assembleRelease命令。只有发布组件时才需要修改isRunAlone=false，即使后面将组件集成到app中，也不需要修改isRunAlone的值。所以在Androidstudio中，是可以看到三个application工程的，随便点击一个都是可以独立运行的，并且可以根据配置引入其他需要依赖的组件，这些工作都由插件来完成。</li>
+</ol>
+<h1 id="组件交互"><a href="#组件交互" class="headerlink" title="组件交互"></a>组件交互</h1><p>组件间数据传输，通过接口+实现的方式，组件之间完全面向接口编程。<br>下面是share提供一个fragment给app使用的例子。<br>share组件在componentservice中定义自己的服务<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ShareService</span> </span>&#123;</div><div class="line">    <span class="function">Fragment <span class="title">getShareFragment</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在自己的组件工程中，提供对应的实现类ShareServiceImpl：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareServiceImpl</span> <span class="keyword">implements</span> <span class="title">ShareService</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Fragment <span class="title">getShareFragment</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ShareFragment();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在ShareAppLike中在组件加载的时候把实现类注册到Router中，ShareAppLike相当于组件的application类需要实现IApplicationLike的接口，在IApplicationLike接口中定义onCreate和onStop两个生命周期方法，对应组件的加载和卸载。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareAppLike</span> <span class="keyword">implements</span> <span class="title">IApplicationLike</span> </span>&#123;</div><div class="line">    Router router = Router.getInstance();</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        router.addService(ShareService.class.getSimpleName(), <span class="keyword">new</span> ShareServiceImpl());</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</div><div class="line">        router.removeService(ShareService.class.getSimpleName());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在app中面向ShareService来编程<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Router router = Router.getInstance();</div><div class="line"><span class="keyword">if</span> (router.getService(ShareService.class.getSimpleName()) != <span class="keyword">null</span>) &#123;</div><div class="line">    ShareService service = (ShareService) router.getService(ShareService.class.getSimpleName());</div><div class="line">    fragment = service.getShareFragment();</div><div class="line">    ft = getSupportFragmentManager().beginTransaction();</div><div class="line">    ft.add(R.id.tab_content, fragment).commitAllowingStateLoss();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>由于组件是动态加载和卸载的，在使用ShareService的需要进行判空处理。我们看到数据的传输是通过一个中央路由Router来实现的，这个Router就是一个HashMap</p>
+<h1 id="UI跳转"><a href="#UI跳转" class="headerlink" title="UI跳转"></a>UI跳转</h1><p>页面（activity）的跳转也是通过一个中央路由UIRouter来实现，这里增加了一个优先级的概念。<br>页面的跳转通过短链的方式，跳转到share的activity<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">UIRouter.getInstance().openUri(getActivity(), <span class="string">"componentdemo://share"</span>, <span class="keyword">null</span>);</div></pre></td></tr></table></figure></p>
+<p>share组件在自己实现的ShareUIRouter中声明了自己处理这个短链(scheme和host)<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SCHEME = <span class="string">"componentdemo"</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SHAREHOST = <span class="string">"share"</span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">openUri</span><span class="params">(Context context, Uri uri, Bundle bundle)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (uri == <span class="keyword">null</span> || context == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    String host = uri.getHost();</div><div class="line">    <span class="keyword">if</span> (SHAREHOST.equals(host)) &#123;</div><div class="line">        Intent intent = <span class="keyword">new</span> Intent(context, ShareActivity.class);</div><div class="line">        intent.putExtras(bundle == <span class="keyword">null</span> ? <span class="keyword">new</span> Bundle() : bundle);</div><div class="line">        context.startActivity(intent);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果已经组件已经响应了这个短链，就返回true，这样更低优先级的组件就不会接收到这个短链。注解生成根据scheme和host跳转的逻辑，如ARouter的开源框架已实现。</p>
+<h1 id="集成调试"><a href="#集成调试" class="headerlink" title="集成调试"></a>集成调试</h1><p>由app或者其他组件充当host的角色，引入其他相关的组件一起参与编译，从而测试整个交互流程。app和组件都可以充当host的角色。在这里我们以app为例。</p>
+<ol>
+<li>在根项目的gradle.properties中增加一个变量mainmodulename，其值就是工程中的主项目，这里是app。设置为mainmodulename的module，isRunAlone永远是true。</li>
+<li>在app项目的gradle.properties文件中增加两个变量：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">debugComponent=com.mrzhang.share:sharecomponent</div><div class="line">compileComponent=sharecomponent</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>其中debugComponent是debug的时候引入的组件，compileComponent是release下引入的组件。<br>debugComponent引入的组件写法是不同的，组件引入支持两种语法，module直接引用module工程，modulePackage:module，使用componentrelease中已经发布的aar。<br>在集成调试中，要引入的share组件是不需要把自己的isRunAlone修改为false的。一个application工程是不能直接引用（compile）另一个application工程的，所以app和组件都是isRunAlone=true在正常情况下是编译不过的。<br>插件会自动识别当前要调试的具体是哪个组件，然后把其他组件修改为library工程，而且这个修改只在当次编译生效。</p>
+<p>通过task来判断判断当前要运行的是app还是哪个组件，判断的规则如下：<br>assembleRelease → app<br>app:assembleRelease或者 :app:assembleRelease → app<br>sharecomponent:assembleRelease 或者:sharecomponent:assembleRelease→ sharecomponent<br>这样每个组件可以直接在Androidstudio中run，也可以使用命令进行打包，不需要修改任何配置，却可以自动引入依赖的组件，在开发中可以提高工作效率。</p>
+<h1 id="代码边界"><a href="#代码边界" class="headerlink" title="代码边界"></a>代码边界</h1><p>依赖的组件集成到host中，本质还是使用compile project（…）或者compile modulePackage:module@aar。不直接在build.gradle中直接引入是为了组件之间的完全隔离，可以称之为代码边界。为了避免直接引入实现类来编程，绕过了面向接口编程的约束。<br>从task入手，只有在assemble任务的时候才进行compile引入。这样在代码的开发期间，组件是完全不可见的。具体的代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 自动添加依赖，只在运行assemble任务的才会添加依赖，在开发期间组件之间是完全无感知，做到完全隔离的关键</div><div class="line"> * module直接引用module工程，modulePackage:module，使用componentrelease中已经发布的aar</div><div class="line"> * <span class="doctag">@param</span> assembleTask</div><div class="line"> * <span class="doctag">@param</span> project</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">compileComponents</span><span class="params">(AssembleTask assembleTask, Project project)</span> </span>&#123;</div><div class="line">    String components;</div><div class="line">    <span class="keyword">if</span> (assembleTask.isDebug) &#123;</div><div class="line">        components = (String) project.properties.get(<span class="string">"debugComponent"</span>)</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        components = (String) project.properties.get(<span class="string">"compileComponent"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (components == <span class="keyword">null</span> || components.length() == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    String[] compileComponents = components.split(<span class="string">","</span>)</div><div class="line">    <span class="keyword">if</span> (compileComponents == <span class="keyword">null</span> || compileComponents.length == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">for</span> (String str : compileComponents) &#123;</div><div class="line">        <span class="keyword">if</span> (str.contains(<span class="string">":"</span>)) &#123;</div><div class="line">            File file = project.file(<span class="string">"../componentrelease/"</span> + str.split(<span class="string">":"</span>)[<span class="number">1</span>] + <span class="string">"-release.aar"</span>)</div><div class="line">            <span class="keyword">if</span> (file.exists()) &#123;</div><div class="line">                project.dependencies.add(<span class="string">"compile"</span>, str + <span class="string">"-release@aar"</span>)</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(str + <span class="string">" not found ! maybe you should generate a new one "</span>)</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            project.dependencies.add(<span class="string">"compile"</span>, project.project(<span class="string">':'</span> + str))</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h1><p>集成调试，可以在打包的时候把依赖的组件参与编译，此时反编译apk的代码会看到各个组件的代码和资源都已经包含在包里面。但是由于每个组件的唯一入口ApplicationLike还没有执行oncreate()方法，所以组件并没有把自己的服务注册到中央路由，因此组件实际上是不可达的。</p>
+<p>加载组件目前插件提供了两种方式，字节码插入和反射调用。</p>
+<h2 id="字节码插入模式"><a href="#字节码插入模式" class="headerlink" title="字节码插入模式"></a>字节码插入模式</h2><p>在dex生成之前，扫描所有的ApplicationLike类，它有一个共同的父类，然后通过javassist在主项目的Application.onCreate()中插入调用ApplicationLike.onCreate()的代码。这样就相当于每个组件在application启动的时候就加载起来了。</p>
+<h2 id="反射调用的方式"><a href="#反射调用的方式" class="headerlink" title="反射调用的方式"></a>反射调用的方式</h2><p>手动在Application.onCreate()中或者在其他合适的时机手动通过反射的方式来调用ApplicationLike.onCreate()。比起字节码插入，这种方式有两个好处，一是字节码插入对代码进行扫描和插入会增加编译的时间，在debug的时候会影响效率，并且这种模式对Instant Run支持不好；二是可以更灵活的控制加载或者卸载时机。<br>这两种模式的配置是通过配置插件的Extension来实现的，下面是字节码插入的模式下的配置格式，添加applicatonName的目的是加快定位Application的速度。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">combuild &#123;</div><div class="line">    applicatonName = <span class="string">'com.mrzhang.component.application.AppApplication'</span></div><div class="line">    isRegisterCompoAuto = <span class="keyword">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="组件化集成步骤"><a href="#组件化集成步骤" class="headerlink" title="组件化集成步骤"></a>组件化集成步骤</h1><p>以官方的demo为例子：</p>
+<ol>
+<li><p>将项目中的所有第三方库引用添加到basiclib的build.gradle</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">compile <span class="string">'com.squareup.okhttp3:okhttp:3.4.1'</span></div><div class="line">compile <span class="string">'com.squareup.picasso:picasso:2.5.2'</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>将项目中的公共资源如颜色，字符串，风格 ，主要是values里面的东西迁移到basicres</p>
+</li>
+<li>导入gradle插件<br>ComExtension 是否自动注册管理<br>ComBuild gradle task 对组件进行打包<br>ComCodeTransform ConvertUtils 工具类</li>
+<li>componentlib 组件化的基础库 Router/UIRouter的实现</li>
+<li><p>componentservice 定义组件提供的服务接口声明，这里是阅读组件提供了一个fragment</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ReadBookService</span> </span>&#123;</div><div class="line">    <span class="function">Fragment <span class="title">getReadBookFragment</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>readerComponent<br>ui路由的注册，实现IApplicationLike接口，此处使用的是默认的ui路由</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReaderAppLike</span> <span class="keyword">implements</span> <span class="title">IApplicationLike</span> </span>&#123;</div><div class="line"></div><div class="line">    Router router = Router.getInstance();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        router.addService(ReadBookService.class.getSimpleName(), <span class="keyword">new</span> ReadBookServiceImpl());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</div><div class="line">        router.removeService(ReadBookService.class.getSimpleName());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>实现提供的ReadBookService接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReadBookServiceImpl</span> <span class="keyword">implements</span> <span class="title">ReadBookService</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Fragment <span class="title">getReadBookFragment</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ReaderFragment();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>需要提供的fragment实现，点击后跳转到share的activity<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReaderFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> View rootView;</div><div class="line"></div><div class="line">    <span class="meta">@Nullable</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreateView(inflater, container, savedInstanceState);</div><div class="line">        <span class="keyword">if</span> (rootView == <span class="keyword">null</span>) &#123;</div><div class="line">            rootView = inflater.inflate(R.layout.readerbook_fragment_reader, container,</div><div class="line">                    <span class="keyword">false</span>);</div><div class="line">            rootView.findViewById(R.id.tv_content).setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line"></div><div class="line">                <span class="meta">@Override</span></div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">                    UIRouter.getInstance().openUri(getActivity(), <span class="string">"componentdemo://share"</span>, <span class="keyword">null</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> rootView;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ol>
+<li>shareComponent<br>ui路由的注册，实现IApplicationLike接口，使用的是自定义的ui路由<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareApplike</span> <span class="keyword">implements</span> <span class="title">IApplicationLike</span> </span>&#123;</div><div class="line"></div><div class="line">    UIRouter uiRouter = UIRouter.getInstance();</div><div class="line">    ShareUIRouter shareUIRouter = ShareUIRouter.getInstance();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        uiRouter.registerUI(shareUIRouter);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</div><div class="line">        uiRouter.unregisterUI(shareUIRouter);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>自定义ui路由，实现IComponentRouter接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareUIRouter</span> <span class="keyword">implements</span> <span class="title">IComponentRouter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SCHME = <span class="string">"componentdemo"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SHAREHOST = <span class="string">"share"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String[] HOSTS = <span class="keyword">new</span> String[]&#123;SHAREHOST&#125;;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ShareUIRouter instance = <span class="keyword">new</span> ShareUIRouter();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ShareUIRouter</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ShareUIRouter <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">openUri</span><span class="params">(Context context, String url, Bundle bundle)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (TextUtils.isEmpty(url) || context == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> openUri(context, Uri.parse(url), bundle);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">openUri</span><span class="params">(Context context, Uri uri, Bundle bundle)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (uri == <span class="keyword">null</span> || context == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        String host = uri.getHost();</div><div class="line">        <span class="keyword">if</span> (SHAREHOST.equals(host)) &#123;</div><div class="line">            Intent intent = <span class="keyword">new</span> Intent(context, ShareActivity.class);</div><div class="line">            intent.putExtras(bundle == <span class="keyword">null</span> ? <span class="keyword">new</span> Bundle() : bundle);</div><div class="line">            context.startActivity(intent);</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">verifyUri</span><span class="params">(Uri uri)</span> </span>&#123;</div><div class="line">        String scheme = uri.getScheme();</div><div class="line">        String host = uri.getHost();</div><div class="line">        <span class="keyword">if</span> (SCHME.equals(scheme)) &#123;</div><div class="line">            <span class="keyword">for</span> (String str : HOSTS) &#123;</div><div class="line">                <span class="keyword">if</span> (str.equals(host)) &#123;</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>activity的具体实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.share_activity_share);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后在主app中调用：<br>使用shareComponent提供的fragment<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Router router = Router.getInstance();</div><div class="line">       <span class="keyword">if</span> (router.getService(ReadBookService.class.getSimpleName()) != <span class="keyword">null</span>) &#123;</div><div class="line">           ReadBookService service = (ReadBookService) router.getService(ReadBookService.class.getSimpleName());</div><div class="line">           fragment = service.getReadBookFragment();</div><div class="line">           ft = getSupportFragmentManager().beginTransaction();</div><div class="line">           ft.add(R.id.tab_content, fragment).commitAllowingStateLoss();</div><div class="line">       &#125;</div></pre></td></tr></table></figure></p>
+<p>注册activity<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Router.registerComponent(<span class="string">"com.mrzhang.share.applike.ShareApplike"</span>);</div></pre></td></tr></table></figure></p>
+<h1 id="Router实现解析"><a href="#Router实现解析" class="headerlink" title="Router实现解析"></a>Router实现解析</h1><p>不管是哪个组件化方案，路由技术都是必不可少的，得到团队的这个方案路由未采用第三方，且实现了动态加载和卸载，确实不错。</p>
+<ol>
+<li><p>定义组件ui路由接口，组件自定义ui路由需实现这个接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IComponentRouter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 打开一个链接</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> url</div><div class="line">     *          目标url可以是http 或者 自定义scheme</div><div class="line">     * <span class="doctag">@param</span> bundle</div><div class="line">     *          打开目录activity时要传入的参数。建议只传基本类型参数。</div><div class="line">     * <span class="doctag">@return</span> 是否正常打开</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">openUri</span><span class="params">(Context context, String url, Bundle bundle)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">openUri</span><span class="params">(Context context,Uri uri, Bundle bundle)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">verifyUri</span><span class="params">(Uri uri)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>实现一个统一管理ui路由的接口，继承IComponentRouter<br>设置优先级和提供注册方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IUIRouter</span> <span class="keyword">extends</span> <span class="title">IComponentRouter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">int</span> PRIORITY_NORMAL = <span class="number">0</span>;</div><div class="line">    <span class="keyword">int</span> PRIORITY_LOW = -<span class="number">1000</span>;</div><div class="line">    <span class="keyword">int</span> PRIORITY_HEIGHT = <span class="number">1000</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">registerUI</span><span class="params">(IComponentRouter router, <span class="keyword">int</span> priority)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">registerUI</span><span class="params">(IComponentRouter router)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unregisterUI</span><span class="params">(IComponentRouter router)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>实现一个统一管理的ui路由<br>定义了一个路由列表和优先级map</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">List&lt;IComponentRouter&gt; uiRouters = <span class="keyword">new</span> ArrayList&lt;IComponentRouter&gt;();</div><div class="line">   HashMap&lt;IComponentRouter, Integer&gt; priorities = <span class="keyword">new</span> HashMap&lt;IComponentRouter, Integer&gt;();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>提供单例对象的接口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="title">UIRouter</span><span class="params">()</span> </span>&#123;</div><div class="line">   &#125;</div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UIRouter <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">           <span class="keyword">synchronized</span> (UIRouter.class) &#123;</div><div class="line">               <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">                   instance = <span class="keyword">new</span> UIRouter();</div><div class="line">               &#125;</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">return</span> instance;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>注册一个ui路由并设置优先级,如果当前列表存在这个路由且优先级相同则返回，移除已存在的路由对象，遍历路由列表，当优先级小于当前路由时，退出遍历并插入列表，同时插入优先级到优先级map<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerUI</span><span class="params">(IComponentRouter router, <span class="keyword">int</span> priority)</span> </span>&#123;</div><div class="line">     <span class="keyword">if</span> (priorities.containsKey(router) &amp;&amp; priority == priorities.get(router)) &#123;</div><div class="line">         <span class="keyword">return</span>;</div><div class="line">     &#125;</div><div class="line">     removeOldUIRouter(router);</div><div class="line">     <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line">     <span class="keyword">for</span> (IComponentRouter temp : uiRouters) &#123;</div><div class="line">         Integer tp = priorities.get(temp);</div><div class="line">         <span class="keyword">if</span> (tp == <span class="keyword">null</span> || tp &lt;= priority) &#123;</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         &#125;</div><div class="line">         i++;</div><div class="line">     &#125;</div><div class="line">     uiRouters.add(i, router);</div><div class="line">     priorities.put(router, Integer.valueOf(priority));</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>反注册执行移除操作<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unregisterUI</span><span class="params">(IComponentRouter router)</span> </span>&#123;</div><div class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; uiRouters.size(); i++) &#123;</div><div class="line">         <span class="keyword">if</span> (router == uiRouters.get(i)) &#123;</div><div class="line">             uiRouters.remove(i);</div><div class="line">             priorities.remove(router);</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         &#125;</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>统一对ui理由的url进行处理，没有特殊前缀加上http头返回<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">openUri</span><span class="params">(Context context, String url, Bundle bundle)</span> </span>&#123;</div><div class="line">       url = url.trim();</div><div class="line">       <span class="keyword">if</span> (!TextUtils.isEmpty(url)) &#123;</div><div class="line">           <span class="keyword">if</span> (!url.contains(<span class="string">"://"</span>) &amp;&amp;</div><div class="line">                   (!url.startsWith(<span class="string">"tel:"</span>) ||</div><div class="line">                           !url.startsWith(<span class="string">"smsto:"</span>) ||</div><div class="line">                           !url.startsWith(<span class="string">"file:"</span>))) &#123;</div><div class="line">               url = <span class="string">"http://"</span> + url;</div><div class="line">           &#125;</div><div class="line">           Uri uri = Uri.parse(url);</div><div class="line">           <span class="keyword">return</span> openUri(context, uri, bundle);</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>遍历路由列表，调用当前ui路由的检查方法和跳转方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">openUri</span><span class="params">(Context context, Uri uri, Bundle bundle)</span> </span>&#123;</div><div class="line">       <span class="keyword">for</span> (IComponentRouter temp : uiRouters) &#123;</div><div class="line">           <span class="keyword">try</span> &#123;</div><div class="line">               <span class="keyword">if</span> (temp.verifyUri(uri) &amp;&amp; temp.openUri(context, uri, bundle)) &#123;</div><div class="line">                   <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">               &#125;</div><div class="line">           &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">               e.printStackTrace();</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<ol>
+<li>路由实现类Router，负责组件的服务管理和组件注册，同时调用applicationLike的onCreate和onStop，相当于Application的初始化与销毁的生命周期<br>组件的服务map和注册组件map<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> HashMap&lt;String, Object&gt; services = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line"><span class="comment">//注册组件的集合</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> HashMap&lt;String, IApplicationLike&gt; components = <span class="keyword">new</span> HashMap&lt;&gt;();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>提供单例对象的接口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="title">Router</span><span class="params">()</span> </span>&#123;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Router <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">           <span class="keyword">synchronized</span> (Router.class) &#123;</div><div class="line">               <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">                   instance = <span class="keyword">new</span> Router();</div><div class="line">               &#125;</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">return</span> instance;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>组件服务的添加移除和获取<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">addService</span><span class="params">(String serviceName, Object serviceImpl)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (serviceName == <span class="keyword">null</span> || serviceImpl == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        services.put(serviceName, serviceImpl);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Object <span class="title">getService</span><span class="params">(String serviceName)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (serviceName == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> services.get(serviceName);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">removeService</span><span class="params">(String serviceName)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (serviceName == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        services.remove(serviceName);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>组件的注册与反注册，调用此处可实现动态的加载和卸载组件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">   * 注册组件</div><div class="line">   *</div><div class="line">   * <span class="doctag">@param</span> classname 组件名</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">registerComponent</span><span class="params">(@Nullable String classname)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (TextUtils.isEmpty(classname)) &#123;</div><div class="line">          <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (components.keySet().contains(classname)) &#123;</div><div class="line">          <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">          Class clazz = Class.forName(classname);</div><div class="line">          IApplicationLike applicationLike = (IApplicationLike) clazz.newInstance();</div><div class="line">          applicationLike.onCreate();</div><div class="line">          components.put(classname, applicationLike);</div><div class="line">      &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">          e.printStackTrace();</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 反注册组件</div><div class="line">   *</div><div class="line">   * <span class="doctag">@param</span> classname 组件名</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unregisterComponent</span><span class="params">(@Nullable String classname)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (TextUtils.isEmpty(classname)) &#123;</div><div class="line">          <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span> (components.keySet().contains(classname)) &#123;</div><div class="line">          components.get(classname).onStop();</div><div class="line">          components.remove(classname);</div><div class="line">          <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">          Class clazz = Class.forName(classname);</div><div class="line">          IApplicationLike applicationLike = (IApplicationLike) clazz.newInstance();</div><div class="line">          applicationLike.onStop();</div><div class="line">          components.remove(classname);</div><div class="line">      &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">          e.printStackTrace();</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/03/GoogleArchitectureStudy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2415,224 +2660,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/13/KotlinStudy2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/06/13/KotlinStudy2/" itemprop="url">kotlin学习日志2-语法学习</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-13T14:58:08+08:00">
-                2017-06-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/06/13/KotlinStudy2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2017/06/13/KotlinStudy2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2017/06/13/KotlinStudy2/" class="leancloud_visitors" data-flag-title="kotlin学习日志2-语法学习">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<h1 id="定义函数"><a href="#定义函数" class="headerlink" title="定义函数"></a>定义函数</h1><p>入参类型写在变量的后面，返回参数类型写在最后，函数关键字fun。</p>
-<p>语法格式<code>fun 函数名(参数名1:参数类型1,参数名2:参数类型2....):返回类型</code></p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">sum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</div><div class="line">    <span class="keyword">return</span> a + b</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以是表达式的函数体，可推断返回值类型<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">sum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span> = a + b</div></pre></td></tr></table></figure></p>
-<p>没有指定它的返回值(类似于java空返回void)，返回 Unit<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">printSum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span>: <span class="built_in">Unit</span> &#123;</div><div class="line">    println(<span class="string">"sum of <span class="variable">$a</span> and <span class="variable">$b</span> is <span class="subst">$&#123;a + b&#125;</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Unit的返回类型可以被缺省<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">printSum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span> &#123;</div><div class="line">    println(<span class="string">"sum of <span class="variable">$a</span> and <span class="variable">$b</span> is <span class="subst">$&#123;a + b&#125;</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="中缀表达式"><a href="#中缀表达式" class="headerlink" title="中缀表达式"></a>中缀表达式</h2><ol>
-<li>使用infix修饰</li>
-<li>只有一个参数</li>
-<li>参数不能为变长且不能有默认值</li>
-</ol>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">infix</span> <span class="function"><span class="keyword">fun</span> <span class="built_in">Int</span>.<span class="title">add</span><span class="params">(i:<span class="type">Int</span>)</span></span>:<span class="built_in">Int</span> = <span class="keyword">this</span> + i</div><div class="line"><span class="keyword">infix</span> <span class="function"><span class="keyword">fun</span> <span class="built_in">Int</span>.加<span class="params">(i:<span class="type">Int</span>)</span></span>:<span class="built_in">Int</span> = <span class="keyword">this</span> + i</div><div class="line"></div><div class="line">println(<span class="number">1</span> add <span class="number">2</span>)</div><div class="line">println(<span class="number">1</span> 加 <span class="number">2</span>)</div></pre></td></tr></table></figure>
-<h1 id="默认参数"><a href="#默认参数" class="headerlink" title="默认参数"></a>默认参数</h1><p>函数参数可以设置默认值,当参数被忽略时会使用默认值。比起java来，少了重载<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">read</span><span class="params">(b: <span class="type">Array</span>&lt;<span class="type">Byte</span>&gt;, off: <span class="type">Int</span> = <span class="number">0</span>, len: <span class="type">Int</span> = b.size()</span></span> ) &#123;</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>调用默认<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">reformat(str)</div></pre></td></tr></table></figure></p>
-<p>调用非默认<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">reformat(str, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">false</span>, <span class="string">'_'</span>)</div></pre></td></tr></table></figure></p>
-<p>使用命名参数：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">reformat(str,</div><div class="line">    normalizeCase = <span class="literal">true</span>,</div><div class="line">    uppercaseFirstLetter = <span class="literal">true</span>,</div><div class="line">    divideByCamelHumps = <span class="literal">false</span>,</div><div class="line">    wordSeparator = <span class="string">'_'</span></div><div class="line">  )</div></pre></td></tr></table></figure></p>
-<p>调用部分非默认：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">reformat(str, wordSeparator = <span class="string">'_'</span>)</div></pre></td></tr></table></figure></p>
-<h1 id="变长函数"><a href="#变长函数" class="headerlink" title="变长函数"></a>变长函数</h1><p>函数的参数(通常是最后一个参数)可以用 <code>vararg</code>修饰符进行标记一个变长入参，相当于传入数组：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> asList<span class="type">&lt;T&gt;</span><span class="params">(<span class="keyword">vararg</span> ts: <span class="type">T</span>)</span></span>: List&lt;T&gt; &#123;</div><div class="line">	<span class="keyword">val</span> result = ArrayList&lt;T&gt;()</div><div class="line">	<span class="keyword">for</span> (t <span class="keyword">in</span> ts)</div><div class="line">		result.add(t)</div><div class="line">	<span class="keyword">return</span> result</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>标记后,允许给函数传递可变长度的参数：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> list = asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div></pre></td></tr></table></figure></p>
-<p>如果变长入参不是最后一个参数，后面的参数需要通过命名参数语法进行传值。<br>当调用变长参数的函数时，如果需要传递一个 array 的内容给函数，我们就可以使用 * 前缀操作符：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> a = array(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line"><span class="keyword">val</span> list = asList(<span class="number">-1</span>, <span class="number">0</span>, *a, <span class="number">4</span>)</div></pre></td></tr></table></figure></p>
-<h1 id="函数范围"><a href="#函数范围" class="headerlink" title="函数范围"></a>函数范围</h1><p>Kotlin 中可以在文件顶级声明函数，不用像java一样创建一个类来持有函数，除了顶级函数，Kotlin 函数可以声明为局部的，作为成员函数或扩展函数。</p>
-<h2 id="一个函数包含另一函数"><a href="#一个函数包含另一函数" class="headerlink" title="一个函数包含另一函数"></a>一个函数包含另一函数</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">dfs</span><span class="params">(graph: <span class="type">Graph</span>)</span></span> &#123;</div><div class="line">  <span class="function"><span class="keyword">fun</span> <span class="title">dfs</span><span class="params">(current: <span class="type">Vertex</span>, visited: <span class="type">Set</span>&lt;<span class="type">Vertex</span>&gt;)</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> (!visited.add(current)) <span class="keyword">return</span></div><div class="line">    <span class="keyword">for</span> (v <span class="keyword">in</span> current.neighbors)</div><div class="line">      dfs(v, visited)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  dfs(graph.vertices[<span class="number">0</span>], HashSet())</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>局部函数可以访问外部函数的局部变量，局部函数甚至可以返回到外部函数，通过<code>return@标签名</code>的方式<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">reachable</span><span class="params">(from: <span class="type">Vertex</span>, to: <span class="type">Vertex</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</div><div class="line">	<span class="keyword">val</span> visited = HashSet&lt;Vertex&gt;()</div><div class="line">	<span class="function"><span class="keyword">fun</span> <span class="title">dfs</span><span class="params">(current: <span class="type">Vertex</span>)</span></span> &#123;</div><div class="line">		<span class="keyword">if</span> (current == to) <span class="keyword">return</span><span class="symbol">@reachable</span> <span class="literal">true</span></div><div class="line">		<span class="keyword">if</span> (!visited.add(current)) <span class="keyword">return</span></div><div class="line">		<span class="keyword">for</span> (v  <span class="keyword">in</span> current.neighbors)</div><div class="line">			dfs(v)</div><div class="line">	&#125;</div><div class="line">	dfs(from)</div><div class="line">	<span class="keyword">return</span> <span class="literal">false</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h1 id="成员函数"><a href="#成员函数" class="headerlink" title="成员函数"></a>成员函数</h1><p>定义在一个类里面<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sample</span></span>() &#123;</div><div class="line">	<span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123; print(<span class="string">"Foo"</span>) &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>成员函数的调用<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Sample.foo()</div></pre></td></tr></table></figure></p>
-<h1 id="泛型函数"><a href="#泛型函数" class="headerlink" title="泛型函数"></a>泛型函数</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> sigletonArray<span class="type">&lt;T&gt;</span><span class="params">(item: <span class="type">T</span>)</span></span>: Array&lt;T&gt; &#123;</div><div class="line">	<span class="keyword">return</span> Array&lt;T&gt;(<span class="number">1</span>, &#123;item&#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="高阶函数与-lambda-表达式"><a href="#高阶函数与-lambda-表达式" class="headerlink" title="高阶函数与 lambda 表达式"></a>高阶函数与 lambda 表达式</h1><p>kotlin的高阶函数可以接受函数作为参数，并返回一个函数。接收一个 lock 对象和一个函数，运行函数并释放 lock<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">lock</span><span class="params">(lock: <span class="type">Lock</span>, body: ()</span></span> -&gt; T ) : T &#123;</div><div class="line">    lock.lock()</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">return</span> body()</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">finally</span> &#123;</div><div class="line">        lock.unlock()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>body 这里代表函数参的引用，<code>() -&gt; T</code>，是一个没有参数并返回 T 类型的函数</p>
-<p>调用<code>lock()</code> 函数，我们可以传给它另一个函数做参数，两种调用方式，一种是通过::函数名，另一种是通过字面函数</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">toBeSynchroized</span><span class="params">()</span></span> = sharedResource.operation()<span class="comment">//需要传递的函数</span></div><div class="line"><span class="keyword">val</span> result = lock(lock, ::toBeSynchroized)</div></pre></td></tr></table></figure>
-<p>传递一个字面函数(通常是 lambda 表达式)<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> result = lock(lock, &#123;sharedResource.operation()&#125;)</div><div class="line">lock (lock) &#123;sharedResource.operation()&#125; <span class="comment">//最后一个参数是函数，可以省略括号</span></div></pre></td></tr></table></figure></p>
-<h2 id="Lambda表达式-入参-gt-函数主体"><a href="#Lambda表达式-入参-gt-函数主体" class="headerlink" title="Lambda表达式:入参-&gt;函数主体"></a>Lambda表达式:入参-&gt;函数主体</h2><p>对比java的写法：</p>
-<p>Java编写的接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnClickListener</span> </span>&#123;  </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span></span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>调用时java写法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">view.setOnClickListener(<span class="keyword">new</span> OnClickListener() &#123;  </div><div class="line">    <span class="meta">@Override</span>  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;  </div><div class="line">        Toast.makeText(v.getContext(), <span class="string">"Click"</span>, Toast.LENGTH_SHORT).show();  </div><div class="line">    &#125;  </div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
-<p>kotlin写法，这里用到了对象表达式<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">view.setOnClickListener(<span class="keyword">object</span> : OnClickListener &#123;  </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onClick</span><span class="params">(v: <span class="type">View</span>)</span></span> &#123;  </div><div class="line">        toast(<span class="string">"Click"</span>)  </div><div class="line">    &#125;  </div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
-<p>加入lambda写法，入参view-&gt;函数体toast(“Click”)<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">view.setOnClickListener(&#123; view -&gt; toast(<span class="string">"Click"</span>)&#125;)</div></pre></td></tr></table></figure></p>
-<p>如果没有使用左边的参数，可以省去左边部分<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">view.setOnClickListener(&#123; toast(<span class="string">"Click"</span>) &#125;)</div></pre></td></tr></table></figure></p>
-<p>被执行的函数是当前函数的最后一个参数，可以直接放到括号外<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">view.setOnClickListener() &#123; toast(<span class="string">"Click"</span>) &#125;</div></pre></td></tr></table></figure></p>
-<p>被执行的函数是当前函数的唯一参数，可以去掉当前函数的括号<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">view.setOnClickListener &#123; toast(<span class="string">"Click"</span>) &#125;</div></pre></td></tr></table></figure></p>
-<h1 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h1><p>函数的调用过程：每个函数都是一个对象，在函数体内部访问的那些外层变量， 内存占用(函数对象和类都会占用内存)以及虚方法调用都会带来运行时的消耗，函数实际上将程序执行顺序转移到该函数所存放在内存中某个地址，将函数的程序内容执行完后，再返回到转去执行该函数前的地方。</p>
-<p>为了解决使用高阶函数在运行时会带来一些不利，出现了内联函数。在程序编译时，编译器将程序中出现的内联函数的表达式整合到函数被调用的地方去，从而生成的代码内存地址是连续的，减少了压栈/出栈的时间。<br>内联关键字inline，在方法的最前面添加</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> lock<span class="type">&lt;T&gt;</span><span class="params">(lock: <span class="type">Lock</span>, body: ()</span></span> -&gt; T): T &#123;</div><div class="line">  ...</div><div class="line">   body()</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如果一个内联函数的参数中有多个 Lambda 表达式, 而你只希望内联其中的一部分, 你可以对函数的一部分参数添加 noinline 标记:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">(inlined: ()</span></span> -&gt; <span class="built_in">Unit</span>, <span class="keyword">noinline</span> notInlined: () -&gt; <span class="built_in">Unit</span>) &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>空白的 return 在 lambda 函数中是禁止的，因为 lambda 函数不可以造一个闭合函数返回，但如果 lambda 函数是内联传递的，是可以的<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123;</div><div class="line">	ordinaryFunction &#123;</div><div class="line">		<span class="keyword">return</span> <span class="comment">// 错误　不可以在这返回</span></div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123;</div><div class="line">	inlineFunction &#123;</div><div class="line">		<span class="keyword">return</span> <span class="comment">//</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h1 id="返回与跳转"><a href="#返回与跳转" class="headerlink" title="返回与跳转"></a>返回与跳转</h1><p>与java支持的跳转类型相同</p>
-<ul>
-<li>return</li>
-<li>break 结束最近的闭合循环</li>
-<li>continue 跳到最近的闭合循环的下一次循环</li>
-</ul>
-<h2 id="break-和-continue-标签"><a href="#break-和-continue-标签" class="headerlink" title="break 和 continue 标签"></a>break 和 continue 标签</h2><p>标签通过 <code>标签名@</code> 来定义，如：abc@，fooBar@，调用时，是返过来 <code>@标签名</code>。</p>
-<p>break 是跳转标签后面的表达式，continue 是跳转到循环的下一次迭代。</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">loop@</span> <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1.</span><span class="number">.100</span>) &#123;</div><div class="line">	<span class="keyword">for</span> (j <span class="keyword">in</span> i.<span class="number">.100</span>) &#123;</div><div class="line">		<span class="keyword">if</span> (...)</div><div class="line">			<span class="keyword">break</span><span class="symbol">@loop</span></div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">return</span><span class="symbol">@a</span> <span class="number">1</span> <span class="comment">//表示 “在标签 @a 返回 1 ”</span></div><div class="line"></div><div class="line"><span class="comment">//用和传入的 lambda 表达式名字相同的标签</span></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123;</div><div class="line">	ints.forEach &#123;</div><div class="line">		<span class="keyword">if</span> (it == <span class="number">0</span>) <span class="keyword">return</span><span class="symbol">@forEach</span></div><div class="line">		print(it)</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//用命名函数自动定义的标签</span></div><div class="line">foo outer() &#123;</div><div class="line">	foo inner() &#123;</div><div class="line">		<span class="keyword">return</span><span class="symbol">@outer</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="this表达式"><a href="#this表达式" class="headerlink" title="this表达式"></a>this表达式</h1><p>为了在范围外部访问 this ，使用<code>this@标签名</code>来访问<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123; <span class="comment">// implicit label @A</span></div><div class="line">  inner <span class="class"><span class="keyword">class</span> <span class="title">B</span> </span>&#123; <span class="comment">// implicit label @B</span></div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="built_in">Int</span>.<span class="title">foo</span><span class="params">()</span></span> &#123; <span class="comment">// implicit label @foo</span></div><div class="line">      <span class="keyword">val</span> a = <span class="keyword">this</span><span class="symbol">@A</span> <span class="comment">// A's this</span></div><div class="line">      <span class="keyword">val</span> b = <span class="keyword">this</span><span class="symbol">@B</span> <span class="comment">// B's this</span></div><div class="line"></div><div class="line">      <span class="keyword">val</span> c = <span class="keyword">this</span> <span class="comment">// foo()'s receiver, an Int</span></div><div class="line">      <span class="keyword">val</span> c1 = <span class="keyword">this</span><span class="symbol">@foo</span> <span class="comment">// foo()'s receiver, an Int</span></div><div class="line"></div><div class="line">      <span class="keyword">val</span> funLit = <span class="meta">@lambda</span> &#123;String.() -&gt;</div><div class="line">        <span class="keyword">val</span> d = <span class="keyword">this</span> <span class="comment">// funLit's receiver</span></div><div class="line">        <span class="keyword">val</span> d1 = <span class="keyword">this</span><span class="symbol">@lambda</span> <span class="comment">// funLit's receiver</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line"></div><div class="line">      <span class="keyword">val</span> funLit2 = &#123; (s: String) -&gt;</div><div class="line">        <span class="comment">// foo()'s receiver, since enclosing function literal </span></div><div class="line">        <span class="comment">// doesn't have any receiver</span></div><div class="line">        <span class="keyword">val</span> d1 = <span class="keyword">this</span> </div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2687,7 +2714,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2709,7 +2736,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
