@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ntp," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近公司有个需求，希望在不同的Android设备上实现视频的播放同步，误差尽可能的小，后期继续优化实现逐帧同步效果，以便后期进行矩阵拼接屏的研发，前期处于试探性阶段，在App上实现，目前误差在10-20ms内，属于肉眼完全看不出的误差效果范围，只有利用手机的慢动作摄影才能看出一点过渡误差，并且视频播放出的声音听起来也完全同步。对于请求主机时间消息的传递误差，主要利用了ntp时间同步技术来解决，对">
+<meta name="keywords" content="ntp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android上利用Ntp实现不同设备间的同步">
+<meta property="og:url" content="http://yoursite.com/2019/07/20/NtpSync/index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="最近公司有个需求，希望在不同的Android设备上实现视频的播放同步，误差尽可能的小，后期继续优化实现逐帧同步效果，以便后期进行矩阵拼接屏的研发，前期处于试探性阶段，在App上实现，目前误差在10-20ms内，属于肉眼完全看不出的误差效果范围，只有利用手机的慢动作摄影才能看出一点过渡误差，并且视频播放出的声音听起来也完全同步。对于请求主机时间消息的传递误差，主要利用了ntp时间同步技术来解决，对">
+<meta property="og:updated_time" content="2019-07-21T10:32:51.123Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android上利用Ntp实现不同设备间的同步">
+<meta name="twitter:description" content="最近公司有个需求，希望在不同的Android设备上实现视频的播放同步，误差尽可能的小，后期继续优化实现逐帧同步效果，以便后期进行矩阵拼接屏的研发，前期处于试探性阶段，在App上实现，目前误差在10-20ms内，属于肉眼完全看不出的误差效果范围，只有利用手机的慢动作摄影才能看出一点过渡误差，并且视频播放出的声音听起来也完全同步。对于请求主机时间消息的传递误差，主要利用了ntp时间同步技术来解决，对">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/20/NtpSync/"/>
+
+
+
+
+
+  <title>Android上利用Ntp实现不同设备间的同步 | JessieK's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/20/NtpSync/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android上利用Ntp实现不同设备间的同步</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-20T20:31:21+08:00">
+                2019-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/07/20/NtpSync/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/20/NtpSync/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/07/20/NtpSync/" class="leancloud_visitors" data-flag-title="Android上利用Ntp实现不同设备间的同步">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>最近公司有个需求，希望在不同的Android设备上实现视频的播放同步，误差尽可能的小，后期继续优化实现逐帧同步效果，以便后期进行矩阵拼接屏的研发，前期处于试探性阶段，在App上实现，目前误差在10-20ms内，属于肉眼完全看不出的误差效果范围，只有利用手机的慢动作摄影才能看出一点过渡误差，并且视频播放出的声音听起来也完全同步。对于请求主机时间消息的传递误差，主要利用了ntp时间同步技术来解决，对于视频的加载耗时通过两个播放器实例交替加载，达到预先加载的效果来解决，加载视频耗时造成的误差基本可以忽略不计。只要获取到了当前的主机时间，那么就能推算出主机的播放时间，这个时间可以看作是所有设备同步播放的时间，也能算出当前设备时间到这个同步播放时间的偏移量，达到准时播放同一个视频的效果。由于设备不一定一直联网，排除设备的时钟时间错误造成的干扰，这里统一采用rtc时间（硬件时钟）。这里主要记录一下在Android平台上ntp协议的应用。</p>
+<hr>
+<h1 id="NTP协议简介"><a href="#NTP协议简介" class="headerlink" title="NTP协议简介"></a>NTP协议简介</h1><p>网络时间协议NTP(Network Time Protocol)用于将计算机客户或服务器的时间与另一服务器同步，使用层次式时间分布模型。在配置时，NTP可以利用冗余服务器和多条网络路径来获得时间的高准确性和高可靠性。即使客户机在长时间无法与某一时间服务器相联系的情况下,仍可提供高准确度时间。</p>
+<p>联网计算机同步时钟最简便的方法是网络授时。网络授时分为广域网授时和局域网授时。广域网授时精度通常能达50ms级，但有时超过500ms，这是因为每次经过的路由器路径可能不相同。现在还没有更好的办法将这种不同路径延迟的时间误差完全消除。局域网授时不存在路由器路径延迟问题，因而授时精度理论上可以提到亚毫秒级。Windows内置NTP服务，在局域网内其最高授时精度也只能达10ms级。</p>
+<h2 id="进一步提高NTP授时精度的方法"><a href="#进一步提高NTP授时精度的方法" class="headerlink" title="进一步提高NTP授时精度的方法"></a>进一步提高NTP授时精度的方法</h2><p>局域网络延相对较大的原因在于时间戳的发送请求和接收一般都是在应用层。减少操作系统内核处理延时可以提高NTP授时精度，使发/收NTP包时间戳应尽量接近主机真实发/收包时刻。在不改变硬件的条件下，修改网卡驱动程序，将记录NTP包发/收时间戳从应用程序移至网卡驱动程序处，可消除操作系统内核处理延时不确定而造成的误差。这种方法在局域网中可大幅提高NTP授时精度至μs级。</p>
+<h1 id="NTP的算法推导"><a href="#NTP的算法推导" class="headerlink" title="NTP的算法推导"></a>NTP的算法推导</h1><p>NTP最典型的授时方式是Client/Server方式。如下图所示，客户机首先向服务器发送一个NTP包，其中包含了该包离开客户机的时间戳T1，当服务器接收到该包时，依次填入包到达的时间戳T2、包离开的时间戳T3，然后立即把包返回给客户机。客户机在接收到响应包时，记录包返回的时间戳T4。客户机用上述4个时间参数就能够计算出2个关键参数：NTP包的往返延迟d和客户机与服务器之间的时钟偏差t。客户机使用时钟偏差来调整本地时钟，以使其时间与服务器时间一致。</p>
+<p>T1为客户发送NTP请求时间戳(以客户时间为参照)；T2为服务器收到NTP请求时间戳(以服务器时间为参照)；T3为服务器回复NTP请求时间戳(以服务器时间为参照)；T4为客户收到NTP回复包时间戳(以客户时间为参照)；d1为NTP请求包传送延时，d2为NTP回复包传送延时；t为服务器和客户端之间的时间偏差，d为NTP包的往返时间<br>那么服务器的处理时间为T3 - T2，服务器从发送请求到接收应答总时间为T4 - T1<br>例如T1客户发送NTP请求时间为10:00:00am，T2服务器收到NTP请求时间为11:00:01am，T3服务器回复NTP请求时间为11:00:02am，T4客户端收到NTP回复包10:00:03am，那么<br>d = (T4 - T1) - (T3 - T2) = 2秒<br>客户端设备相对服务端设备的时间差为<br>t = (T2 - T1) + (T3 - T4) / 2 约等于 1 小时</p>
+<h1 id="Android代码实现"><a href="#Android代码实现" class="headerlink" title="Android代码实现"></a>Android代码实现</h1><h2 id="客户端请求ntp时间"><a href="#客户端请求ntp时间" class="headerlink" title="客户端请求ntp时间"></a>客户端请求ntp时间</h2><p>已知客户端T1，T4时间，实现从服务器返回的报文中获取T2，T3时间参数并计算服务器ntp时间<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div></pre></td><td class="code"><pre><div class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NTP_PACKET_SIZE = <span class="number">48</span>;</div><div class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NTP_MODE_CLIENT = <span class="number">3</span>;</div><div class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NTP_VERSION = <span class="number">3</span>;</div><div class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RECEIVE_TIME_OFFSET = <span class="number">32</span>;</div><div class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSMIT_TIME_OFFSET = <span class="number">40</span>;</div><div class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> OFFSET_1900_TO_1970 = ((<span class="number">365L</span> * <span class="number">70L</span>) + <span class="number">17L</span>) * <span class="number">24L</span> * <span class="number">60L</span> * <span class="number">60L</span>;</div><div class="line"><span class="comment">/**</span></div><div class="line">    * 请求ntp服务器设备的时间，设置服务器IP地址，端口号，以及超时时间</div><div class="line">    *</div><div class="line">    * <span class="doctag">@param</span> ipAddress ip地址</div><div class="line">    * <span class="doctag">@param</span> port      端口号</div><div class="line">    * <span class="doctag">@param</span> timeout   超时时间单位毫秒</div><div class="line">    * <span class="doctag">@return</span> 如果请求成功返回true</div><div class="line">    */</div><div class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">requestTime</span><span class="params">(String ipAddress, <span class="keyword">int</span> port, <span class="keyword">int</span> timeout)</span> </span>&#123;</div><div class="line">       <span class="keyword">try</span> &#123;</div><div class="line">           InetAddress address = InetAddress.getByName(ipAddress);</div><div class="line">           DatagramSocket mSocket = <span class="keyword">new</span> DatagramSocket();</div><div class="line">           mSocket.setSoTimeout(timeout);</div><div class="line">           <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[NTP_PACKET_SIZE];</div><div class="line">           DatagramPacket request = <span class="keyword">new</span> DatagramPacket(buffer, buffer.length, address, port);</div><div class="line">           buffer[<span class="number">0</span>] = NTP_MODE_CLIENT | (NTP_VERSION &lt;&lt; <span class="number">3</span>);</div><div class="line">           <span class="comment">// 请求发送时间</span></div><div class="line">           <span class="keyword">final</span> <span class="keyword">long</span> requestTicks = SystemClock.elapsedRealtime();</div><div class="line">           mSocket.send(request);</div><div class="line">           <span class="comment">// 读取服务器响应数据包</span></div><div class="line">           DatagramPacket response = <span class="keyword">new</span> DatagramPacket(buffer, buffer.length);</div><div class="line">           mSocket.receive(response);</div><div class="line">           <span class="comment">// 收到服务器响应时间</span></div><div class="line">           <span class="keyword">final</span> <span class="keyword">long</span> responseTicks = SystemClock.elapsedRealtime();</div><div class="line">           <span class="comment">// 服务器的接收时间</span></div><div class="line">           <span class="keyword">final</span> <span class="keyword">long</span> receiveTime = readTimeStamp(buffer, RECEIVE_TIME_OFFSET);</div><div class="line">           <span class="comment">// 服务器的发送时间</span></div><div class="line">           <span class="keyword">final</span> <span class="keyword">long</span> transmitTime = readTimeStamp(buffer, TRANSMIT_TIME_OFFSET);</div><div class="line">           <span class="comment">// 计算时间客户端和服务器的时间差（服务器收到请求时间 - 客户端请求时间） + （服务器回复请求时间 - 客户端收到回复时间） / 2</span></div><div class="line">           <span class="keyword">long</span> clockOffset = ((receiveTime - requestTicks) + (transmitTime - responseTicks)) / <span class="number">2</span>;</div><div class="line">           <span class="comment">// 当前ntp服务器的时间</span></div><div class="line">           <span class="keyword">long</span> mNtpTime = SystemClock.elapsedRealtime() + clockOffset;</div><div class="line">           <span class="comment">// 添加到平均值计算集合中，求平均值使得计算误差更小</span></div><div class="line">           addDeviation(clockOffset);</div><div class="line">       &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">           <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">       &#125; <span class="keyword">finally</span> &#123;</div><div class="line">           <span class="keyword">try</span> &#123;</div><div class="line">               <span class="keyword">if</span> (mSocket != <span class="keyword">null</span>) &#123;</div><div class="line">                   <span class="keyword">if</span> (!mSocket.isClosed()) &#123;</div><div class="line">                       mSocket.close();</div><div class="line">                   &#125;</div><div class="line">                   mSocket.disconnect();</div><div class="line">                   mSocket = <span class="keyword">null</span>;</div><div class="line">               &#125;</div><div class="line">           &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">               e.printStackTrace();</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">   &#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">    * 从buffer中读取32位的大端数</div><div class="line">    */</div><div class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">long</span> <span class="title">read32</span><span class="params">(<span class="keyword">byte</span>[] buffer, <span class="keyword">int</span> offset)</span> </span>&#123;</div><div class="line">       <span class="keyword">byte</span> b0 = buffer[offset];</div><div class="line">       <span class="keyword">byte</span> b1 = buffer[offset + <span class="number">1</span>];</div><div class="line">       <span class="keyword">byte</span> b2 = buffer[offset + <span class="number">2</span>];</div><div class="line">       <span class="keyword">byte</span> b3 = buffer[offset + <span class="number">3</span>];</div><div class="line">       <span class="comment">// convert signed bytes to unsigned values</span></div><div class="line">       <span class="keyword">int</span> i0 = ((b0 &amp; <span class="number">0x80</span>) == <span class="number">0x80</span> ? (b0 &amp; <span class="number">0x7F</span>) + <span class="number">0x80</span> : b0);</div><div class="line">       <span class="keyword">int</span> i1 = ((b1 &amp; <span class="number">0x80</span>) == <span class="number">0x80</span> ? (b1 &amp; <span class="number">0x7F</span>) + <span class="number">0x80</span> : b1);</div><div class="line">       <span class="keyword">int</span> i2 = ((b2 &amp; <span class="number">0x80</span>) == <span class="number">0x80</span> ? (b2 &amp; <span class="number">0x7F</span>) + <span class="number">0x80</span> : b2);</div><div class="line">       <span class="keyword">int</span> i3 = ((b3 &amp; <span class="number">0x80</span>) == <span class="number">0x80</span> ? (b3 &amp; <span class="number">0x7F</span>) + <span class="number">0x80</span> : b3);</div><div class="line"></div><div class="line">       <span class="keyword">return</span> ((<span class="keyword">long</span>) i0 &lt;&lt; <span class="number">24</span>) + ((<span class="keyword">long</span>) i1 &lt;&lt; <span class="number">16</span>) + ((<span class="keyword">long</span>) i2 &lt;&lt; <span class="number">8</span>)</div><div class="line">               + (<span class="keyword">long</span>) i3;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="comment">/**</span></div><div class="line">    * 从buffer中读取时间戳</div><div class="line">    * 返回毫秒数</div><div class="line">    */</div><div class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">long</span> <span class="title">readTimeStamp</span><span class="params">(<span class="keyword">byte</span>[] buffer, <span class="keyword">int</span> offset)</span> </span>&#123;</div><div class="line">       <span class="comment">// 读取秒数</span></div><div class="line">       <span class="keyword">long</span> seconds = read32(buffer, offset);</div><div class="line">       <span class="comment">// 读取小数</span></div><div class="line">       <span class="keyword">long</span> fraction = read32(buffer, offset + <span class="number">4</span>);</div><div class="line">       <span class="keyword">return</span> ((seconds - OFFSET_1900_TO_1970) * <span class="number">1000</span>)</div><div class="line">               + ((fraction * <span class="number">1000L</span>) / <span class="number">0x100000000L</span>);</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>这里的SystemClock.elapsedRealtime()是获取设备启动后到现在的时间（硬件时间），System.currentTimeMillis()获取的是系统时间（软件时间），是距离1970年1月1日开始计算的一个值，这里为了减少误差，避免因为外界修改软件时间而导致时间不准的情况而使用硬件时间。</p>
+<h1 id="服务器返回ntp时间"><a href="#服务器返回ntp时间" class="headerlink" title="服务器返回ntp时间"></a>服务器返回ntp时间</h1><p>从客户端发的报文中获取响应地址和端口号，把收到请求的时间写入报文并保存到链表，从链表中取出刚才放入的报文，写入发送响应的时间发给客户端<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> OFFSET_1900_TO_1970 = ((<span class="number">365L</span> * <span class="number">70L</span>) + <span class="number">17L</span>) * <span class="number">24L</span> * <span class="number">60L</span> * <span class="number">60L</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RECEIVE_TIME_OFFSET = <span class="number">32</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSMIT_TIME_OFFSET = <span class="number">40</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NTP_PACKET_SIZE = <span class="number">48</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NTP_MODE_SERVIER = <span class="number">0</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NTP_VERSION = <span class="number">3</span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(<span class="keyword">int</span> port)</span> </span>&#123;</div><div class="line">    mCompositeDisposable.add(Observable.just(<span class="number">1</span>).subscribeOn(Schedulers.io())</div><div class="line">            .subscribe(integer -&gt; &#123;</div><div class="line">                start = <span class="keyword">true</span>;</div><div class="line">                Logger.t(TAG).d(<span class="string">"服务端开启 port="</span> + port);</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    mSocket = <span class="keyword">new</span> DatagramSocket(<span class="keyword">null</span>);</div><div class="line">                    <span class="comment">// 设置端口重用</span></div><div class="line">                    mSocket.setReuseAddress(<span class="keyword">true</span>);</div><div class="line">                    <span class="comment">// 绑定端口号</span></div><div class="line">                    mSocket.bind(<span class="keyword">new</span> InetSocketAddress(port));</div><div class="line">                    <span class="keyword">while</span> (start) &#123;</div><div class="line">                        <span class="keyword">try</span> &#123;</div><div class="line">                            <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[NTP_PACKET_SIZE];</div><div class="line">                            DatagramPacket response = <span class="keyword">new</span> DatagramPacket(buffer,</div><div class="line">                                    buffer.length);</div><div class="line">                            buffer[<span class="number">0</span>] = NTP_MODE_SERVIER | (NTP_VERSION &lt;&lt; <span class="number">3</span>);</div><div class="line">                            Logger.t(TAG).d(<span class="string">"等待接收客户端消息"</span>);</div><div class="line">                            mSocket.receive(response);</div><div class="line">                            DatagramPacket echo = <span class="keyword">new</span> DatagramPacket(buffer, buffer.length, response.getAddress(), response.getPort());</div><div class="line">                            Logger.t(TAG).d(<span class="string">"收到客户端请求="</span> + response.getAddress());</div><div class="line">                            <span class="comment">// 把收到的时间写入buffer</span></div><div class="line">                            writeTimeStamp(buffer, RECEIVE_TIME_OFFSET, SystemClock.elapsedRealtime());</div><div class="line">                            <span class="comment">// 添加到链表</span></div><div class="line">                            mLinkedList.add(echo);</div><div class="line">                        &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                            Logger.t(TAG).e(<span class="string">"while receive failed:"</span> + e);</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                    Logger.t(TAG).e(<span class="string">"response failed:"</span> + e);</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    Logger.t(TAG).e(<span class="string">"关闭socket"</span>);</div><div class="line">                    <span class="keyword">if</span> (mSocket != <span class="keyword">null</span>) &#123;</div><div class="line">                        <span class="keyword">if</span> (!mSocket.isClosed()) &#123;</div><div class="line">                            mSocket.close();</div><div class="line">                        &#125;</div><div class="line">                        mSocket.disconnect();</div><div class="line">                        mSocket = <span class="keyword">null</span>;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;));</div><div class="line">    mCompositeDisposable.add(Observable.just(<span class="number">1</span>).subscribeOn(Schedulers.io())</div><div class="line">            .subscribe(integer -&gt; &#123;</div><div class="line">                mSendSocket = <span class="keyword">new</span> DatagramSocket();</div><div class="line">                mSendSocket.setSoTimeout(<span class="number">2000</span>);</div><div class="line">                <span class="keyword">while</span> (start) &#123;</div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        <span class="keyword">if</span> (mLinkedList.size() &gt; <span class="number">0</span>) &#123;</div><div class="line">                            <span class="comment">// 取出刚才放入链表的数据包</span></div><div class="line">                            DatagramPacket first = mLinkedList.removeFirst();</div><div class="line">                            <span class="keyword">if</span> (first != <span class="keyword">null</span>) &#123;</div><div class="line">                                <span class="comment">// 写入发送响应包的时间</span></div><div class="line">                                writeTimeStamp(first.getData(), TRANSMIT_TIME_OFFSET, SystemClock.elapsedRealtime());</div><div class="line">                                Logger.t(TAG).d(<span class="string">"向客户端发送消息="</span> + first.getAddress());</div><div class="line">                                mSendSocket.send(first);</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                        Logger.t(TAG).e(<span class="string">"while send failed:"</span> + e);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                Logger.t(TAG).d(<span class="string">"发送消息端关闭"</span>);</div><div class="line">            &#125;));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 写入硬件时间到buffer中</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeTimeStamp</span><span class="params">(<span class="keyword">byte</span>[] buffer, <span class="keyword">int</span> offset, <span class="keyword">long</span> time)</span> </span>&#123;</div><div class="line">    <span class="keyword">long</span> seconds = time / <span class="number">1000L</span>;</div><div class="line">    <span class="keyword">long</span> milliseconds = time - seconds * <span class="number">1000L</span>;</div><div class="line">    seconds += OFFSET_1900_TO_1970;</div><div class="line"></div><div class="line">    <span class="comment">// 按大端模式写入秒数</span></div><div class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (seconds &gt;&gt; <span class="number">24</span>);</div><div class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (seconds &gt;&gt; <span class="number">16</span>);</div><div class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (seconds &gt;&gt; <span class="number">8</span>);</div><div class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (seconds &gt;&gt; <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="keyword">long</span> fraction = milliseconds * <span class="number">0x100000000L</span> / <span class="number">1000L</span>;</div><div class="line">    <span class="comment">// 按大端模式写入小数</span></div><div class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (fraction &gt;&gt; <span class="number">24</span>);</div><div class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (fraction &gt;&gt; <span class="number">16</span>);</div><div class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (fraction &gt;&gt; <span class="number">8</span>);</div><div class="line">    <span class="comment">// 低位字节随机</span></div><div class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (Math.random() * <span class="number">255.0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ntp/" rel="tag"># ntp</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/13/MacRemoveAnySearch/" rel="next" title="Mac移除浏览器劫持AnySearch">
+                <i class="fa fa-chevron-left"></i> Mac移除浏览器劫持AnySearch
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="Jessie Kate" />
+            
+              <p class="site-author-name" itemprop="name">Jessie Kate</p>
+              <p class="site-description motion-element" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NTP协议简介"><span class="nav-number">1.</span> <span class="nav-text">NTP协议简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#进一步提高NTP授时精度的方法"><span class="nav-number">1.1.</span> <span class="nav-text">进一步提高NTP授时精度的方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NTP的算法推导"><span class="nav-number">2.</span> <span class="nav-text">NTP的算法推导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android代码实现"><span class="nav-number">3.</span> <span class="nav-text">Android代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端请求ntp时间"><span class="nav-number">3.1.</span> <span class="nav-text">客户端请求ntp时间</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器返回ntp时间"><span class="nav-number">4.</span> <span class="nav-text">服务器返回ntp时间</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz',
+        appKey: 'h0CQIfed08e67roNpfhTzHOH',
+        placeholder: '在这里写下你的评论吧～',
+        avatar:'wavatar',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz", "h0CQIfed08e67roNpfhTzHOH");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
