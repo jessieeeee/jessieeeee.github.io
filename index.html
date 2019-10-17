@@ -1025,9 +1025,18 @@
 <ol>
 <li>绿色灯闪烁，读取到了SD卡并且也正常启动了系统</li>
 <li>红色灯常亮，电源接入正常</li>
-<li>橙色灯亮全双工状态，不亮半双工状态</li>
+<li>橙色灯亮全双工状态，不亮半双工状态<h1 id="ssh连接"><a href="#ssh连接" class="headerlink" title="ssh连接"></a>ssh连接</h1>我认为最简单的方法如下:</li>
+<li>树莓派默认没有开启ssh，把sd卡用读卡器插到电脑上，创建一个名为ssh的文件</li>
+<li>直接用网线连在家里的路由器上，通过路由器后台查看ip地址连接<br><code>ssh pi@xxx.xxx.xxx.xxx</code><br>默认密码为raspberry<h1 id="设置中文显示"><a href="#设置中文显示" class="headerlink" title="设置中文显示"></a>设置中文显示</h1>打开系统设置<code>sudo raspi-config</code></li>
 </ol>
-<h1 id="shadowsocks配置"><a href="#shadowsocks配置" class="headerlink" title="shadowsocks配置"></a>shadowsocks配置</h1><ol>
+<ul>
+<li>Localisation Options -&gt; Change Locale</li>
+<li>按空格选择</li>
+<li>去掉en_GB.UTF-8 UTF-8</li>
+<li>勾上en_US.UTF-8 UTF-8、zh_CN.UTF-8 UTF-8、zh_CN.GBK GBK</li>
+<li>下一屏幕默认语言选zh_CN.UTF-8<h1 id="shadowsocks配置"><a href="#shadowsocks配置" class="headerlink" title="shadowsocks配置"></a>shadowsocks配置</h1></li>
+</ul>
+<ol>
 <li>安装python的依赖库<br><code>sudo apt-get install python-pip python-gevent python-m2crypto</code></li>
 <li>利用python安装shadowsocks，注意别忘记sudo，否则可能造成安装路径有问题而无法使用sslocal的命令<br>i</li>
 <li>修改/usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/openssl.py，将此文件中的52行和111行中的cleanup替换为reset，否则可能执行启动命令报错</li>
@@ -2105,6 +2114,14 @@
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
 
   
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站总访问量: <span id="busuanzi_value_site_pv"></span>次
+    </span>
 </div>
 
 
@@ -2120,8 +2137,15 @@
 
 
 
-
         
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
 
 
 
@@ -2276,7 +2300,24 @@
         guest_info:guest,
         pageSize:'10' || 10,
     });
-  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
 
 
