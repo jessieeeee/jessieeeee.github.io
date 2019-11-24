@@ -83,13 +83,12 @@
 <meta name="keywords" content="DoubleScreen">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Presentation实现双屏异显">
-<meta property="og:url" content="http://yoursite.com/2018/10/21/Presentation/index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;10&#x2F;21&#x2F;Presentation&#x2F;index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。  Pres">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-10-21T14:22:08.547Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Presentation实现双屏异显">
-<meta name="twitter:description" content="由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。  Pres">
 
 
 
@@ -181,7 +180,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
+          <a href="/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -191,7 +190,7 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
+          <a href="/about/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -201,7 +200,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
+          <a href="/tags/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -211,7 +210,7 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
+          <a href="/categories/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -221,7 +220,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
+          <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -365,11 +364,13 @@
 <p>由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。</p>
 <hr>
 <p>Presentation是一个特殊的dialog，可以在辅屏上显示与主屏不一样的内容，设置里面也可以把“模拟第二屏”的功能打开，运行的时候会在左上角显示一个小窗口来显示第二屏的显示内容，Presentation在创建的时候需要和Display对象相关联，关联之前需要先获取显示设备，DisplayManager或MediaRouter都可以来获取显示设备。下面用最简单的两个例子来介绍，在主屏和辅屏上都显示一个不同内容的TextView文本。</p>
-<h1 id="设置权限"><a href="#设置权限" class="headerlink" title="设置权限"></a>设置权限</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_ALERT_WINDOW"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_OVERLAY_WINDOW"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<h1 id="DisplayManager实现"><a href="#DisplayManager实现" class="headerlink" title="DisplayManager实现"></a>DisplayManager实现</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPresentation</span> <span class="keyword">extends</span> <span class="title">Presentation</span> </span>&#123;</div><div class="line"></div><div class="line">       <span class="function"><span class="keyword">public</span> <span class="title">MyPresentation</span><span class="params">(Context outerContext, Display display)</span> </span>&#123;</div><div class="line">           <span class="keyword">super</span>(outerContext,display);</div><div class="line"></div><div class="line">       &#125;</div><div class="line">       <span class="meta">@Override</span></div><div class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">           <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">           setContentView(R.layout.second_screen);</div><div class="line"></div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> MyPresentation myPresentation;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">        DisplayManager manager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);</div><div class="line">        Display[] displays = manager.getDisplays();</div><div class="line">        <span class="keyword">if</span> (presentationDisplays.length &gt; <span class="number">1</span>) &#123;</div><div class="line">            <span class="comment">// displays[0] 主屏 displays[1] 辅屏</span></div><div class="line">            myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>,displays[<span class="number">1</span>]);</div><div class="line">            myPresentation.getWindow().setType(</div><div class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</div><div class="line">            myPresentation.show();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span> </span>&#123;</div><div class="line">        onDestroy();</div><div class="line">        <span class="comment">//完全退出应用，取消双屏异显</span></div><div class="line">        Intent startMain = <span class="keyword">new</span> Intent(Intent.ACTION_MAIN);</div><div class="line">        startMain.addCategory(Intent.CATEGORY_HOME);</div><div class="line">        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div><div class="line">        startActivity(startMain);</div><div class="line">        System.exit(<span class="number">0</span>);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h1 id="设置权限"><a href="#设置权限" class="headerlink" title="设置权限"></a>设置权限</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_ALERT_WINDOW"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_OVERLAY_WINDOW"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="DisplayManager实现"><a href="#DisplayManager实现" class="headerlink" title="DisplayManager实现"></a>DisplayManager实现</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPresentation</span> <span class="keyword">extends</span> <span class="title">Presentation</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="title">MyPresentation</span><span class="params">(Context outerContext, Display display)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">super</span>(outerContext,display);</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">       <span class="meta">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">           setContentView(R.layout.second_screen);</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MyPresentation myPresentation;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        DisplayManager manager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);</span><br><span class="line">        Display[] displays = manager.getDisplays();</span><br><span class="line">        <span class="keyword">if</span> (presentationDisplays.length &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">// displays[0] 主屏 displays[1] 辅屏</span></span><br><span class="line">            myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>,displays[<span class="number">1</span>]);</span><br><span class="line">            myPresentation.getWindow().setType(</span><br><span class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</span><br><span class="line">            myPresentation.show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        onDestroy();</span><br><span class="line">        <span class="comment">//完全退出应用，取消双屏异显</span></span><br><span class="line">        Intent startMain = <span class="keyword">new</span> Intent(Intent.ACTION_MAIN);</span><br><span class="line">        startMain.addCategory(Intent.CATEGORY_HOME);</span><br><span class="line">        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">        startActivity(startMain);</span><br><span class="line">        System.exit(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>这里的activity_main和second_screen就是一个xml布局，放了一个不同内容的TextView文本，代码就不贴了，可以看到DisplayManager的getDisplays方法可以返回一个可显示的Display数组，也就是当前可以连接的屏幕列表，第一个元素是主屏的Display对象，第二个元素是辅屏的Display对象，然后把辅屏的Display对象传入到Presentation的构造函数中绑定，设置窗口类型就可以展示了。</p>
-<h1 id="MediaRouter实现"><a href="#MediaRouter实现" class="headerlink" title="MediaRouter实现"></a>MediaRouter实现</h1><p>这里就只贴辅屏的Display对象获取并传入到Presentation的构造函数中绑定的代码，因为其余部分都是一样的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">MediaRouter mediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);</div><div class="line">MediaRouter.RouteInfo route = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);</div><div class="line"><span class="keyword">if</span>(route != <span class="keyword">null</span>) &#123;</div><div class="line">    Display display = route.getPresentationDisplay();</div><div class="line">    <span class="keyword">if</span> (display != <span class="keyword">null</span>) &#123;</div><div class="line">        myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>, display);</div><div class="line">        myPresentation.getWindow().setType(</div><div class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</div><div class="line">        myPresentation.show();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="MediaRouter实现"><a href="#MediaRouter实现" class="headerlink" title="MediaRouter实现"></a>MediaRouter实现</h1><p>这里就只贴辅屏的Display对象获取并传入到Presentation的构造函数中绑定的代码，因为其余部分都是一样的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">MediaRouter mediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);</span><br><span class="line">MediaRouter.RouteInfo route = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);</span><br><span class="line"><span class="keyword">if</span>(route != <span class="keyword">null</span>) &#123;</span><br><span class="line">    Display display = route.getPresentationDisplay();</span><br><span class="line">    <span class="keyword">if</span> (display != <span class="keyword">null</span>) &#123;</span><br><span class="line">        myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>, display);</span><br><span class="line">        myPresentation.getWindow().setType(</span><br><span class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</span><br><span class="line">        myPresentation.show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>MediaRouter与DisplayManager不同的是MediaRouter会直接绑定周围最合适的设备。总的来说，这两个API实现的思路大致相同，都是要自定义Presentation，获取到一个辅屏的Display对象传入到Presentation的构造函数中进行绑定，Presentation初始化完成后设置窗口类型然后展示。</p>
 
       
@@ -495,9 +496,9 @@
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -519,7 +520,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -579,14 +580,6 @@
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
 
   
-
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站总访问量: <span id="busuanzi_value_site_pv"></span>次
-    </span>
 </div>
 
 
@@ -602,15 +595,8 @@
 
 
 
+
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-  
-
-  
-</div>
-
 
 
 

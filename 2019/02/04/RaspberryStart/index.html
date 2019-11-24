@@ -83,13 +83,12 @@
 <meta name="keywords" content="raspberry">
 <meta property="og:type" content="article">
 <meta property="og:title" content="树莓派折腾记录">
-<meta property="og:url" content="http://yoursite.com/2019/02/04/RaspberryStart/index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;02&#x2F;04&#x2F;RaspberryStart&#x2F;index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="放假前在公司看到有同事在玩树莓派，觉得挺有意思，之前也曾经了解过，但是一直都没有下定决定买一个玩玩，这次也算是被同事拉下水吧，趁着这次放假的机会，在淘宝上买了个最新的树莓派3B+ 来学习一下，从小白开始树莓派的折腾之旅。想到自己有linux的基础应该上手不会太难，没想到还是踩了不少的坑，在购买的时候淘宝店家说会有技术支持，结果放假了完全不回消息😔，不过遇到的问题还是自己慢慢踩坑爬出来了，在这里">
-<meta property="og:updated_time" content="2019-09-09T17:00:38.345Z">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-09T12:27:34.392Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="树莓派折腾记录">
-<meta name="twitter:description" content="放假前在公司看到有同事在玩树莓派，觉得挺有意思，之前也曾经了解过，但是一直都没有下定决定买一个玩玩，这次也算是被同事拉下水吧，趁着这次放假的机会，在淘宝上买了个最新的树莓派3B+ 来学习一下，从小白开始树莓派的折腾之旅。想到自己有linux的基础应该上手不会太难，没想到还是踩了不少的坑，在购买的时候淘宝店家说会有技术支持，结果放假了完全不回消息😔，不过遇到的问题还是自己慢慢踩坑爬出来了，在这里">
 
 
 
@@ -181,7 +180,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
+          <a href="/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -191,7 +190,7 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
+          <a href="/about/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -201,7 +200,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
+          <a href="/tags/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -211,7 +210,7 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
+          <a href="/categories/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -221,7 +220,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
+          <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -365,46 +364,36 @@
 <li>安装python的依赖库<br><code>sudo apt-get install python-pip python-gevent python-m2crypto</code></li>
 <li>利用python安装shadowsocks，注意别忘记sudo，否则可能造成安装路径有问题而无法使用sslocal的命令<br>i</li>
 <li>修改/usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/openssl.py，将此文件中的52行和111行中的cleanup替换为reset，否则可能执行启动命令报错</li>
-<li><p>创建shadowsocks的配置文件ss_conf.json，需根据shadowsocks服务器的信息替换，内容如下：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line"><span class="attr">"server"</span>:<span class="string">"server_ip"</span>,</div><div class="line"><span class="attr">"server_port"</span>:server_port,</div><div class="line"><span class="attr">"local_address"</span>:<span class="string">"127.0.0.1"</span>,</div><div class="line"><span class="attr">"local_port"</span>:<span class="number">1080</span>,</div><div class="line"><span class="attr">"password"</span>:<span class="string">"password"</span>,</div><div class="line"><span class="attr">"timeout"</span>:<span class="number">600</span>,</div><div class="line"><span class="attr">"method"</span>:<span class="string">"aes-256-cfb"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>最后执行启动命令<br><code>sudo sslocal -c ./ss_conf.json -d start</code></p>
-<h1 id="privoxy配置"><a href="#privoxy配置" class="headerlink" title="privoxy配置"></a>privoxy配置</h1><p>在树莓派下命令行梯子是十分有必要的，给http,https设置代理使用privoxy。</p>
-</li>
+<li>创建shadowsocks的配置文件ss_conf.json，需根据shadowsocks服务器的信息替换，内容如下：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="attr">"server"</span>:<span class="string">"server_ip"</span>,</span><br><span class="line"><span class="attr">"server_port"</span>:server_port,</span><br><span class="line"><span class="attr">"local_address"</span>:<span class="string">"127.0.0.1"</span>,</span><br><span class="line"><span class="attr">"local_port"</span>:<span class="number">1080</span>,</span><br><span class="line"><span class="attr">"password"</span>:<span class="string">"password"</span>,</span><br><span class="line"><span class="attr">"timeout"</span>:<span class="number">600</span>,</span><br><span class="line"><span class="attr">"method"</span>:<span class="string">"aes-256-cfb"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>最后执行启动命令<br><code>sudo sslocal -c ./ss_conf.json -d start</code><h1 id="privoxy配置"><a href="#privoxy配置" class="headerlink" title="privoxy配置"></a>privoxy配置</h1>在树莓派下命令行梯子是十分有必要的，给http,https设置代理使用privoxy。</li>
 <li>安装privoxy<br><code>sudo apt install privoxy</code></li>
 <li>修改配置文件<br><code>sudo vi /etc/privoxy/config</code><br>783行，去掉注释<br><code>listen-address 127.0.0.1:8118</code><br>1336行，去掉注释，注意与ss地址端口号保持一致<br><code>forward-socks5t / 127.0.0.1:1080</code></li>
 <li>配置开机启动<br><code>sudo vi /etc/profile</code><br><code>export https_proxy=http://127.0.0.1:8118</code><br><code>export http_proxy=http://127.0.0.1:8118</code></li>
 <li>重启<br><code>sudo systemctl restart privoxy</code><h1 id="开机启动设置"><a href="#开机启动设置" class="headerlink" title="开机启动设置"></a>开机启动设置</h1>这个步骤估计是我爬坑时间最长的地方，写入命令到rc.local配置文件中即可实现开机启动的功能，然而到树莓派上始终无法实现，树莓派已经不支持这种自启方式了。</li>
 </ol>
 <ul>
-<li><p>创建一个文件写入自启命令<br><code>sudo vi /etc/rc.local</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>!/bin/sh -e</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span> rc.local</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span> This script is executed at the end of each multiuser runlevel.</div><div class="line"><span class="meta">#</span> Make sure that the script will "exit 0" on success or any other</div><div class="line"><span class="meta">#</span> value on error.</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span> In order to enable or disable this script just change the execution</div><div class="line"><span class="meta">#</span> bits.</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span> By default this script does nothing.</div><div class="line"><span class="meta"></span></div><div class="line"># Print the IP address</div><div class="line">_IP=$(hostname -I) || true</div><div class="line">if [ "$_IP" ]; then</div><div class="line">  printf "My IP address is %s\n" "$_IP"</div><div class="line">fi</div><div class="line">sudo sslocal -c /etc/ss.json -d start</div><div class="line">exit 0</div></pre></td></tr></table></figure>
-</li>
-<li><p>创建一个服务文件<br><code>sudo vi /lib/systemd/system/rc.local.service</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>  This file is part of systemd.</div><div class="line"><span class="meta">#</span></div><div class="line"><span class="meta">#</span>  systemd is free software; you can redistribute it and/or modify it</div><div class="line"><span class="meta">#</span>  under the terms of the GNU Lesser General Public License as published by</div><div class="line"><span class="meta">#</span>  the Free Software Foundation; either version 2.1 of the License, or</div><div class="line"><span class="meta">#</span>  (at your option) any later version.</div><div class="line"><span class="meta"></span></div><div class="line"># This unit gets pulled automatically into multi-user.target by</div><div class="line"><span class="meta">#</span> systemd-rc-local-generator if /etc/rc.local is executable.</div><div class="line">[Unit]</div><div class="line">Description=/etc/rc.local Compatibility</div><div class="line">ConditionFileIsExecutable=/etc/rc.local</div><div class="line">After=network.target</div><div class="line"></div><div class="line">[Service]</div><div class="line">Type=forking</div><div class="line">ExecStart=/etc/rc.local start</div><div class="line">TimeoutSec=0</div><div class="line">RemainAfterExit=yes</div><div class="line">GuessMainPID=no</div></pre></td></tr></table></figure>
-</li>
+<li>创建一个文件写入自启命令<br><code>sudo vi /etc/rc.local</code><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh -e</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> rc.local</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> This script is executed at the end of each multiuser runlevel.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Make sure that the script will <span class="string">"exit 0"</span> on success or any other</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> value on error.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> In order to <span class="built_in">enable</span> or <span class="built_in">disable</span> this script just change the execution</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> bits.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> By default this script does nothing.</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Print the IP address</span></span><br><span class="line">_IP=$(hostname -I) || true</span><br><span class="line">if [ "$_IP" ]; then</span><br><span class="line">  printf "My IP address is %s\n" "$_IP"</span><br><span class="line">fi</span><br><span class="line">sudo sslocal -c /etc/ss.json -d start</span><br><span class="line">exit 0</span><br></pre></td></tr></table></figure></li>
+<li>创建一个服务文件<br><code>sudo vi /lib/systemd/system/rc.local.service</code><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">  This file is part of systemd.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">  systemd is free software; you can redistribute it and/or modify it</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  under the terms of the GNU Lesser General Public License as published by</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  the Free Software Foundation; either version 2.1 of the License, or</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  (at your option) any later version.</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> This unit gets pulled automatically into multi-user.target by</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> systemd-rc-local-generator <span class="keyword">if</span> /etc/rc.local is executable.</span></span><br><span class="line">[Unit]</span><br><span class="line">Description=/etc/rc.local Compatibility</span><br><span class="line">ConditionFileIsExecutable=/etc/rc.local</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/etc/rc.local start</span><br><span class="line">TimeoutSec=0</span><br><span class="line">RemainAfterExit=yes</span><br><span class="line">GuessMainPID=no</span><br></pre></td></tr></table></figure>
+<h1 id="修改apt源"><a href="#修改apt源" class="headerlink" title="修改apt源"></a>修改apt源</h1>树莓派默认的apt源在英国，速度非常慢，即使我配置了香港的http代理，还是很慢，换成了阿里的源速度还不错。<br>修改apt源的配置文件<br><code>sudo vi /etc/apt/sources.list</code><br>注释掉原来的源，添加<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">deb http://mirrors.aliyun.com/raspbian/raspbian/ jessie main non-free contrib rpi</span><br><span class="line">deb-src http://mirrors.aliyun.com/raspbian/raspbian/ jessie main non-free contrib rpi</span><br></pre></td></tr></table></figure>
+更新索引清单<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+更新依赖库<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get upgrade -y</span><br></pre></td></tr></table></figure>
+<h1 id="U盘挂载和卸载"><a href="#U盘挂载和卸载" class="headerlink" title="U盘挂载和卸载"></a>U盘挂载和卸载</h1><h2 id="挂载u盘"><a href="#挂载u盘" class="headerlink" title="挂载u盘"></a>挂载u盘</h2><code>sudo mount -o umask=0000 /dev/sda1 ~/Downloads</code></li>
+<li>o 配置挂载可选项，umask=0000对所有用户都可读可写可执行<br>/dev/sda1 usb分区路径<br><code>fdisk -l</code>可查看分区<br>~/Downloads 要挂载的文件夹路径<h2 id="卸载u盘"><a href="#卸载u盘" class="headerlink" title="卸载u盘"></a>卸载u盘</h2><code>sudo umount -l ~/Downloads</code></li>
+<li>l 强制卸载，避免busy的错误提示<h1 id="dlna服务器搭建"><a href="#dlna服务器搭建" class="headerlink" title="dlna服务器搭建"></a>dlna服务器搭建</h1></li>
 </ul>
-<h1 id="修改apt源"><a href="#修改apt源" class="headerlink" title="修改apt源"></a>修改apt源</h1><p>树莓派默认的apt源在英国，速度非常慢，即使我配置了香港的http代理，还是很慢，换成了阿里的源速度还不错。<br>修改apt源的配置文件<br><code>sudo vi /etc/apt/sources.list</code><br>注释掉原来的源，添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">deb http://mirrors.aliyun.com/raspbian/raspbian/ jessie main non-free contrib rpi</div><div class="line">deb-src http://mirrors.aliyun.com/raspbian/raspbian/ jessie main non-free contrib rpi</div></pre></td></tr></table></figure></p>
-<p>更新索引清单<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update</div></pre></td></tr></table></figure></p>
-<p>更新依赖库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get upgrade -y</div></pre></td></tr></table></figure></p>
-<h1 id="U盘挂载和卸载"><a href="#U盘挂载和卸载" class="headerlink" title="U盘挂载和卸载"></a>U盘挂载和卸载</h1><h2 id="挂载u盘"><a href="#挂载u盘" class="headerlink" title="挂载u盘"></a>挂载u盘</h2><p><code>sudo mount -o umask=0000 /dev/sda1 ~/Downloads</code><br>-o 配置挂载可选项，umask=0000对所有用户都可读可写可执行<br>/dev/sda1 usb分区路径<br><code>fdisk -l</code>可查看分区<br>~/Downloads 要挂载的文件夹路径</p>
-<h2 id="卸载u盘"><a href="#卸载u盘" class="headerlink" title="卸载u盘"></a>卸载u盘</h2><p><code>sudo umount -l ~/Downloads</code><br>-l 强制卸载，避免busy的错误提示</p>
-<h1 id="dlna服务器搭建"><a href="#dlna服务器搭建" class="headerlink" title="dlna服务器搭建"></a>dlna服务器搭建</h1><ol>
+<ol>
 <li>安装dlna<br><code>apt-get install minidlna</code></li>
 <li>修改配置文件<br><code>sudo vi /etc/minidlna.conf</code><br><code>media_dir=/home/pi/Downloads</code><br>修改media_dir的变量指向资源路径，这里我是挂载U盘上的资源，遇到了一个坑，需要刷新资源索引，耗了很长时间，网上很多说dlna刷新命令是<code>sudo service minidlna force-reload</code>我发现并没有作用，以为是配置文件的问题改了很多次，还是不起作用，后来发现资源刷新的正确姿势是这样：<br><code>sudo minidlna -R</code><br>然后重启服务：<br><code>sudo service minidlna restart</code><br>设置开机启动<br><code>sudo update-rc.d minidlna defaults</code><br>访问<code>http://树莓派ip地址:8200</code>查看当前服务器上的资源类型和数量<h1 id="smaba服务器搭建"><a href="#smaba服务器搭建" class="headerlink" title="smaba服务器搭建"></a>smaba服务器搭建</h1></li>
 <li>安装smaba<br><code>sudo apt-get install samba samba-common-bin</code><br>第二个命令也遇到过一个坑，就是smaba的部分依赖库已经安装，且版本高于smaba依赖的版本，这个时候命令行是不会安装smaba的，需要把这些已经安装的依赖库卸载掉重新安装。</li>
-<li><p>修改配置文件<br><code>sudo vi /etc/samba/smb.conf</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[share]           #共享文件的名称， 将在网络上以此名称显示</div><div class="line">path = /share         #共享文件的路径</div><div class="line">valid users = pi        #允许访问的用户</div><div class="line">browseable = yes        #允许浏览</div><div class="line">public = yes        #共享开放</div><div class="line">writable = yes        #可写</div></pre></td></tr></table></figure>
-</li>
-<li><p>重启smaba<br><code>sudo /etc/init.d/samba restart</code></p>
-<h1 id="ftp服务器搭建"><a href="#ftp服务器搭建" class="headerlink" title="ftp服务器搭建"></a>ftp服务器搭建</h1><p>ftp方便文件传输，而且vsftpd搭建服务器只有400k</p>
-</li>
+<li>修改配置文件<br><code>sudo vi /etc/samba/smb.conf</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[share]           #共享文件的名称， 将在网络上以此名称显示</span><br><span class="line">path = /share         #共享文件的路径</span><br><span class="line">valid users = pi        #允许访问的用户</span><br><span class="line">browseable = yes        #允许浏览</span><br><span class="line">public = yes        #共享开放</span><br><span class="line">writable = yes        #可写</span><br></pre></td></tr></table></figure></li>
+<li>将默认用户添加到samba<br><code>sudo smbpasswd -a pi</code></li>
+<li>重启smaba<br><code>sudo /etc/init.d/samba restart</code></li>
+<li>配置开机启动<br><code>systemctl enable smdb</code><h1 id="ftp服务器搭建"><a href="#ftp服务器搭建" class="headerlink" title="ftp服务器搭建"></a>ftp服务器搭建</h1>ftp方便文件传输，而且vsftpd搭建服务器只有400k</li>
 <li>安装sftp<br><code>sudo apt-get install vsftpd</code></li>
 <li>修改配置文件<br><code>sudo vim /etc/vsftpd.conf</code><br>配置可选项如下：<br>禁止匿名用户登录：anonymous_enable=NO<br>配置用户可以写权限：write_enable=YES<br>配置uMask：local_umask=022（077不支持断点续传，修改为022）</li>
-<li>重启<br><code>sudo service vsftpd restart</code><h1 id="折腾摄像头"><a href="#折腾摄像头" class="headerlink" title="折腾摄像头"></a>折腾摄像头</h1>我在购买树莓派主板的时候，也购买了官方的摄像头，它是usb接口，插入树莓派的usb接口后，输入命令：<code>ls /dev</code>如果此时能识别到video0的设备时，代表树莓派已识别。<br>此时我们使用<code>lsusb</code>命令同样可以查看这个设备的idVendor和idProduct<h2 id="拍摄照片"><a href="#拍摄照片" class="headerlink" title="拍摄照片"></a>拍摄照片</h2>拍摄一张照片<br><code>sudo fswebcam image.jpg</code><br>预览<br><code>gpicview image.jpg</code><h2 id="搭建视频流服务器"><a href="#搭建视频流服务器" class="headerlink" title="搭建视频流服务器"></a>搭建视频流服务器</h2><h3 id="安装依赖库和编译库"><a href="#安装依赖库和编译库" class="headerlink" title="安装依赖库和编译库"></a>安装依赖库和编译库</h3><code>sudo apt install libjpeg8-dev</code><br><code>sudo apt install imagemagic</code><br><code>sudo apt install libv4l-dev</code><br><code>sudo apt install cmake</code><h3 id="安装mjpg-streamer"><a href="#安装mjpg-streamer" class="headerlink" title="安装mjpg-streamer"></a>安装mjpg-streamer</h3>克隆项目到本地并编译<br><code>sudo git clone https://github.com/jacksonliam/mjpg-streamer.git</code><br><code>cd mjpg-streamer/mjpg-streamer-experimental</code><br><code>make all</code><br><code>sudo make install</code><br>启动流服务器<br><code>./mjpg_streamer -i &quot;./input_uvc.so&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>此时报错，树莓派官方的摄像头不支持v4l的驱动，需安装UV4L兼容驱动，解决方法是<br>添加软件源<br><code>curl https://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add -</code><br>修改apt-get的源列表文件<code>/etc/apt/sources.list</code>，在文件末尾添加<br><code>deb https://www.linux-projects.org/listing/uv4l_repo/raspbian/ wheezy main</code><br>再安装兼容驱动<br><code>sudo rpi-update</code><br><code>sudo apt-get update</code><br><code>sudo apt-get install uv4l uv4l-raspicam</code><br><code>sudo service uv4l_raspicam restart</code><br><code>sudo pkill uv4l</code><br><code>sudo apt-get update</code><br><code>sudo apt install uv4l-uvc</code><br><code>sudo apt install uv4l-xscreen</code><br><code>sudo apt install uv4l-mjpegstream</code><br>启动流服务器<br><code>./mjpg_streamer -i &quot;./input_uvc.so&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>发现仍然报错<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Unable to set format: 1196444237 res: 640x480</div><div class="line">Init v4L2 failed !! exit fatal</div></pre></td></tr></table></figure>
-</li>
+<li>重启<br><code>sudo service vsftpd restart</code><h1 id="折腾摄像头"><a href="#折腾摄像头" class="headerlink" title="折腾摄像头"></a>折腾摄像头</h1>我在购买树莓派主板的时候，也购买了官方的摄像头，它是usb接口，插入树莓派的usb接口后，输入命令：<code>ls /dev</code>如果此时能识别到video0的设备时，代表树莓派已识别。<br>此时我们使用<code>lsusb</code>命令同样可以查看这个设备的idVendor和idProduct<h2 id="拍摄照片"><a href="#拍摄照片" class="headerlink" title="拍摄照片"></a>拍摄照片</h2>拍摄一张照片<br><code>sudo fswebcam image.jpg</code><br>预览<br><code>gpicview image.jpg</code><h2 id="搭建视频流服务器"><a href="#搭建视频流服务器" class="headerlink" title="搭建视频流服务器"></a>搭建视频流服务器</h2><h3 id="安装依赖库和编译库"><a href="#安装依赖库和编译库" class="headerlink" title="安装依赖库和编译库"></a>安装依赖库和编译库</h3><code>sudo apt install libjpeg8-dev</code><br><code>sudo apt install imagemagic</code><br><code>sudo apt install libv4l-dev</code><br><code>sudo apt install cmake</code><h3 id="安装mjpg-streamer"><a href="#安装mjpg-streamer" class="headerlink" title="安装mjpg-streamer"></a>安装mjpg-streamer</h3>克隆项目到本地并编译<br><code>sudo git clone https://github.com/jacksonliam/mjpg-streamer.git</code><br><code>cd mjpg-streamer/mjpg-streamer-experimental</code><br><code>make all</code><br><code>sudo make install</code><br>启动流服务器<br><code>./mjpg_streamer -i &quot;./input_uvc.so&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>此时报错，树莓派官方的摄像头不支持v4l的驱动，需安装UV4L兼容驱动，解决方法是<br>添加软件源<br><code>curl https://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add -</code><br>修改apt-get的源列表文件<code>/etc/apt/sources.list</code>，在文件末尾添加<br><code>deb https://www.linux-projects.org/listing/uv4l_repo/raspbian/ wheezy main</code><br>再安装兼容驱动<br><code>sudo rpi-update</code><br><code>sudo apt-get update</code><br><code>sudo apt-get install uv4l uv4l-raspicam</code><br><code>sudo service uv4l_raspicam restart</code><br><code>sudo pkill uv4l</code><br><code>sudo apt-get update</code><br><code>sudo apt install uv4l-uvc</code><br><code>sudo apt install uv4l-xscreen</code><br><code>sudo apt install uv4l-mjpegstream</code><br>启动流服务器<br><code>./mjpg_streamer -i &quot;./input_uvc.so&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>发现仍然报错<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Unable to set format: 1196444237 res: 640x480</span><br><span class="line">Init v4L2 failed !! exit fatal</span><br></pre></td></tr></table></figure>
+mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树莓派官方的摄像头不支持JPEG<br>解决方案1:<br><code>cd mjpg-streamer-experimental/plugins/input_uvc/</code><br><code>sudo vi input_uvc.c</code><br>将<code>format = V4L2_PIX_FMT_MJPEG</code>改为<code>format = V4L2_PIX_FMT_YUYV</code><br>解决方案2:<br>用命令参数-y使用YUV编码<br><code>./mjpg_streamer -i &quot;./input_uvc.so -y&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>此时看到启动信息已经启动，但是有一堆error<br>用命令参数-n来消除error<br><code>./mjpg_streamer -i &quot;./input_uvc.so -y -n&quot; -o &quot;./output_http.so -w ./www&quot;</code></li>
 </ol>
-<p>mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树莓派官方的摄像头不支持JPEG<br>解决方案1:<br><code>cd mjpg-streamer-experimental/plugins/input_uvc/</code><br><code>sudo vi input_uvc.c</code><br>将<code>format = V4L2_PIX_FMT_MJPEG</code>改为<code>format = V4L2_PIX_FMT_YUYV</code><br>解决方案2:<br>用命令参数-y使用YUV编码<br><code>./mjpg_streamer -i &quot;./input_uvc.so -y&quot; -o &quot;./output_http.so -w ./www&quot;</code><br>此时看到启动信息已经启动，但是有一堆error<br>用命令参数-n来消除error<br><code>./mjpg_streamer -i &quot;./input_uvc.so -y -n&quot; -o &quot;./output_http.so -w ./www&quot;</code></p>
 <p>访问树莓派的ip:8080就可以看到采集的视频了</p>
 
       
@@ -530,9 +519,9 @@
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -554,7 +543,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -614,14 +603,6 @@
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
 
   
-
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站总访问量: <span id="busuanzi_value_site_pv"></span>次
-    </span>
 </div>
 
 
@@ -637,15 +618,8 @@
 
 
 
+
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-  
-
-  
-</div>
-
 
 
 

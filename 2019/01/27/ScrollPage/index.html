@@ -83,13 +83,12 @@
 <meta name="keywords" content="nodejs">
 <meta property="og:type" content="article">
 <meta property="og:title" content="window.scrollTo失效了怎么办？使用puppeteer实现屏幕滑动效果">
-<meta property="og:url" content="http://yoursite.com/2019/01/27/ScrollPage/index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;01&#x2F;27&#x2F;ScrollPage&#x2F;index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="又是很久没有写博客了，最近在搞漫画爬虫项目时发现某些网站把window.scrollTo方法都屏蔽了，由于大多数漫画网站都是在网页滚动时动态加载，所以如果无法实现网页滚动是没办法爬取到所有漫画的，幸好还好有google爸爸维护的puppeteer爬虫框架，这个强大的框架当然是无视这些方法屏蔽的，它可以实现鼠标按下，滑动，弹起等一系列自动化操作，那么利用这些方法我们就可以实现网页滑动了，在此，针对">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-01-27T07:51:30.464Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="window.scrollTo失效了怎么办？使用puppeteer实现屏幕滑动效果">
-<meta name="twitter:description" content="又是很久没有写博客了，最近在搞漫画爬虫项目时发现某些网站把window.scrollTo方法都屏蔽了，由于大多数漫画网站都是在网页滚动时动态加载，所以如果无法实现网页滚动是没办法爬取到所有漫画的，幸好还好有google爸爸维护的puppeteer爬虫框架，这个强大的框架当然是无视这些方法屏蔽的，它可以实现鼠标按下，滑动，弹起等一系列自动化操作，那么利用这些方法我们就可以实现网页滑动了，在此，针对">
 
 
 
@@ -181,7 +180,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
+          <a href="/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -191,7 +190,7 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
+          <a href="/about/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -201,7 +200,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
+          <a href="/tags/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -211,7 +210,7 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
+          <a href="/categories/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -221,7 +220,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
+          <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -348,9 +347,12 @@
 <p>然后再打印一下window这个实例：<code>console.log(window)</code></p>
 <p>可以看到<code>scrollTo: null</code></p>
 <p>估计是网站为了反爬取而采用的措施，直接把window.scrollTo等原生方法赋值为空。</p>
-<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><h2 id="获取浏览器页面实例"><a href="#获取浏览器页面实例" class="headerlink" title="获取浏览器页面实例"></a>获取浏览器页面实例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> browser = <span class="keyword">await</span> puppeteer.launch(&#123; <span class="attr">headless</span>: <span class="literal">true</span> &#125;)</div><div class="line"><span class="keyword">let</span> page =<span class="keyword">await</span> browser.newPage()</div></pre></td></tr></table></figure>
-<h2 id="模拟PC的尺寸和UA"><a href="#模拟PC的尺寸和UA" class="headerlink" title="模拟PC的尺寸和UA"></a>模拟PC的尺寸和UA</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 模拟pc设备mac</div><div class="line"> */</div><div class="line">exports.viewPort = &#123;</div><div class="line">    <span class="attr">width</span>: <span class="number">1080</span>,</div><div class="line">    <span class="attr">height</span>: <span class="number">1920</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> userAgent = <span class="string">'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'</span></div><div class="line"><span class="comment">/**</span></div><div class="line">* 设置屏幕尺寸和UA</div><div class="line">*/</div><div class="line"><span class="keyword">await</span> page.setViewport(viewPort);</div><div class="line"><span class="keyword">await</span> page.setUserAgent(userAgent);</div></pre></td></tr></table></figure>
-<h1 id="实现网页滑动"><a href="#实现网页滑动" class="headerlink" title="实现网页滑动"></a>实现网页滑动</h1><h2 id="利用鼠标动作组合"><a href="#利用鼠标动作组合" class="headerlink" title="利用鼠标动作组合"></a>利用鼠标动作组合</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">exports.scrollPage = <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params">distance</span>) </span>&#123;</div><div class="line">    <span class="keyword">await</span> page.mouse.move(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.9</span>, &#123;<span class="attr">steps</span>: <span class="number">10</span>&#125;)</div><div class="line">    <span class="keyword">await</span> page.mouse.down(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.9</span>)</div><div class="line">    <span class="keyword">if</span> (Spider.viewPort.height * <span class="number">0.9</span> - distance &gt; Spider.viewPort.height * <span class="number">0.05</span>)&#123;</div><div class="line">        <span class="keyword">await</span> page.mouse.move(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.9</span> - distance, &#123;<span class="attr">steps</span>: <span class="number">10</span>&#125;)</div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">        <span class="keyword">await</span> page.mouse.move(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.05</span>, &#123;<span class="attr">steps</span>: <span class="number">10</span>&#125;)</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">await</span> page.mouse.up()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><h2 id="获取浏览器页面实例"><a href="#获取浏览器页面实例" class="headerlink" title="获取浏览器页面实例"></a>获取浏览器页面实例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> browser = <span class="keyword">await</span> puppeteer.launch(&#123; <span class="attr">headless</span>: <span class="literal">true</span> &#125;)</span><br><span class="line"><span class="keyword">let</span> page =<span class="keyword">await</span> browser.newPage()</span><br></pre></td></tr></table></figure>
+
+<h2 id="模拟PC的尺寸和UA"><a href="#模拟PC的尺寸和UA" class="headerlink" title="模拟PC的尺寸和UA"></a>模拟PC的尺寸和UA</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 模拟pc设备mac</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">exports.viewPort = &#123;</span><br><span class="line">    width: <span class="number">1080</span>,</span><br><span class="line">    height: <span class="number">1920</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> userAgent = <span class="string">'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 设置屏幕尺寸和UA</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">await</span> page.setViewport(viewPort);</span><br><span class="line"><span class="keyword">await</span> page.setUserAgent(userAgent);</span><br></pre></td></tr></table></figure>
+
+<h1 id="实现网页滑动"><a href="#实现网页滑动" class="headerlink" title="实现网页滑动"></a>实现网页滑动</h1><h2 id="利用鼠标动作组合"><a href="#利用鼠标动作组合" class="headerlink" title="利用鼠标动作组合"></a>利用鼠标动作组合</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">exports.scrollPage = <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params">distance</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">await</span> page.mouse.move(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.9</span>, &#123;<span class="attr">steps</span>: <span class="number">10</span>&#125;)</span><br><span class="line">    <span class="keyword">await</span> page.mouse.down(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.9</span>)</span><br><span class="line">    <span class="keyword">if</span> (Spider.viewPort.height * <span class="number">0.9</span> - distance &gt; Spider.viewPort.height * <span class="number">0.05</span>)&#123;</span><br><span class="line">        <span class="keyword">await</span> page.mouse.move(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.9</span> - distance, &#123;<span class="attr">steps</span>: <span class="number">10</span>&#125;)</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">await</span> page.mouse.move(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.05</span>, &#123;<span class="attr">steps</span>: <span class="number">10</span>&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">await</span> page.mouse.up()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>distance是y轴滑动的垂直距离，根据屏幕尺寸计算出鼠标滑动到的组合操作的起始位置x和y的坐标点，然后模拟鼠标按下操作。因为我们需要爬取的网页，屏幕高度的5%是顶部固定的导航栏，所以结束位置的y轴坐标应该大于屏幕高度的5%。由于我们的网页滑动操作普遍是鼠标由下往上滑动，所以我们需要判断一下动作当前的起始位置的y轴坐标减去滑动的垂直距离后的y轴坐标值是否大于屏幕高度的5%，如果是，结束位置的y轴坐标为鼠标按下操作的y轴坐标减去滑动的垂直距离，否则结束位置的y轴坐标即为屏幕高度的5%。将window.scrollTo方法替换为我们自定义的scrollPage方法，传入滑动的垂直距离即可。</p>
 
       
@@ -476,9 +478,9 @@
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -500,7 +502,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -560,14 +562,6 @@
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
 
   
-
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站总访问量: <span id="busuanzi_value_site_pv"></span>次
-    </span>
 </div>
 
 
@@ -583,15 +577,8 @@
 
 
 
+
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-  
-
-  
-</div>
-
 
 
 

@@ -83,18 +83,17 @@
 <meta name="keywords" content="raspberry">
 <meta property="og:type" content="article">
 <meta property="og:title" content="树莓派+PanDownload(aria2)实现远程下载">
-<meta property="og:url" content="http://yoursite.com/2019/05/19/RaspberryAria2/index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;05&#x2F;19&#x2F;RaspberryAria2&#x2F;index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下">
-<meta property="og:image" content="http://yoursite.com/images/RaspberryAria2_1.png">
-<meta property="og:image" content="http://yoursite.com/images/RaspberryAria2_2.png">
-<meta property="og:image" content="http://yoursite.com/images/RaspberryAria2_3.png">
-<meta property="og:image" content="http://yoursite.com/images/RaspberryAria2_4.png">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;RaspberryAria2_1.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;RaspberryAria2_2.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;RaspberryAria2_3.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;RaspberryAria2_4.png">
 <meta property="og:updated_time" content="2019-05-19T13:04:30.777Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="树莓派+PanDownload(aria2)实现远程下载">
-<meta name="twitter:description" content="又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下">
-<meta name="twitter:image" content="http://yoursite.com/images/RaspberryAria2_1.png">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;RaspberryAria2_1.png">
 
 
 
@@ -186,7 +185,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
+          <a href="/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -196,7 +195,7 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
+          <a href="/about/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -206,7 +205,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
+          <a href="/tags/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -216,7 +215,7 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
+          <a href="/categories/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -226,7 +225,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
+          <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -347,21 +346,18 @@
         <hr>
 <p>又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下载的工具，无奈它的下载速度实在是太慢了，百度云的第三方下载工具PanDownload是基于aria2的，下载速度非常可观，且支持远程下载。我们可以在树莓派上搭建aria2的下载服务器，然后利用PanDownload远程下发下载任务到树莓派上的aria2服务器，即可实现远程下载。</p>
 <hr>
-<h1 id="树莓派搭建aria2服务器"><a href="#树莓派搭建aria2服务器" class="headerlink" title="树莓派搭建aria2服务器"></a>树莓派搭建aria2服务器</h1><p>关于树莓派的准备工作和系统安装这里就不讲了，希望了解的朋友可以查看<a href="https://jessiekate.gitee.io/2019/02/04/RaspberryStart/" target="_blank" rel="external">上一篇</a>，这里主要是说一下关于aria2服务器的搭建流程。</p>
+<h1 id="树莓派搭建aria2服务器"><a href="#树莓派搭建aria2服务器" class="headerlink" title="树莓派搭建aria2服务器"></a>树莓派搭建aria2服务器</h1><p>关于树莓派的准备工作和系统安装这里就不讲了，希望了解的朋友可以查看<a href="https://jessiekate.gitee.io/2019/02/04/RaspberryStart/" target="_blank" rel="noopener">上一篇</a>，这里主要是说一下关于aria2服务器的搭建流程。</p>
 <h2 id="安装aria2"><a href="#安装aria2" class="headerlink" title="安装aria2"></a>安装aria2</h2><p><code>sudo apt install -y aria2</code></p>
 <h2 id="编写配置文件"><a href="#编写配置文件" class="headerlink" title="编写配置文件"></a>编写配置文件</h2><ul>
 <li>创建配置文件的文件夹<br><code>mkdir -p ~/.config/aria2/</code></li>
-<li><p>vim编写配置文件<br><code>sudo vi ~/.config/aria2/aria2.config</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>后台运行</div><div class="line">daemon=true</div><div class="line"><span class="meta">#</span>设置加密密钥</div><div class="line">rpc-secret=secret</div><div class="line"><span class="meta">#</span>允许rpc</div><div class="line">enable-rpc=true</div><div class="line"><span class="meta">#</span>允许所有来源, web界面跨域权限需要</div><div class="line">rpc-allow-origin-all=true</div><div class="line"><span class="meta">#</span>允许外部访问，false的话只监听本地端口</div><div class="line">rpc-listen-all=true</div><div class="line"><span class="meta">#</span>RPC端口, 仅当默认端口被占用时修改</div><div class="line">rpc-listen-port=6800</div><div class="line"><span class="meta">#</span>最大同时下载数(任务数), 路由建议值: 3</div><div class="line">max-concurrent-downloads=5</div><div class="line"><span class="meta">#</span>断点续传</div><div class="line">continue=true</div><div class="line"><span class="meta">#</span>同服务器连接数</div><div class="line">max-connection-per-server=5</div><div class="line"><span class="meta">#</span>最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要</div><div class="line">min-split-size=10M</div><div class="line"><span class="meta">#</span>单文件最大线程数, 路由建议值: 5</div><div class="line">split=10</div><div class="line"><span class="meta">#</span>下载速度限制</div><div class="line">max-overall-download-limit=0</div><div class="line"><span class="meta">#</span>单文件速度限制</div><div class="line">max-download-limit=0</div><div class="line"><span class="meta">#</span>上传速度限制</div><div class="line">max-overall-upload-limit=0</div><div class="line"><span class="meta">#</span>单文件速度限制</div><div class="line">max-upload-limit=0</div><div class="line"><span class="meta">#</span>文件保存路径</div><div class="line">dir=/home/pi/Downloads</div><div class="line"><span class="meta">#</span>所需时间</div><div class="line">file-allocation=prealloc</div><div class="line"><span class="meta">#</span>不进行证书校验</div><div class="line">check-certificate=false</div><div class="line"><span class="meta">#</span>保存下载会话</div><div class="line">save-session=/home/pi/.config/aria2/aria2.session</div><div class="line">input-file=/home/pi/.config/aria2/aria2.session</div><div class="line"><span class="meta">#</span>断电续传</div><div class="line">save-session-interval=60</div></pre></td></tr></table></figure>
-</li>
-<li><p>创建该会话空白文件<br><code>touch /home/pi/.config/aria2/aria2.session</code></p>
-</li>
+<li>vim编写配置文件<br><code>sudo vi ~/.config/aria2/aria2.config</code><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">后台运行</span></span><br><span class="line">daemon=true</span><br><span class="line"><span class="meta">#</span><span class="bash">设置加密密钥</span></span><br><span class="line">rpc-secret=secret</span><br><span class="line"><span class="meta">#</span><span class="bash">允许rpc</span></span><br><span class="line">enable-rpc=true</span><br><span class="line"><span class="meta">#</span><span class="bash">允许所有来源, web界面跨域权限需要</span></span><br><span class="line">rpc-allow-origin-all=true</span><br><span class="line"><span class="meta">#</span><span class="bash">允许外部访问，<span class="literal">false</span>的话只监听本地端口</span></span><br><span class="line">rpc-listen-all=true</span><br><span class="line"><span class="meta">#</span><span class="bash">RPC端口, 仅当默认端口被占用时修改</span></span><br><span class="line">rpc-listen-port=6800</span><br><span class="line"><span class="meta">#</span><span class="bash">最大同时下载数(任务数), 路由建议值: 3</span></span><br><span class="line">max-concurrent-downloads=5</span><br><span class="line"><span class="meta">#</span><span class="bash">断点续传</span></span><br><span class="line">continue=true</span><br><span class="line"><span class="meta">#</span><span class="bash">同服务器连接数</span></span><br><span class="line">max-connection-per-server=5</span><br><span class="line"><span class="meta">#</span><span class="bash">最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要</span></span><br><span class="line">min-split-size=10M</span><br><span class="line"><span class="meta">#</span><span class="bash">单文件最大线程数, 路由建议值: 5</span></span><br><span class="line">split=10</span><br><span class="line"><span class="meta">#</span><span class="bash">下载速度限制</span></span><br><span class="line">max-overall-download-limit=0</span><br><span class="line"><span class="meta">#</span><span class="bash">单文件速度限制</span></span><br><span class="line">max-download-limit=0</span><br><span class="line"><span class="meta">#</span><span class="bash">上传速度限制</span></span><br><span class="line">max-overall-upload-limit=0</span><br><span class="line"><span class="meta">#</span><span class="bash">单文件速度限制</span></span><br><span class="line">max-upload-limit=0</span><br><span class="line"><span class="meta">#</span><span class="bash">文件保存路径</span></span><br><span class="line">dir=/home/pi/Downloads</span><br><span class="line"><span class="meta">#</span><span class="bash">所需时间</span></span><br><span class="line">file-allocation=prealloc</span><br><span class="line"><span class="meta">#</span><span class="bash">不进行证书校验</span></span><br><span class="line">check-certificate=false</span><br><span class="line"><span class="meta">#</span><span class="bash">保存下载会话</span></span><br><span class="line">save-session=/home/pi/.config/aria2/aria2.session</span><br><span class="line">input-file=/home/pi/.config/aria2/aria2.session</span><br><span class="line"><span class="meta">#</span><span class="bash">断电续传</span></span><br><span class="line">save-session-interval=60</span><br></pre></td></tr></table></figure></li>
+<li>创建该会话空白文件<br><code>touch /home/pi/.config/aria2/aria2.session</code></li>
 <li>测试下aria2是否启动成功<br><code>aria2c --conf-path=/home/pi/.config/aria2/aria2.config</code></li>
 <li>是否有进程启动<br><code>用 ps aux|grep aria2</code></li>
 <li>结束进程<br><code>kill -9 xxxx</code></li>
 </ul>
 <h1 id="设置aria2服务并开机启动"><a href="#设置aria2服务并开机启动" class="headerlink" title="设置aria2服务并开机启动"></a>设置aria2服务并开机启动</h1><h2 id="编写服务文件"><a href="#编写服务文件" class="headerlink" title="编写服务文件"></a>编写服务文件</h2><p><code>sudo vim /lib/systemd/system/aria.service</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=Aria2 Service</div><div class="line">After=network.target</div><div class="line"></div><div class="line">[Service]</div><div class="line">User=pi</div><div class="line">Type=forking</div><div class="line">ExecStart=/usr/bin/aria2c --conf-path=/home/pi/.config/aria2/aria2.config</div><div class="line"></div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Aria2 Service</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User=pi</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/usr/bin/aria2c --conf-path=/home/pi/.config/aria2/aria2.config</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
 <h2 id="设置开机启动"><a href="#设置开机启动" class="headerlink" title="设置开机启动"></a>设置开机启动</h2><p><code>sudo systemctl daemon-reload</code><br><code>sudo systemctl enable aria</code></p>
 <h2 id="查看aria服务状态"><a href="#查看aria服务状态" class="headerlink" title="查看aria服务状态"></a>查看aria服务状态</h2><p><code>sudo systemctl status aria</code> </p>
 <h2 id="启动aria2服务"><a href="#启动aria2服务" class="headerlink" title="启动aria2服务"></a>启动aria2服务</h2><p><code>sudo systemctl start aria</code></p>
@@ -499,9 +495,9 @@
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -523,7 +519,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -583,14 +579,6 @@
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
 
   
-
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站总访问量: <span id="busuanzi_value_site_pv"></span>次
-    </span>
 </div>
 
 
@@ -606,15 +594,8 @@
 
 
 
+
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-  
-
-  
-</div>
-
 
 
 

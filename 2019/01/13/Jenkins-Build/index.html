@@ -83,49 +83,48 @@
 <meta name="keywords" content="automation,build environment">
 <meta property="og:type" content="article">
 <meta property="og:title" content="搭建Jenkins自动化构建环境">
-<meta property="og:url" content="http://yoursite.com/2019/01/13/Jenkins-Build/index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;01&#x2F;13&#x2F;Jenkins-Build&#x2F;index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="最近公司想搭建自动化构建平台，由于以前自己在空闲时间折腾过jenkins搭建相关的东西，领导就把这个任务交给了我，虽然以前在自己的电脑上搭建过，由于时间过去太久了，当时又没做记录，搭建的时候还是踩了不少坑，不过在google爸爸的帮助下，翻阅各种资料，最后都爬坑解决，所以这里对再此搭建做一个记录，避免以后遗忘。  连接远程服务器 ssh -p 端口号 服务器用户名@ip 输入密码安装jenkin">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_1.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_2.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_3.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_4.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_5.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_6_1.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_6_2.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_6_3.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_6_4.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_6_5.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_6_6.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_6_7.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_6_8.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_6_9.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_7_1.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_7_2.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_7_3.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_8_1.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_8_2.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_9_1.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_9_2.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_10_1.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_10_2.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_10_3.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_11_1.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_11_2.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_11_3.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_11_4.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_11_5.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_12_1.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_12_2.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_12_3.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_12_4.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_12_5.jpg">
-<meta property="og:image" content="http://yoursite.com/images/jenkins_12_6.jpg">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_6_1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_6_2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_6_3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_6_4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_6_5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_6_6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_6_7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_6_8.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_6_9.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_7_1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_7_2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_7_3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_8_1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_8_2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_9_1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_9_2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_10_1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_10_2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_10_3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_11_1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_11_2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_11_3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_11_4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_11_5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_12_1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_12_2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_12_3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_12_4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_12_5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_12_6.jpg">
 <meta property="og:updated_time" content="2019-05-17T15:39:00.359Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="搭建Jenkins自动化构建环境">
-<meta name="twitter:description" content="最近公司想搭建自动化构建平台，由于以前自己在空闲时间折腾过jenkins搭建相关的东西，领导就把这个任务交给了我，虽然以前在自己的电脑上搭建过，由于时间过去太久了，当时又没做记录，搭建的时候还是踩了不少坑，不过在google爸爸的帮助下，翻阅各种资料，最后都爬坑解决，所以这里对再此搭建做一个记录，避免以后遗忘。  连接远程服务器 ssh -p 端口号 服务器用户名@ip 输入密码安装jenkin">
-<meta name="twitter:image" content="http://yoursite.com/images/jenkins_1.jpg">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;jenkins_1.jpg">
 
 
 
@@ -217,7 +216,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
+          <a href="/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -227,7 +226,7 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
+          <a href="/about/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -237,7 +236,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
+          <a href="/tags/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -247,7 +246,7 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
+          <a href="/categories/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -257,7 +256,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
+          <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -420,7 +419,8 @@
 <li>输入一个项目名称</li>
 <li>选择构建一个自由风格的软件项目，点击左下角的ok<br><img src="/images/jenkins_3.jpg" alt=""></li>
 <li>输入项目的文字描述<br><img src="/images/jenkins_4.jpg" alt=""></li>
-<li>勾选丢弃旧的构建，设置保留的构建天数和保留的最大构建数<br><img src="/images/jenkins_5.jpg" alt=""><br>6.勾选参数化构建过程，添加不同类型的参数<br><img src="/images/jenkins_6_1.jpg" alt=""></li>
+<li>勾选丢弃旧的构建，设置保留的构建天数和保留的最大构建数<br><img src="/images/jenkins_5.jpg" alt=""></li>
+<li>勾选参数化构建过程，添加不同类型的参数<br><img src="/images/jenkins_6_1.jpg" alt=""></li>
 </ol>
 <ul>
 <li>布尔值参数<br><img src="/images/jenkins_6_2.jpg" alt=""></li>
@@ -429,7 +429,7 @@
 <li>git Parameter<br><img src="/images/jenkins_6_6.jpg" alt=""></li>
 <li>dynamic Parameter<br>打包前，要配置这些参数，配置界面展示效果如下：<br><img src="/images/jenkins_6_7.jpg" alt=""><br><img src="/images/jenkins_6_8.jpg" alt=""><br><img src="/images/jenkins_6_9.jpg" alt=""></li>
 </ul>
-<ol>
+<ol start="7">
 <li>Source Code Management配置git远程代码仓库</li>
 </ol>
 <ul>
@@ -441,14 +441,14 @@
 <li>选择Advanced clone behaviours<br><img src="/images/jenkins_7_3.jpg" alt=""></li>
 <li>修改Timeout (in minutes) for clone and fetch operations的值，改大一点60</li>
 </ul>
-<ol>
+<ol start="8">
 <li>Build Triggers配置轮询构建和定时构建<br><img src="/images/jenkins_8_1.jpg" alt=""><br>定时构建： 无论git中有无提交，均执行定时化的构建任务<br><img src="/images/jenkins_8_2.jpg" alt=""><br>轮询构建： 查看git中是否有提交，如果有，则执行构建任务<br>每隔5分钟构建一次<br><code>H/5 * * * *</code><br>每两小时构建一次<br><code>H H/2 * * *</code><br>每天中午下班前定时构建一次<br><code>0 12 * * *</code><br>每天下午下班前定时构建一次<br><code>0 18 * * *</code></li>
 <li>Build Environment设置构建名称<br><img src="/images/jenkins_9_1.jpg" alt=""></li>
 </ol>
 <ul>
 <li>勾选Set Build Name，这里填写的参数对应上面设置的参数，保持名称一致<br>打包后展示的效果如下：<br><img src="/images/jenkins_9_2.jpg" alt=""></li>
 </ul>
-<ol>
+<ol start="10">
 <li>Build构建方式（Android以gradle为例）<br><img src="/images/jenkins_10_1.jpg" alt=""></li>
 </ol>
 <ul>
@@ -456,7 +456,7 @@
 <li>填写task，配置gradle打包命令<code>clean assemble${BUILD_TYPE} --stacktrace</code>，这里的BUILD_TYPE引用前面配置的</li>
 <li>点击Advanced选项，勾选Pass all job parameters as Project properties，将上面的配置参数全部传入gradle.properties配置文件中，实现参数化打包<br><img src="/images/jenkins_10_3.jpg" alt=""></li>
 </ul>
-<ol>
+<ol start="11">
 <li>Post-build Actions</li>
 </ol>
 <ul>
@@ -603,9 +603,9 @@
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -627,7 +627,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -687,14 +687,6 @@
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
 
   
-
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站总访问量: <span id="busuanzi_value_site_pv"></span>次
-    </span>
 </div>
 
 
@@ -710,15 +702,8 @@
 
 
 
+
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-  
-
-  
-</div>
-
 
 
 

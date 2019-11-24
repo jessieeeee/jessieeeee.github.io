@@ -83,13 +83,12 @@
 <meta name="keywords" content="cross-platform">
 <meta property="og:type" content="article">
 <meta property="og:title" content="react-native 踩坑记录">
-<meta property="og:url" content="http://yoursite.com/2017/10/10/RN-issue/index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;10&#x2F;10&#x2F;RN-issue&#x2F;index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="随着近几年web前端的火热，纯原生的开发需求逐渐减少，混合开发也变得越来越流行。连最近刷论坛也传着不会前端的android开发不是好的开发者这么一句话。上一个项目快要结束，最近也闲下来了，带着对前端的好奇和提升自身技术的想法，入了混合开发的坑。react-native是Facebook打造的一款开源的跨平台移动应用开发框架，作为最火的跨平台移动应用开发开发框架，官网上写着Learn once,">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-08-12T13:27:38.273Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="react-native 踩坑记录">
-<meta name="twitter:description" content="随着近几年web前端的火热，纯原生的开发需求逐渐减少，混合开发也变得越来越流行。连最近刷论坛也传着不会前端的android开发不是好的开发者这么一句话。上一个项目快要结束，最近也闲下来了，带着对前端的好奇和提升自身技术的想法，入了混合开发的坑。react-native是Facebook打造的一款开源的跨平台移动应用开发框架，作为最火的跨平台移动应用开发开发框架，官网上写着Learn once,">
 
 
 
@@ -181,7 +180,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
+          <a href="/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -191,7 +190,7 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
+          <a href="/about/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -201,7 +200,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
+          <a href="/tags/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -211,7 +210,7 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
+          <a href="/categories/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -221,7 +220,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
+          <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -390,18 +389,25 @@
 <h3 id="记2018-1-18爬坑"><a href="#记2018-1-18爬坑" class="headerlink" title="记2018.1.18爬坑"></a>记2018.1.18爬坑</h3><p>react-native Android真机调试技巧：</p>
 <p>目前网上这块的资料比较少，基本都是如官网所说摇一摇或者是通过adb命令发送一个双击R的输入事件</p>
 <p>然而这并不实用，真机调试的时候经常都是连着数据线，每次reload都要摇一摇触发难度系数比较高，输入adb命令显得过于麻烦。实际上我们使用reactnative绘制的activity都是继承了ReactActivity，查看一下源码，它重写了按键监听，我们可以看到这样的代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyUp</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> mDelegate.onKeyUp(keyCode, event) || <span class="keyword">super</span>.onKeyUp(keyCode, event);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyUp</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> mDelegate.onKeyUp(keyCode, event) || <span class="keyword">super</span>.onKeyUp(keyCode, event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>我们点击进去<code>mDelegate.onKeyUp(keyCode, event)</code>继续跟踪，可以看到</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyUp</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (getReactNativeHost().hasInstance() &amp;&amp; getReactNativeHost().getUseDeveloperSupport()) &#123;</div><div class="line">    <span class="keyword">if</span> (keyCode == KeyEvent.KEYCODE_MENU) &#123;</div><div class="line">      getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();</div><div class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">boolean</span> didDoubleTapR = Assertions.assertNotNull(mDoubleTapReloadRecognizer)</div><div class="line">      .didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());</div><div class="line">    <span class="keyword">if</span> (didDoubleTapR) &#123;</div><div class="line">      getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();</div><div class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyUp</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (getReactNativeHost().hasInstance() &amp;&amp; getReactNativeHost().getUseDeveloperSupport()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (keyCode == KeyEvent.KEYCODE_MENU) &#123;</span><br><span class="line">      getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">boolean</span> didDoubleTapR = Assertions.assertNotNull(mDoubleTapReloadRecognizer)</span><br><span class="line">      .didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());</span><br><span class="line">    <span class="keyword">if</span> (didDoubleTapR) &#123;</span><br><span class="line">      getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>所以我们点菜单键调用的是<code>getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();</code>弹出调试菜单。</p>
 <p>我们双击R键，调用的是<code>getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();</code>进行reload刷新。</p>
 <p>这两个方法在ReactActivity直接调用，纯react-native搭建的项目，我们可以在onCreate时调用方便调试。</p>
 <p>如果是在混合开发的项目，onCreate方法中我们有自己的ReactInstanceManager，可以直接调用 <code>mReactInstanceManager.getDevSupportManager().handleReloadJS();</code>菜单弹出也一样。</p>
-<h3 id="记2018-8-28爬坑"><a href="#记2018-8-28爬坑" class="headerlink" title="记2018.8.28爬坑"></a>记2018.8.28爬坑</h3><p>当前最新的react-native版本0.56.0引入mobx报错<br>网上诸多教程为老版本引入方式，过程如下：<br>npm安装以下插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i babel-plugin-transform-decorators-legacy babel-preset-react-native-stage-0 --save-dev</div></pre></td></tr></table></figure></p>
-<p>修改 .babelrc 文件配置 babel 插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line"> &apos;presets&apos;: [&apos;react-native&apos;],</div><div class="line"> &apos;plugins&apos;: [&apos;transform-decorators-legacy&apos;]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个方式已经过时了，你会得到以下错误，看起来是babel的问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">error: bundling failed: TypeError: Property right of AssignmentExpression expected node to be of a type [&quot;Expression&quot;] but instead got null</div></pre></td></tr></table></figure></p>
-<p>google无数次后在github上issue查到babel@7.0+不能再使用原先的babel-plugin-transform-decorators-legacy，这个只能在babel@6以下使用，而新版本rn使用正好使用的是babel@7.0+<br>正确的.babelrc如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;presets&quot;: [&quot;react-native&quot;],</div><div class="line">  &quot;plugins&quot;: [</div><div class="line">    [&quot;@babel/plugin-proposal-decorators&quot;, &#123; &quot;legacy&quot;: true &#125;]</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>注意，这里的plugin-proposal-decorators的版本必须与babel的版本完全一样，<br>在yarn.lock文件中可以查看babel的版本如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&quot;@babel/core@7.0.0-beta.47&quot;:</div><div class="line">  version &quot;7.0.0-beta.47&quot;</div><div class="line">  resolved &quot;http://r.cnpmjs.org/@babel/core/download/@babel/core-7.0.0-beta.47.tgz#b9c164fb9a1e1083f067c236a9da1d7a7d759271&quot;</div><div class="line">  dependencies:</div><div class="line">    &quot;@babel/code-frame&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/generator&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/helpers&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/template&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/traverse&quot; &quot;7.0.0-beta.47&quot;</div><div class="line">    &quot;@babel/types&quot; &quot;7.0.0-beta.47&quot;</div></pre></td></tr></table></figure></p>
+<h3 id="记2018-8-28爬坑"><a href="#记2018-8-28爬坑" class="headerlink" title="记2018.8.28爬坑"></a>记2018.8.28爬坑</h3><p>当前最新的react-native版本0.56.0引入mobx报错<br>网上诸多教程为老版本引入方式，过程如下：<br>npm安装以下插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i babel-plugin-transform-decorators-legacy babel-preset-react-native-stage-0 --save-dev</span><br></pre></td></tr></table></figure>
+<p>修改 .babelrc 文件配置 babel 插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> &apos;presets&apos;: [&apos;react-native&apos;],</span><br><span class="line"> &apos;plugins&apos;: [&apos;transform-decorators-legacy&apos;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方式已经过时了，你会得到以下错误，看起来是babel的问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">error: bundling failed: TypeError: Property right of AssignmentExpression expected node to be of a type [&quot;Expression&quot;] but instead got null</span><br></pre></td></tr></table></figure>
+<p>google无数次后在github上issue查到<a href="mailto:babel@7.0" target="_blank" rel="noopener">babel@7.0</a>+不能再使用原先的babel-plugin-transform-decorators-legacy，这个只能在babel@6以下使用，而新版本rn使用正好使用的是<a href="mailto:babel@7.0" target="_blank" rel="noopener">babel@7.0</a>+<br>正确的.babelrc如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;presets&quot;: [&quot;react-native&quot;],</span><br><span class="line">  &quot;plugins&quot;: [</span><br><span class="line">    [&quot;@babel/plugin-proposal-decorators&quot;, &#123; &quot;legacy&quot;: true &#125;]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，这里的plugin-proposal-decorators的版本必须与babel的版本完全一样，<br>在yarn.lock文件中可以查看babel的版本如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&quot;@babel/core@7.0.0-beta.47&quot;:</span><br><span class="line">  version &quot;7.0.0-beta.47&quot;</span><br><span class="line">  resolved &quot;http://r.cnpmjs.org/@babel/core/download/@babel/core-7.0.0-beta.47.tgz#b9c164fb9a1e1083f067c236a9da1d7a7d759271&quot;</span><br><span class="line">  dependencies:</span><br><span class="line">    &quot;@babel/code-frame&quot; &quot;7.0.0-beta.47&quot;</span><br><span class="line">    &quot;@babel/generator&quot; &quot;7.0.0-beta.47&quot;</span><br><span class="line">    &quot;@babel/helpers&quot; &quot;7.0.0-beta.47&quot;</span><br><span class="line">    &quot;@babel/template&quot; &quot;7.0.0-beta.47&quot;</span><br><span class="line">    &quot;@babel/traverse&quot; &quot;7.0.0-beta.47&quot;</span><br><span class="line">    &quot;@babel/types&quot; &quot;7.0.0-beta.47&quot;</span><br></pre></td></tr></table></figure>
 <p>如果你的版本是@7.0.0-beta.47那么用如下命令安装<br><code>yarn add @babel/plugin-proposal-decorators@7.0.0-beta.47</code></p>
 
       
@@ -527,9 +533,9 @@
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -551,7 +557,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -611,14 +617,6 @@
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
 
   
-
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站总访问量: <span id="busuanzi_value_site_pv"></span>次
-    </span>
 </div>
 
 
@@ -634,15 +632,8 @@
 
 
 
+
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-  
-
-  
-</div>
-
 
 
 

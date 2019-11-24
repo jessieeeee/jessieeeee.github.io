@@ -83,15 +83,14 @@
 <meta name="keywords" content="about blog">
 <meta property="og:type" content="article">
 <meta property="og:title" content="我的第一篇文章">
-<meta property="og:url" content="http://yoursite.com/2017/06/01/MyBlog1/index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;06&#x2F;01&#x2F;MyBlog1&#x2F;index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="简介我是JessieK，从学校起开始自学android，很幸运，毕业后顺利从事android开发，学校里为数不多的女coder之一（相信读计算机的女生会深有感触~(￣▽￣)ブ，在浏览博客的时候发现，不少女coder很牛逼的，相信不久的 将来，越来越多的女生会进入到这个行业，成为行业中的精英）有人可能会疑惑，女生从事这个职业的很少，为什么会选择这条路呢？很简单，因为热爱。俗话说搜索引擎是我们最好的">
-<meta property="og:image" content="http://yoursite.com/images/MyFirstBlog1">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;MyFirstBlog1">
 <meta property="og:updated_time" content="2018-11-02T15:40:49.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="我的第一篇文章">
-<meta name="twitter:description" content="简介我是JessieK，从学校起开始自学android，很幸运，毕业后顺利从事android开发，学校里为数不多的女coder之一（相信读计算机的女生会深有感触~(￣▽￣)ブ，在浏览博客的时候发现，不少女coder很牛逼的，相信不久的 将来，越来越多的女生会进入到这个行业，成为行业中的精英）有人可能会疑惑，女生从事这个职业的很少，为什么会选择这条路呢？很简单，因为热爱。俗话说搜索引擎是我们最好的">
-<meta name="twitter:image" content="http://yoursite.com/images/MyFirstBlog1">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;MyFirstBlog1">
 
 
 
@@ -183,7 +182,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
+          <a href="/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -193,7 +192,7 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
+          <a href="/about/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -203,7 +202,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
+          <a href="/tags/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -213,7 +212,7 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
+          <a href="/categories/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -223,7 +222,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
+          <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -368,80 +367,66 @@
 <hr>
 <h1 id="博客搭建之路"><a href="#博客搭建之路" class="headerlink" title="博客搭建之路"></a>博客搭建之路</h1><p>说来有些惭愧，由于长久以来从事android开发，对前端的东西并不是很了解，随着小程序和react native的火热，我觉得是有必要去学习的，不过现在也不可能花掉巨大的学习成本后再弄博客吧，我也不想花钱去买收费的云空间，立马让我想到了GitHub，我知道现在的博客框架很多，相信能快速搭建出来，准备找个免费的云空间和博客框架，搭一个博客，只是简单纯粹的写作，经过google以后，发现大多数人都推荐GithubPage+Hexo来搭建免费博客，然后就开始了自己的折腾之旅。</p>
 <h2 id="Hexo是什么？"><a href="#Hexo是什么？" class="headerlink" title="Hexo是什么？"></a>Hexo是什么？</h2><p>Hexo 是一个快速、简洁且高效的博客框架。Hexo使用Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。说白了，就是集各种博客管理插件和多款主题于一身的能快速搭出博客的框架。</p>
-<h2 id="GitHubPage是什么？"><a href="#GitHubPage是什么？" class="headerlink" title="GitHubPage是什么？"></a>GitHubPage是什么？</h2><p>GitHubPage主要的用法有两种。一种是你的 GitHub 用户名建立的 username.github.io，这个是GitHub自动为每一个用户分配的域名，如果仅仅是建立个人博客的话，这种方法就可以了，另一种是依附项目的 Project Pages。具体用法请参考:<a href="http://www.worldhello.net/gotgithub/03-project-hosting/050-homepage.html" target="_blank" rel="external"> Github Pages官方文档</a></p>
-<h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><pre><code>1. 必须先安装以下环境
-</code></pre><ul>
-<li><a href="https://nodejs.org/en/" target="_blank" rel="external">node.js</a></li>
-<li><a href="https://git-scm.com/" target="_blank" rel="external">git</a></li>
+<h2 id="GitHubPage是什么？"><a href="#GitHubPage是什么？" class="headerlink" title="GitHubPage是什么？"></a>GitHubPage是什么？</h2><p>GitHubPage主要的用法有两种。一种是你的 GitHub 用户名建立的 username.github.io，这个是GitHub自动为每一个用户分配的域名，如果仅仅是建立个人博客的话，这种方法就可以了，另一种是依附项目的 Project Pages。具体用法请参考:<a href="http://www.worldhello.net/gotgithub/03-project-hosting/050-homepage.html" target="_blank" rel="noopener"> Github Pages官方文档</a></p>
+<h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><pre><code>1. 必须先安装以下环境</code></pre><ul>
+<li><a href="https://nodejs.org/en/" target="_blank" rel="noopener">node.js</a></li>
+<li><a href="https://git-scm.com/" target="_blank" rel="noopener">git</a></li>
 </ul>
 <p>由于工作原因，我经常是mac和windows来回切换，安装方式有很多，可以用控制台安装，这里面花样就很多了，也可以去官网下载安装包，不管是mac还是windows，需要设置全局变量，保证node.js和git的命令行使用，我是直接在官网下载的安装包，安装完后，已经自动配置好了。</p>
-<ol>
+<ol start="2">
 <li><p>安装Hexo<br>通过npm命令即可安装。</p>
 <p> npm install hexo-cli -g<br> npm install hexo –save</p>
 </li>
 </ol>
-<p>如果命令无法运行，可以尝试更换taobao的npm源<br>npm install -g cnpm –registry=<a href="https://registry.npm.taobao.org" target="_blank" rel="external">https://registry.npm.taobao.org</a><br>创建博客的工程目录文件夹，如blog文件夹。进入该文件夹根目录，利用hexo框架进行初始化。</p>
+<p>如果命令无法运行，可以尝试更换taobao的npm源<br>npm install -g cnpm –registry=<a href="https://registry.npm.taobao.org" target="_blank" rel="noopener">https://registry.npm.taobao.org</a><br>创建博客的工程目录文件夹，如blog文件夹。进入该文件夹根目录，利用hexo框架进行初始化。</p>
 <pre><code>$hexo init
 
-$npm install
-</code></pre><p><img src="/images/MyFirstBlog1" alt="hexo目录结构"></p>
-<p>其中主要使用的文件夹<br>public是需要上传到github的文件<br>themes为下载的主题文件<br>source为页面文件，包括头像文件，关于页面，所有上传的文章<br>可以先测试一下<br>hexo g<br>hexo s<br>此时控制台打印一个地址<a href="http://localhost:4000/" target="_blank" rel="external">http://localhost:4000/</a><br>mac下使用iterm就可以直接点击跳转<br>windows下使用cmder按住ctrl就可以点击跳转<br>注意，所有hexo命令必须要在初始化后的文件夹根目录下（即执行过 $hexo init的文件夹根目录）<br>常用的Hexo命令<br>新建文章</p>
-<pre><code>$ hexo new &quot;xxx&quot;  可以简写为 $ hexo n
-</code></pre><p>新建页面</p>
-<pre><code>$ hexo new page &quot;xxx&quot; 
-</code></pre><p>生成资源文件</p>
-<pre><code>$ hexo g 
-</code></pre><p>本地预览</p>
-<pre><code>$ hexo s
-</code></pre><p>部署到github</p>
-<pre><code>$ hexo d
-</code></pre><p>还可以使用一些组合命令:<br>生成资源文件并部署</p>
-<pre><code>$ hexo d -g
-</code></pre><p>生成资源文件并预览</p>
-<pre><code>$ hexo s -g 
-</code></pre><ol>
+$npm install</code></pre><p><img src="/images/MyFirstBlog1" alt="hexo目录结构"></p>
+<p>其中主要使用的文件夹<br>public是需要上传到github的文件<br>themes为下载的主题文件<br>source为页面文件，包括头像文件，关于页面，所有上传的文章<br>可以先测试一下<br>hexo g<br>hexo s<br>此时控制台打印一个地址<a href="http://localhost:4000/" target="_blank" rel="noopener">http://localhost:4000/</a><br>mac下使用iterm就可以直接点击跳转<br>windows下使用cmder按住ctrl就可以点击跳转<br>注意，所有hexo命令必须要在初始化后的文件夹根目录下（即执行过 $hexo init的文件夹根目录）<br>常用的Hexo命令<br>新建文章</p>
+<pre><code>$ hexo new &quot;xxx&quot;  可以简写为 $ hexo n</code></pre><p>新建页面</p>
+<pre><code>$ hexo new page &quot;xxx&quot; </code></pre><p>生成资源文件</p>
+<pre><code>$ hexo g </code></pre><p>本地预览</p>
+<pre><code>$ hexo s</code></pre><p>部署到github</p>
+<pre><code>$ hexo d</code></pre><p>还可以使用一些组合命令:<br>生成资源文件并部署</p>
+<pre><code>$ hexo d -g</code></pre><p>生成资源文件并预览</p>
+<pre><code>$ hexo s -g </code></pre><ol start="3">
 <li>配置GitHub Page</li>
 </ol>
 <ul>
 <li>我们需要新建一个项目来存放GitHub Page，new repository。（在这里踩过坑，由于采用的是username.github.io来建立博客，所以必须保证填写repository name的时候，格式一定要严格按照username.github.io，且这里的用户名username与GitHub完全一致。）</li>
 </ul>
 <p>如果本机没有生成过ssh密钥（路径 C:/Users/用户名/.ssh/），我们需要生成一对密钥<br>控制台输入以下命令，填写你的邮箱</p>
-<pre><code>$ssh-keygen -t rsa -C &quot;your_email@example.com&quot;
-</code></pre><p>Generating public/private rsa key pair.<br>Enter file in which to save the key (/c/Users/you/.ssh/id_rsa): [Press enter]<br>这个时候直接回车就好，你也可以输入特定的文件名，如/c/Users/you/.ssh/id_rsa来保存</p>
+<pre><code>$ssh-keygen -t rsa -C &quot;your_email@example.com&quot;</code></pre><p>Generating public/private rsa key pair.<br>Enter file in which to save the key (/c/Users/you/.ssh/id_rsa): [Press enter]<br>这个时候直接回车就好，你也可以输入特定的文件名，如/c/Users/you/.ssh/id_rsa来保存</p>
 <p>Enter passphrase (empty for no passphrase): [Type a passphrase]<br>Enter same passphrase again: [Type passphrase again]<br>这个时候不写密码也可以<br>密钥创建成功后，输入</p>
-<pre><code>clip &lt; ~/.ssh/id_rsa.pub
-</code></pre><p>复制你的公钥到剪切板<br>接着，需要在github的设置界面添加你的公钥<br>title：只要自己能区分是哪台电脑的公钥就行<br>key：刚才复制的公钥<br>然后保存</p>
+<pre><code>clip &lt; ~/.ssh/id_rsa.pub</code></pre><p>复制你的公钥到剪切板<br>接着，需要在github的设置界面添加你的公钥<br>title：只要自己能区分是哪台电脑的公钥就行<br>key：刚才复制的公钥<br>然后保存</p>
 <p>到blog文件夹根目录找到_config.yml<br>配置文件的最后</p>
 <pre><code>deploy:
-  type:
-</code></pre><p>改为:</p>
+  type:</code></pre><p>改为:</p>
 <pre><code>deploy:  
   type: git
   repository: http://github.com/yourname/username.github.io.git
-  branch: master
-</code></pre><p>这里的repository地址就是github项目页面的https地址<br>保存后，控制台输入</p>
+  branch: master</code></pre><p>这里的repository地址就是github项目页面的https地址<br>保存后，控制台输入</p>
 <pre><code>$ hexo g
 
-$ hexo d
-</code></pre><p>这里才过坑，报一个错误<br>ERROR Deployer not found: git<br>找不到hexo的git插件，这时我们需要安装这个插件<br>控制台输入</p>
-<pre><code>$ npm install hexo-deployer-git --save
-</code></pre><p>部署成功后就可以通过username.github.io访问了</p>
-<p>Hexo有很多主题可供下载，可以去官网挑选，需要根据该主题的文档进行配置<a href="https://hexo.io/themes/" target="_blank" rel="external">官网主题</a>，同时还有很多博客管理插件，可供下载<a href="https://hexo.io/plugins/" target="_blank" rel="external">官网插件</a><br>我选择了一个star最多的主题NexT，它内置3种外观，而且配置文档十分详细<a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="external">NexT官网</a><br>到此，第一篇文章结束了，我的博客之旅从此开始~</p>
+$ hexo d</code></pre><p>这里才过坑，报一个错误<br>ERROR Deployer not found: git<br>找不到hexo的git插件，这时我们需要安装这个插件<br>控制台输入</p>
+<pre><code>$ npm install hexo-deployer-git --save</code></pre><p>部署成功后就可以通过username.github.io访问了</p>
+<p>Hexo有很多主题可供下载，可以去官网挑选，需要根据该主题的文档进行配置<a href="https://hexo.io/themes/" target="_blank" rel="noopener">官网主题</a>，同时还有很多博客管理插件，可供下载<a href="https://hexo.io/plugins/" target="_blank" rel="noopener">官网插件</a><br>我选择了一个star最多的主题NexT，它内置3种外观，而且配置文档十分详细<a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="noopener">NexT官网</a><br>到此，第一篇文章结束了，我的博客之旅从此开始~</p>
 <h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>随着开源中国（oschina/码云）的发展，推出了类似githubPage的东西，码云也自动为每一个用户分配 username.gitee.io的域名，适合搭建免费的个人博客，不需要太多的维护成本，大家都懂的github在国内使用的弊端，这个搭建的博客速度明显快很多，算是很良心了(不像Coding Pages还有广告跳转页orz…但愿它能一直良心下去)，而且它还有免费的私有仓库。搭建的过程跟githubPag差不多，项目名称和仓库路径都必须和你的用户名一致。</p>
-<h2 id="2017-09-07记"><a href="#2017-09-07记" class="headerlink" title="2017-09-07记"></a>2017-09-07记</h2><p>mac下，hexo任何命令都报错<code>Error: Cannot find module &#39;./build/Release/DTraceProviderBindings&#39;</code><br>google了许久，先是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ npm uninstall hexo</div><div class="line">$ npm install hexo --no-optional</div></pre></td></tr></table></figure></p>
+<h2 id="2017-09-07记"><a href="#2017-09-07记" class="headerlink" title="2017-09-07记"></a>2017-09-07记</h2><p>mac下，hexo任何命令都报错<code>Error: Cannot find module &#39;./build/Release/DTraceProviderBindings&#39;</code><br>google了许久，先是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm uninstall hexo</span><br><span class="line">$ npm install hexo --no-optional</span><br></pre></td></tr></table></figure>
 <p>无效</p>
-<p>接着<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ npm uninstall hexo-cli -g</div><div class="line">$ npm install hexo-cli -g</div></pre></td></tr></table></figure></p>
+<p>接着</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm uninstall hexo-cli -g</span><br><span class="line">$ npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
 <p>依旧无效</p>
-<p>最后卸载dtrace-provider这个组件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm uninstall dtrace-provider</div></pre></td></tr></table></figure></p>
+<p>最后卸载dtrace-provider这个组件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall dtrace-provider</span><br></pre></td></tr></table></figure>
+
 <p>终于正常了<br>据说安装 hexo-cli 的时候依赖了该组件</p>
 <h2 id="2018-10-16记"><a href="#2018-10-16记" class="headerlink" title="2018-10-16记"></a>2018-10-16记</h2><p>mac下，修改文章的名字大小写无效问题，由于mac和windows下git本身就忽略大小写，所以导致修改了文章的名字大小写本地生成正常，远程仓库死活不更新的问题。<br>解决方案：</p>
 <ol>
 <li>进入博客目录.deploy_git文件夹下的.git文件夹，修改里面的git配置文件config，把ignorecase = true改为ignorecase = false，让git不要忽略大小写</li>
-<li><p>如果你仅仅是做了上一步的话，再次上传会生成一个大写的文件夹和一个小写的文件夹，需要先删除git缓存中的博客目录下的 .deploy_git 文件夹下的所有文件，再 push 一次，博客目录下执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cd .deploy_git</div><div class="line">git rm -rf *</div><div class="line">git commit -m &apos;clean all file&apos;</div><div class="line">git push</div></pre></td></tr></table></figure>
-</li>
-<li><p>此时再重新生成上传就没有问题了，博客目录下执行hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</p>
-</li>
+<li>如果你仅仅是做了上一步的话，再次上传会生成一个大写的文件夹和一个小写的文件夹，需要先删除git缓存中的博客目录下的 .deploy_git 文件夹下的所有文件，再 push 一次，博客目录下执行<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd .deploy_git</span><br><span class="line">git rm -rf *</span><br><span class="line">git commit -m &apos;clean all file&apos;</span><br><span class="line">git push</span><br></pre></td></tr></table></figure></li>
+<li>此时再重新生成上传就没有问题了，博客目录下执行hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</li>
 </ol>
 
       
@@ -563,9 +548,9 @@ $ hexo d
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -587,7 +572,7 @@ $ hexo d
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -647,14 +632,6 @@ $ hexo d
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
 
   
-
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站总访问量: <span id="busuanzi_value_site_pv"></span>次
-    </span>
 </div>
 
 
@@ -670,15 +647,8 @@ $ hexo d
 
 
 
+
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-  
-
-  
-</div>
-
 
 
 

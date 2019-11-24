@@ -83,13 +83,12 @@
 <meta name="keywords" content="jni">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ijkplayer编译so文件支持更多格式">
-<meta property="og:url" content="http://yoursite.com/2019/02/16/IjkplayerSo/index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;02&#x2F;16&#x2F;IjkplayerSo&#x2F;index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="bilibili大名鼎鼎的ijkplayer开源播放器，有支持ffmpeg拓展，可拓展性高，体积小的优点，成为很多公司的首选播放器，但官方给的demo只支持mp4格式，想要支持横多的视频格式需要自己修改配置文件并重新编译出so文件才能实现，之前折腾了很久，一直是循环编译，最后编译失败。周末闲来下了，继续折腾终于编译成功，下面对ijkplayer的配置修改和编译做一个详细记录，方便以后查阅。 编译">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-02-16T15:14:00.452Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ijkplayer编译so文件支持更多格式">
-<meta name="twitter:description" content="bilibili大名鼎鼎的ijkplayer开源播放器，有支持ffmpeg拓展，可拓展性高，体积小的优点，成为很多公司的首选播放器，但官方给的demo只支持mp4格式，想要支持横多的视频格式需要自己修改配置文件并重新编译出so文件才能实现，之前折腾了很久，一直是循环编译，最后编译失败。周末闲来下了，继续折腾终于编译成功，下面对ijkplayer的配置修改和编译做一个详细记录，方便以后查阅。 编译">
 
 
 
@@ -181,7 +180,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
+          <a href="/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -191,7 +190,7 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
+          <a href="/about/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -201,7 +200,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
+          <a href="/tags/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -211,7 +210,7 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
+          <a href="/categories/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -221,7 +220,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
+          <a href="/archives/%20" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -401,7 +400,7 @@
 <p>解决方案：</p>
 <p>先删除之前的软链接文件<code>rm module.sh</code></p>
 <p>改一下module-default.sh配置文件，在末尾添加2行代码：</p>
-   <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-linux-perf"</div><div class="line">export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-bzlib"</div></pre></td></tr></table></figure>
+   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-linux-perf"</span><br><span class="line">export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-bzlib"</span><br></pre></td></tr></table></figure>
 <p>再创建软链接<code>ln -s module-default.sh module.sh</code></p>
 </li>
 <li><p>切换目录，编译ffmpeg</p>
@@ -414,7 +413,8 @@
 <p>解决方案：</p>
 <p>可以安装yasm，或者按照提示执行./configure –disable-x86asm，由于yasm暂时用不上，那么就执行./configure –disable-x86asm来解决，但是这里我们编译ffmpeg是通过shell脚本，所以只能去改脚本。</p>
 <p>我们打开compile-ffmpeg.sh这个脚本发现它其实是在执行tools/do-compile-ffmpeg.sh这个脚本，再打开do-compile-ffmpeg.sh，搜索是否有<code>./configure</code>这个命令，果然在305行，我们找到了相关代码：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">./configure $FF_CFG_FLAGS \</div><div class="line">       --extra-cflags="$FF_CFLAGS $FF_EXTRA_CFLAGS" \</div><div class="line">       --extra-ldflags="$FF_DEP_LIBS $FF_EXTRA_LDFLAGS"</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./configure $FF_CFG_FLAGS \</span><br><span class="line">       --extra-cflags="$FF_CFLAGS $FF_EXTRA_CFLAGS" \</span><br><span class="line">       --extra-ldflags="$FF_DEP_LIBS $FF_EXTRA_LDFLAGS"</span><br></pre></td></tr></table></figure>
+
 <p>这里关注一下FF_CFG_FLAGS这个变量，我们可以在它后面追加<code>--disable-x86asm</code>这个参数命令</p>
 <p>修改FF_CFG_FLAGS变量应该在调用<code>./configure</code>命令之前，所以我们添加一句代码在294行：</p>
 <p><code>FF_CFG_FLAGS=&quot;$FF_CFG_FLAGS --disable-x86asm&quot;</code>，先清除之前编译的文件<code>./compile-ffmpeg.sh clean</code>，再编译一次<code>./compile-ffmpeg.sh all</code>这个错误就解决了。</p>
@@ -540,9 +540,9 @@
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -564,7 +564,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -608,14 +608,6 @@
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
 
   
-
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站总访问量: <span id="busuanzi_value_site_pv"></span>次
-    </span>
 </div>
 
 
@@ -631,15 +623,8 @@
 
 
 
+
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-  
-
-  
-</div>
-
 
 
 
