@@ -2,84 +2,60 @@
 
 
 
-  
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
 
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Hexo, NexT" />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="程序的世界，比你牛逼的人更比你努力。 hello，I&amp;apos;m an Android developer～  My hobbies tag &amp;#58;  - Coding   - Sports    - Game">
+  <meta name="description" content="程序的世界，比你牛逼的人更比你努力。 hello，I&amp;apos;m an Android developer～  My hobbies tag &amp;#58;  - Coding   - Sports    - Game">
 <meta property="og:type" content="website">
 <meta property="og:title" content="JessieK&#39;s blog">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;index.html">
@@ -87,42 +63,21 @@
 <meta property="og:description" content="程序的世界，比你牛逼的人更比你努力。 hello，I&amp;apos;m an Android developer～  My hobbies tag &amp;#58;  - Coding   - Sports    - Game">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/">
 
 
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: true,
+    isPost: false,
+    isPage: false,
+    isArchive: false
   };
 </script>
 
-
-
-  <link rel="canonical" href="http://yoursite.com/"/>
-
-
-
-
-
-  <title>JessieK's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>JessieK's blog</title>
   
 
 
@@ -131,204 +86,205 @@
 
 
 
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
-  
-  
-    
-  
-
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left 
-  page-home">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
 
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+    <div>
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">JessieK's blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-      
         <p class="site-subtitle">My Technical sharing</p>
       
   </div>
 
   <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
 
+
 <nav class="site-nav">
   
-
-  
-    <ul id="menu" class="menu">
+  <ul id="menu" class="menu">
       
+      
+        
         
         <li class="menu-item menu-item-home">
-          <a href="/%20" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/%20" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            关于
-          </a>
-        </li>
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
       
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/%20" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/%20" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/%20" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
-
-      
-    </ul>
-  
-
-  
-</nav>
-
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-  <section id="posts" class="posts-expand">
     
       
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
 
-  
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
 
-  
-  
-  
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+        
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/24/DingDingRobot/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/24/DingDingRobot/" itemprop="url">钉钉机器人实现自定义提醒和发送天气预报</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/11/24/DingDingRobot/" class="post-title-link" itemprop="url">钉钉机器人实现自定义提醒和发送天气预报</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-24T20:57:51+08:00">
-                2019-11-24
-              </time>
-            
 
-            
-
-            
-          </span>
-
-          
-
+              <time title="Created: 2019-11-24 20:57:51" itemprop="dateCreated datePublished" datetime="2019-11-24T20:57:51+08:00">2019-11-24</time>
+            </span>
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
+
+            
+              <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
+                  <i class="fa fa-calendar-check-o"></i>
                 </span>
-                <a href="/2019/11/24/DingDingRobot/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/11/24/DingDingRobot/" itemprop="commentCount"></span>
-                </a>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-25 00:08:31" itemprop="dateModified" datetime="2019-11-25T00:08:31+08:00">2019-11-25</time>
               </span>
             
-          
-
-          
-          
-
-          
-
           
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -336,12 +292,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>又是很长一段时间没写博客了，最近工作繁忙，加班多，也是无奈啊～但是好习惯还是应该坚持下去的，平时工作钉钉作为主要的沟通工具，发现它除了是个聊天软件以外，还有一个好玩的东西-钉钉机器人，做些自动化推送提醒还是不错的，之前在telegram看到过类似的东西，它有一套专属api，可发送一些自定义的消息，实现一些自动化功能，目前推送提醒的解决方案一般是app推送，短信，企业微信，邮件，为了推送提醒单独开发一个app成本太高，短信现在几乎都是收费的，企业微信注册麻烦，而邮件一般都不会及时去看的。钉钉机器人创建成本低，又是主力聊天工具之一，对于个人或群组推送还是很实用的，随便拉两个人创建一个群就可以添加机器人了，如果只是做个人提醒的话，创建好后可以把这两个人T掉。唯一的限制是1秒最多发送20条～由于个人用iphone手机，本土化做得不好，节假日后补班那几天经常因为忘记定闹钟而睡过头，又不想下载第三方app，准备用家里有个树莓派做个人小型服务器，定时跑一个python脚本，如果明天是节前或节后补班的情况就用钉钉机器人发消息提醒我定好闹钟，顺带每天晚上发一个天气预报给我。</p>
 <hr>
 <h1 id="创建钉钉机器人"><a href="#创建钉钉机器人" class="headerlink" title="创建钉钉机器人"></a>创建钉钉机器人</h1><p>只要是个群组即可创建钉钉机器人，先拉两个人组成群组，在群组菜单中选择群组助手，添加机器人选择自定义机器人，创建的时候填写机器人名字，这里需要复制webhook的url链接，安全设置中可勾选自定义关键字，签名，ip地址，这里为了简单选择自定义关键字，设置为“提醒”，只要发送内容中带了关键字“提醒”即可。如果选择签名的话需要参考官方的签名算法，签名需添加到webhook的url上，如果选择ip地址的话，只有该ip地址的服务器才可以调用api发送消息。</p>
@@ -366,105 +317,76 @@
 <h2 id="校准树莓派时间"><a href="#校准树莓派时间" class="headerlink" title="校准树莓派时间"></a>校准树莓派时间</h2><p>查看当前树莓派时间<code>date</code><br>设置树莓派时区<br><code>sudo dpkg-reconfigure tzdata</code><br>选择亚洲时区Asia，选择上海时间Shanghai</p>
 <h2 id="contab设置定时任务"><a href="#contab设置定时任务" class="headerlink" title="contab设置定时任务"></a>contab设置定时任务</h2><p>linux定时任务可利用contab设置，<code>crontab -e</code>，进入文件编辑，选择编辑工具，nano或vim<br>格式为：Minute Hour Day Month Dayofweek   command<br>Minute            每个小时的第几分钟执行该任务<br>Hour               每天的第几个小时执行该任务<br>Day                 每月的第几天执行该任务<br>Month             每年的第几个月执行该任务<br>DayOfWeek    每周的第几天执行该任务<br>Command       要执行的命令<br>设置23点22分执行python3的脚本，并输出日志<br><code>22 23 * * * python3 /home/pi/upload/test123.py &gt;&gt;/home/pi/mylog.log</code><br>保存文件，并重启contab服务<br><code>service restart contab</code></p>
 
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-      
-
-  
-
+        
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/20/NtpSync/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/20/NtpSync/" itemprop="url">Android上利用Ntp实现不同设备间的同步</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/07/20/NtpSync/" class="post-title-link" itemprop="url">Android上利用Ntp实现不同设备间的同步</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-20T20:31:21+08:00">
-                2019-07-20
-              </time>
-            
 
-            
-
-            
-          </span>
-
+              <time title="Created: 2019-07-20 20:31:21" itemprop="dateCreated datePublished" datetime="2019-07-20T20:31:21+08:00">2019-07-20</time>
+            </span>
           
-            <span class="post-category" >
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-07-21 18:32:51" itemprop="dateModified" datetime="2019-07-21T18:32:51+08:00">2019-07-21</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
+              <span class="post-meta-item-text">In</span>
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Android/" itemprop="url" rel="index">
@@ -479,31 +401,9 @@
           
 
           
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/07/20/NtpSync/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/20/NtpSync/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
 
         </div>
       </header>
-    
 
     
     
@@ -511,12 +411,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>最近公司有个需求，希望在不同的Android设备上实现视频的播放同步，误差尽可能的小，后期继续优化实现逐帧同步效果，以便后期进行矩阵拼接屏的研发，前期处于试探性阶段，在App上实现，目前误差在10-20ms内，属于肉眼完全看不出的误差效果范围，只有利用手机的慢动作摄影才能看出一点过渡误差，并且视频播放出的声音听起来也完全同步。对于请求主机时间消息的传递误差，主要利用了ntp时间同步技术来解决，对于视频的加载耗时通过两个播放器实例交替加载，达到预先加载的效果来解决，加载视频耗时造成的误差基本可以忽略不计。只要获取到了当前的主机时间，那么就能推算出主机的播放时间，这个时间可以看作是所有设备同步播放的时间，也能算出当前设备时间到这个同步播放时间的偏移量，达到准时播放同一个视频的效果。由于设备不一定一直联网，排除设备的时钟时间错误造成的干扰，这里统一采用rtc时间（硬件时钟）。这里主要记录一下在Android平台上ntp协议的应用。</p>
 <hr>
 <h1 id="NTP协议简介"><a href="#NTP协议简介" class="headerlink" title="NTP协议简介"></a>NTP协议简介</h1><p>网络时间协议NTP(Network Time Protocol)用于将计算机客户或服务器的时间与另一服务器同步，使用层次式时间分布模型。在配置时，NTP可以利用冗余服务器和多条网络路径来获得时间的高准确性和高可靠性。即使客户机在长时间无法与某一时间服务器相联系的情况下,仍可提供高准确度时间。</p>
@@ -529,122 +424,76 @@
 <p>这里的SystemClock.elapsedRealtime()是获取设备启动后到现在的时间（硬件时间），System.currentTimeMillis()获取的是系统时间（软件时间），是距离1970年1月1日开始计算的一个值，这里为了减少误差，避免因为外界修改软件时间而导致时间不准的情况而使用硬件时间。</p>
 <h1 id="服务器返回ntp时间"><a href="#服务器返回ntp时间" class="headerlink" title="服务器返回ntp时间"></a>服务器返回ntp时间</h1><p>从客户端发的报文中获取响应地址和端口号，把收到请求的时间写入报文并保存到链表，从链表中取出刚才放入的报文，写入发送响应的时间发给客户端</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> OFFSET_1900_TO_1970 = ((<span class="number">365L</span> * <span class="number">70L</span>) + <span class="number">17L</span>) * <span class="number">24L</span> * <span class="number">60L</span> * <span class="number">60L</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RECEIVE_TIME_OFFSET = <span class="number">32</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSMIT_TIME_OFFSET = <span class="number">40</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NTP_PACKET_SIZE = <span class="number">48</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NTP_MODE_SERVIER = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NTP_VERSION = <span class="number">3</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(<span class="keyword">int</span> port)</span> </span>&#123;</span><br><span class="line">    mCompositeDisposable.add(Observable.just(<span class="number">1</span>).subscribeOn(Schedulers.io())</span><br><span class="line">            .subscribe(integer -&gt; &#123;</span><br><span class="line">                start = <span class="keyword">true</span>;</span><br><span class="line">                Logger.t(TAG).d(<span class="string">"服务端开启 port="</span> + port);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    mSocket = <span class="keyword">new</span> DatagramSocket(<span class="keyword">null</span>);</span><br><span class="line">                    <span class="comment">// 设置端口重用</span></span><br><span class="line">                    mSocket.setReuseAddress(<span class="keyword">true</span>);</span><br><span class="line">                    <span class="comment">// 绑定端口号</span></span><br><span class="line">                    mSocket.bind(<span class="keyword">new</span> InetSocketAddress(port));</span><br><span class="line">                    <span class="keyword">while</span> (start) &#123;</span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[NTP_PACKET_SIZE];</span><br><span class="line">                            DatagramPacket response = <span class="keyword">new</span> DatagramPacket(buffer,</span><br><span class="line">                                    buffer.length);</span><br><span class="line">                            buffer[<span class="number">0</span>] = NTP_MODE_SERVIER | (NTP_VERSION &lt;&lt; <span class="number">3</span>);</span><br><span class="line">                            Logger.t(TAG).d(<span class="string">"等待接收客户端消息"</span>);</span><br><span class="line">                            mSocket.receive(response);</span><br><span class="line">                            DatagramPacket echo = <span class="keyword">new</span> DatagramPacket(buffer, buffer.length, response.getAddress(), response.getPort());</span><br><span class="line">                            Logger.t(TAG).d(<span class="string">"收到客户端请求="</span> + response.getAddress());</span><br><span class="line">                            <span class="comment">// 把收到的时间写入buffer</span></span><br><span class="line">                            writeTimeStamp(buffer, RECEIVE_TIME_OFFSET, SystemClock.elapsedRealtime());</span><br><span class="line">                            <span class="comment">// 添加到链表</span></span><br><span class="line">                            mLinkedList.add(echo);</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                            Logger.t(TAG).e(<span class="string">"while receive failed:"</span> + e);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    Logger.t(TAG).e(<span class="string">"response failed:"</span> + e);</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    Logger.t(TAG).e(<span class="string">"关闭socket"</span>);</span><br><span class="line">                    <span class="keyword">if</span> (mSocket != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (!mSocket.isClosed()) &#123;</span><br><span class="line">                            mSocket.close();</span><br><span class="line">                        &#125;</span><br><span class="line">                        mSocket.disconnect();</span><br><span class="line">                        mSocket = <span class="keyword">null</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;));</span><br><span class="line">    mCompositeDisposable.add(Observable.just(<span class="number">1</span>).subscribeOn(Schedulers.io())</span><br><span class="line">            .subscribe(integer -&gt; &#123;</span><br><span class="line">                mSendSocket = <span class="keyword">new</span> DatagramSocket();</span><br><span class="line">                mSendSocket.setSoTimeout(<span class="number">2000</span>);</span><br><span class="line">                <span class="keyword">while</span> (start) &#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        <span class="keyword">if</span> (mLinkedList.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                            <span class="comment">// 取出刚才放入链表的数据包</span></span><br><span class="line">                            DatagramPacket first = mLinkedList.removeFirst();</span><br><span class="line">                            <span class="keyword">if</span> (first != <span class="keyword">null</span>) &#123;</span><br><span class="line">                                <span class="comment">// 写入发送响应包的时间</span></span><br><span class="line">                                writeTimeStamp(first.getData(), TRANSMIT_TIME_OFFSET, SystemClock.elapsedRealtime());</span><br><span class="line">                                Logger.t(TAG).d(<span class="string">"向客户端发送消息="</span> + first.getAddress());</span><br><span class="line">                                mSendSocket.send(first);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                        Logger.t(TAG).e(<span class="string">"while send failed:"</span> + e);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                Logger.t(TAG).d(<span class="string">"发送消息端关闭"</span>);</span><br><span class="line">            &#125;));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 写入硬件时间到buffer中</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeTimeStamp</span><span class="params">(<span class="keyword">byte</span>[] buffer, <span class="keyword">int</span> offset, <span class="keyword">long</span> time)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> seconds = time / <span class="number">1000L</span>;</span><br><span class="line">    <span class="keyword">long</span> milliseconds = time - seconds * <span class="number">1000L</span>;</span><br><span class="line">    seconds += OFFSET_1900_TO_1970;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 按大端模式写入秒数</span></span><br><span class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (seconds &gt;&gt; <span class="number">24</span>);</span><br><span class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (seconds &gt;&gt; <span class="number">16</span>);</span><br><span class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (seconds &gt;&gt; <span class="number">8</span>);</span><br><span class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (seconds &gt;&gt; <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> fraction = milliseconds * <span class="number">0x100000000L</span> / <span class="number">1000L</span>;</span><br><span class="line">    <span class="comment">// 按大端模式写入小数</span></span><br><span class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (fraction &gt;&gt; <span class="number">24</span>);</span><br><span class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (fraction &gt;&gt; <span class="number">16</span>);</span><br><span class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (fraction &gt;&gt; <span class="number">8</span>);</span><br><span class="line">    <span class="comment">// 低位字节随机</span></span><br><span class="line">    buffer[offset++] = (<span class="keyword">byte</span>) (Math.random() * <span class="number">255.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-      
-
-  
-
+        
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/13/MacRemoveAnySearch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/13/MacRemoveAnySearch/" itemprop="url">Mac移除浏览器劫持AnySearch</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/07/13/MacRemoveAnySearch/" class="post-title-link" itemprop="url">Mac移除浏览器劫持AnySearch</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-13T19:11:56+08:00">
-                2019-07-13
-              </time>
-            
 
-            
-
-            
-          </span>
-
-          
-
+              <time title="Created: 2019-07-13 19:11:56" itemprop="dateCreated datePublished" datetime="2019-07-13T19:11:56+08:00">2019-07-13</time>
+            </span>
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
+
+            
+              <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
+                  <i class="fa fa-calendar-check-o"></i>
                 </span>
-                <a href="/2019/07/13/MacRemoveAnySearch/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/13/MacRemoveAnySearch/" itemprop="commentCount"></span>
-                </a>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-22 00:39:16" itemprop="dateModified" datetime="2019-11-22T00:39:16+08:00">2019-11-22</time>
               </span>
             
-          
-
-          
-          
-
-          
-
           
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -652,12 +501,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>家里面一直使用的MAC电脑最近遇到一个比较烦人的问题，浏览器被劫持，打开chrome浏览器和safari浏览器主页全是AnySearch的搜索导航界面，被一个名为AnySearch的插件恶意修改了主页，主页修改劫持，最开始我手动删除chrome和safari的插件，当时主页被修正回来了，但是过不了几天这个插件又悄悄的被安装在chrome和safari浏览器上，主页又被修改为了AnySearch的搜索导航界面。我发现SystemPreference(系统偏好)中多出一个profile的选项，里面能看到一个AnySearch脚本路径，然后我在profile中把脚本删除，再手动删除chrome和safari的插件，结果和第一次的尝试一样，过几天又悄无声息的装上了，主页再次被修改。我查找了很多方案都不起作用，后来发现一个比较靠谱的方法能彻底移除AnySearch的浏览器劫持，在这里记录一下。</p>
 <hr>
 <p>除了删除profile中AnySearch的脚本路径和chrome浏览器以及safari浏览器的AnySearch插件以外</p>
@@ -667,122 +511,68 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/Library/Application Support</span><br><span class="line">find ./ -iname &quot;infosearch*&quot;</span><br></pre></td></tr></table></figure>
 <p>找出所有相关的文件路径并删除路径下的文件</p>
 
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-      
-
-  
-
+        
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/19/RaspberryAria2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/19/RaspberryAria2/" itemprop="url">树莓派+PanDownload(aria2)实现远程下载</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/05/19/RaspberryAria2/" class="post-title-link" itemprop="url">树莓派+PanDownload(aria2)实现远程下载</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-19T17:45:57+08:00">
-                2019-05-19
-              </time>
-            
 
-            
-
-            
-          </span>
-
-          
-
+              <time title="Created: 2019-05-19 17:45:57 / Modified: 21:04:30" itemprop="dateCreated datePublished" datetime="2019-05-19T17:45:57+08:00">2019-05-19</time>
+            </span>
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/05/19/RaspberryAria2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/19/RaspberryAria2/" itemprop="commentCount"></span>
-                </a>
-              </span>
+
             
-          
-
-          
-          
-
-          
-
           
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -790,12 +580,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下载的工具，无奈它的下载速度实在是太慢了，百度云的第三方下载工具PanDownload是基于aria2的，下载速度非常可观，且支持远程下载。我们可以在树莓派上搭建aria2的下载服务器，然后利用PanDownload远程下发下载任务到树莓派上的aria2服务器，即可实现远程下载。</p>
 <hr>
 <h1 id="树莓派搭建aria2服务器"><a href="#树莓派搭建aria2服务器" class="headerlink" title="树莓派搭建aria2服务器"></a>树莓派搭建aria2服务器</h1><p>关于树莓派的准备工作和系统安装这里就不讲了，希望了解的朋友可以查看<a href="https://jessiekate.gitee.io/2019/02/04/RaspberryStart/" target="_blank" rel="noopener">上一篇</a>，这里主要是说一下关于aria2服务器的搭建流程。</p>
@@ -824,105 +609,68 @@
 <li>如果提示“下载失败：无法创建文件，给下载文件夹授权，<code>chmod 777 /mnt/download</code></li>
 </ol>
 
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-      
-
-  
-
+        
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/16/IjkplayerSo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/16/IjkplayerSo/" itemprop="url">ijkplayer编译so文件支持更多格式</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/02/16/IjkplayerSo/" class="post-title-link" itemprop="url">ijkplayer编译so文件支持更多格式</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-16T21:50:54+08:00">
-                2019-02-16
-              </time>
-            
 
-            
-
-            
-          </span>
-
+              <time title="Created: 2019-02-16 21:50:54 / Modified: 23:14:00" itemprop="dateCreated datePublished" datetime="2019-02-16T21:50:54+08:00">2019-02-16</time>
+            </span>
           
-            <span class="post-category" >
             
-              <span class="post-meta-divider">|</span>
+
             
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
+              <span class="post-meta-item-text">In</span>
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Android/" itemprop="url" rel="index">
@@ -937,31 +685,9 @@
           
 
           
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/16/IjkplayerSo/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/16/IjkplayerSo/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
 
         </div>
       </header>
-    
 
     
     
@@ -969,12 +695,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>bilibili大名鼎鼎的ijkplayer开源播放器，有支持ffmpeg拓展，可拓展性高，体积小的优点，成为很多公司的首选播放器，但官方给的demo只支持mp4格式，想要支持横多的视频格式需要自己修改配置文件并重新编译出so文件才能实现，之前折腾了很久，一直是循环编译，最后编译失败。周末闲来下了，继续折腾终于编译成功，下面对ijkplayer的配置修改和编译做一个详细记录，方便以后查阅。</p>
 <p>编译前提：在linux或者mac开发环境下，配置好JDK,SDK,NDK的环境变量</p>
 <p>编译步骤：</p>
@@ -1040,122 +761,76 @@
 </li>
 </ol>
 
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-      
-
-  
-
+        
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/04/RaspberryStart/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/04/RaspberryStart/" itemprop="url">树莓派折腾记录</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/02/04/RaspberryStart/" class="post-title-link" itemprop="url">树莓派折腾记录</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-04T23:54:18+08:00">
-                2019-02-04
-              </time>
-            
 
-            
-
-            
-          </span>
-
-          
-
+              <time title="Created: 2019-02-04 23:54:18" itemprop="dateCreated datePublished" datetime="2019-02-04T23:54:18+08:00">2019-02-04</time>
+            </span>
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
+
+            
+              <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
+                  <i class="fa fa-calendar-check-o"></i>
                 </span>
-                <a href="/2019/02/04/RaspberryStart/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/04/RaspberryStart/" itemprop="commentCount"></span>
-                </a>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-09 20:27:34" itemprop="dateModified" datetime="2019-11-09T20:27:34+08:00">2019-11-09</time>
               </span>
             
-          
-
-          
-          
-
-          
-
           
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -1163,12 +838,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>放假前在公司看到有同事在玩树莓派，觉得挺有意思，之前也曾经了解过，但是一直都没有下定决定买一个玩玩，这次也算是被同事拉下水吧，趁着这次放假的机会，在淘宝上买了个最新的树莓派3B+ 来学习一下，从小白开始树莓派的折腾之旅。想到自己有linux的基础应该上手不会太难，没想到还是踩了不少的坑，在购买的时候淘宝店家说会有技术支持，结果放假了完全不回消息😔，不过遇到的问题还是自己慢慢踩坑爬出来了，在这里做个简单的记录。</p>
 <hr>
 <h1 id="折腾树莓派的准备工作"><a href="#折腾树莓派的准备工作" class="headerlink" title="折腾树莓派的准备工作"></a>折腾树莓派的准备工作</h1><h2 id="贴散热贴"><a href="#贴散热贴" class="headerlink" title="贴散热贴"></a>贴散热贴</h2><p>拿到树莓派的主板后，先贴好散热贴，总共3个散热贴，有2个带脚的散热贴和1个不带脚并有树莓标志的散热贴，主要是3个地方，CPU，GPU和内存，其中CPU和GPU在主板的正面，贴两个带脚的散热片，正中有两个近似于正方形的方块，大的是CPU，小的是GPU，而内存在主板的背面，贴不带脚并有树莓标志的散热贴。</p>
@@ -1226,122 +896,68 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
 </ol>
 <p>访问树莓派的ip:8080就可以看到采集的视频了</p>
 
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-      
-
-  
-
+        
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/27/ScrollPage/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/27/ScrollPage/" itemprop="url">window.scrollTo失效了怎么办？使用puppeteer实现屏幕滑动效果</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/01/27/ScrollPage/" class="post-title-link" itemprop="url">window.scrollTo失效了怎么办？使用puppeteer实现屏幕滑动效果</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-27T14:56:38+08:00">
-                2019-01-27
-              </time>
-            
 
-            
-
-            
-          </span>
-
-          
-
+              <time title="Created: 2019-01-27 14:56:38 / Modified: 15:51:30" itemprop="dateCreated datePublished" datetime="2019-01-27T14:56:38+08:00">2019-01-27</time>
+            </span>
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/27/ScrollPage/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/27/ScrollPage/" itemprop="commentCount"></span>
-                </a>
-              </span>
+
             
-          
-
-          
-          
-
-          
-
           
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -1349,12 +965,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>又是很久没有写博客了，最近在搞漫画爬虫项目时发现某些网站把window.scrollTo方法都屏蔽了，由于大多数漫画网站都是在网页滚动时动态加载，所以如果无法实现网页滚动是没办法爬取到所有漫画的，幸好还好有google爸爸维护的puppeteer爬虫框架，这个强大的框架当然是无视这些方法屏蔽的，它可以实现鼠标按下，滑动，弹起等一系列自动化操作，那么利用这些方法我们就可以实现网页滑动了，在此，针对原生滑动方法都被屏蔽的情况下，利用puppeteer实现网页滑动做一个记录。如果有更好的方法的小伙伴欢迎一起交流讨论。</p>
 <hr>
 <p>前几天我维护代码的时候，突然发现爬虫代码报错了😂</p>
@@ -1371,105 +982,76 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
 
 <p>distance是y轴滑动的垂直距离，根据屏幕尺寸计算出鼠标滑动到的组合操作的起始位置x和y的坐标点，然后模拟鼠标按下操作。因为我们需要爬取的网页，屏幕高度的5%是顶部固定的导航栏，所以结束位置的y轴坐标应该大于屏幕高度的5%。由于我们的网页滑动操作普遍是鼠标由下往上滑动，所以我们需要判断一下动作当前的起始位置的y轴坐标减去滑动的垂直距离后的y轴坐标值是否大于屏幕高度的5%，如果是，结束位置的y轴坐标为鼠标按下操作的y轴坐标减去滑动的垂直距离，否则结束位置的y轴坐标即为屏幕高度的5%。将window.scrollTo方法替换为我们自定义的scrollPage方法，传入滑动的垂直距离即可。</p>
 
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-      
-
-  
-
+        
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/13/Jenkins-Build/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/13/Jenkins-Build/" itemprop="url">搭建Jenkins自动化构建环境</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/01/13/Jenkins-Build/" class="post-title-link" itemprop="url">搭建Jenkins自动化构建环境</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-13T22:20:20+08:00">
-                2019-01-13
-              </time>
-            
 
-            
-
-            
-          </span>
-
+              <time title="Created: 2019-01-13 22:20:20" itemprop="dateCreated datePublished" datetime="2019-01-13T22:20:20+08:00">2019-01-13</time>
+            </span>
           
-            <span class="post-category" >
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-05-17 23:39:00" itemprop="dateModified" datetime="2019-05-17T23:39:00+08:00">2019-05-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
+              <span class="post-meta-item-text">In</span>
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Util/" itemprop="url" rel="index">
@@ -1484,31 +1066,9 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
           
 
           
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/13/Jenkins-Build/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/13/Jenkins-Build/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
 
         </div>
       </header>
-    
 
     
     
@@ -1516,12 +1076,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>最近公司想搭建自动化构建平台，由于以前自己在空闲时间折腾过jenkins搭建相关的东西，领导就把这个任务交给了我，虽然以前在自己的电脑上搭建过，由于时间过去太久了，当时又没做记录，搭建的时候还是踩了不少坑，不过在google爸爸的帮助下，翻阅各种资料，最后都爬坑解决，所以这里对再此搭建做一个记录，避免以后遗忘。</p>
 <hr>
 <h1 id="连接远程服务器"><a href="#连接远程服务器" class="headerlink" title="连接远程服务器"></a>连接远程服务器</h1><ol>
@@ -1603,122 +1158,76 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
 <li>如果配置了邮件通知，打包完成后邮箱会收到一封邮件</li>
 </ol>
 
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-      
-
-  
-
+        
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/18/SocketioRn/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/18/SocketioRn/" itemprop="url">socket.io+nodejs+mongodb+reactnative 实现简易聊天室</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2018/11/18/SocketioRn/" class="post-title-link" itemprop="url">socket.io+nodejs+mongodb+reactnative 实现简易聊天室</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-18T19:22:41+08:00">
-                2018-11-18
-              </time>
-            
 
-            
-
-            
-          </span>
-
-          
-
+              <time title="Created: 2018-11-18 19:22:41" itemprop="dateCreated datePublished" datetime="2018-11-18T19:22:41+08:00">2018-11-18</time>
+            </span>
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
+
+            
+              <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
+                  <i class="fa fa-calendar-check-o"></i>
                 </span>
-                <a href="/2018/11/18/SocketioRn/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/11/18/SocketioRn/" itemprop="commentCount"></span>
-                </a>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-12-16 23:45:32" itemprop="dateModified" datetime="2018-12-16T23:45:32+08:00">2018-12-16</time>
               </span>
             
-          
-
-          
-          
-
-          
-
           
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -1726,12 +1235,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>最近公司非常忙，又是很长一段时间没有写博客了，虽然公司的项目使用不到ReactNative和nodejs相关的知识，但我仍然看好跨平台技术，毕竟以后是大前端的发展趋势。所以依旧不能停下学习的脚步，多做技术储备，提升核心竞争力，继续挖全栈的坑，拓展自己的技术栈。毕竟有的时候站在一个不同的角度，可能有不同的看法。之前做了一个获取网易腾讯免费漫画的app，后台用nodejs+mongodb+koa搭建，在展示漫画弹幕的时候，需要用到长链接实时展示当前最新的弹幕内容。之前对socket.io在react-native上的使用不太了解，借此机会学习一下相关的知识并做一个总结和记录。</p>
 <hr>
 <p>效果如下：<br><img src="/images/socketio_rn.gif" alt="效果gif"></p>
@@ -1775,105 +1279,68 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
 
 <p>客户端的ui用了一个封装的库GiftedChat来简单展示一下。demo已打包上传，最后贴一个<a href="https://github.com/jessieeeee/SocketioRn/" target="_blank" rel="noopener">传送门</a></p>
 
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-      
-
-  
-
+        
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/21/Presentation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="JessieK's blog">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/21/Presentation/" itemprop="url">Presentation实现双屏异显</a></h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2018/10/21/Presentation/" class="post-title-link" itemprop="url">Presentation实现双屏异显</a>
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">Posted on</span>
+
               
-                <span class="post-meta-item-text">发表于</span>
+                
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-21T21:06:44+08:00">
-                2018-10-21
-              </time>
-            
 
-            
-
-            
-          </span>
-
+              <time title="Created: 2018-10-21 21:06:44 / Modified: 22:22:08" itemprop="dateCreated datePublished" datetime="2018-10-21T21:06:44+08:00">2018-10-21</time>
+            </span>
           
-            <span class="post-category" >
             
-              <span class="post-meta-divider">|</span>
+
             
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
+              <span class="post-meta-item-text">In</span>
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Android/" itemprop="url" rel="index">
@@ -1888,31 +1355,9 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
           
 
           
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/10/21/Presentation/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/21/Presentation/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
 
         </div>
       </header>
-    
 
     
     
@@ -1920,12 +1365,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <hr>
+          <hr>
 <p>由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。</p>
 <hr>
 <p>Presentation是一个特殊的dialog，可以在辅屏上显示与主屏不一样的内容，设置里面也可以把“模拟第二屏”的功能打开，运行的时候会在左上角显示一个小窗口来显示第二屏的显示内容，Presentation在创建的时候需要和Display对象相关联，关联之前需要先获取显示设备，DisplayManager或MediaRouter都可以来获取显示设备。下面用最简单的两个例子来介绍，在主屏和辅屏上都显示一个不同内容的TextView文本。</p>
@@ -1938,45 +1378,27 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">MediaRouter mediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);</span><br><span class="line">MediaRouter.RouteInfo route = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);</span><br><span class="line"><span class="keyword">if</span>(route != <span class="keyword">null</span>) &#123;</span><br><span class="line">    Display display = route.getPresentationDisplay();</span><br><span class="line">    <span class="keyword">if</span> (display != <span class="keyword">null</span>) &#123;</span><br><span class="line">        myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>, display);</span><br><span class="line">        myPresentation.getWindow().setType(</span><br><span class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</span><br><span class="line">        myPresentation.show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>MediaRouter与DisplayManager不同的是MediaRouter会直接绑定周围最合适的设备。总的来说，这两个API实现的思路大致相同，都是要自定义Presentation，获取到一个辅屏的Display对象传入到Presentation的构造函数中进行绑定，Presentation初始化完成后设置窗口类型然后展示。</p>
 
-          
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
-
+  
+  
+  
 
     
-  </section>
+  </div>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">&lt;i class=&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1984,131 +1406,138 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
           </div>
           
 
-
-          
-
         </div>
-        
           
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-  <aside id="sidebar" class="sidebar">
-    
+  <aside class="sidebar">
     <div class="sidebar-inner">
 
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
       
-
       
-
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.png"
-                alt="Jessie Kate" />
-            
-              <p class="site-author-name" itemprop="name">Jessie Kate</p>
-              <p class="site-description motion-element" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/%20%7C%7C%20archive">
-              
-                  <span class="site-state-item-count">37</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">24</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
+      <div class="site-state-item site-state-categories">
+        
           
-
+            <a href="/categories/">
           
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
       
-
       
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
 
     </div>
   </aside>
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
-    <footer id="footer" class="footer">
+    <footer class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
 
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
   
 </div>
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
-
-        
 
 
 
@@ -2119,151 +1548,15 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
   </div>
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
-  
-  <script type="text/javascript">
-    var GUEST = ['nick','mail','link'];
-    var guest = 'nick,mail,link';
-    guest = guest.split(',').filter(item=>{
-      return GUEST.indexOf(item)>-1;
-    });
-    new Valine({
-        el: '#comments' ,
-        verify: false,
-        notify: false,
-        appId: '6LCVjBbx0bpqxaQGmw1hdaTw-gzGzoHsz',
-        appKey: 'h0CQIfed08e67roNpfhTzHOH',
-        placeholder: '在这里写下你的评论吧～',
-        avatar:'wavatar',
-        guest_info:guest,
-        pageSize:'10' || 10,
-    });
-  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
 </script>
@@ -2290,14 +1583,21 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
 
 
 
-  
 
-  
 
-  
 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
 
   
 
