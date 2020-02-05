@@ -235,6 +235,107 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/05/PuppeteerInterception/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2020/02/05/PuppeteerInterception/" class="post-title-link" itemprop="url">nodejs爬虫-puppeteer网络拦截器</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-02-05 14:36:13 / Modified: 17:53:38" itemprop="dateCreated datePublished" datetime="2020-02-05T14:36:13+08:00">2020-02-05</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>又是很久没有写博客了，最近由于武汉疫情，这个春节从初一起就全程宅家，春节假期一延再延，本该上班的我们依然没有正常返工，街上仍然是没有几个人，快递延迟，很多人仍然是宅在家里远程上班。停工不停学，之前的漫画项目主要使用了网易漫画和腾讯漫画爬取的数据，而网易漫画在不久前被bilibili收购了，现在正式改为bilibili漫画，所以之前的爬虫逻辑和接口失效了，正好趁着这个时间把之前的服务端数据爬取接口改一下，这里做一个简单的记录。</p>
+<hr>
+<p>爬取漫画列表和漫画详情都没什么问题，跟之前的思路一样，改一下对应的标签重新绑定目标数据，但是在爬去漫画内容的时候，发现漫画图片的链接已经不在html的标签中了，而是直接获取到服务端返回的图片地址后用canvas绘制出来的。如下图所示：<br><img src="/images/PuppeteerInterception1.png" alt="截图"></p>
+<p>所以只要我们能获取到该页面的网络请求结果，我们就能过滤出图片地址，也就不用去标签中获取目标数据了，接下来我发现在chrome浏览器中元素审查界面的网络拦截器中可以找到漫画内容的图片链接，如下图所示：<br><img src="/images/PuppeteerInterception2.png" alt="截图"></p>
+<p>所以只要我们目前使用的爬虫框架puppeteer能够拦截到网络请求的结果就可以解决标签中无法爬取到图片地址的问题了。我查了一下puppeteer的官方文档，发现了这些api</p>
+<p>开启拦截</p>
+<p><code>page.setRequestInterception(true)</code></p>
+<p>监听服务端返回<br><code>page.on(&#39;response&#39;)</code></p>
+<p>另外还可以监听当前页面的请求</p>
+<p><code>page.on(&#39;request&#39;)</code></p>
+<p>返回一个自定义的响应</p>
+<p><code>req.respond()</code></p>
+<p>根据当前的场景，我们需要获取服务器返回的数据，并过滤其中的漫画图片地址</p>
+<p><code>https://manga.hdslb.com/bfs/manga/a39f3fd06e540fe14b7e591ced413f372bd9f85f.jpg@660w.jpg?token=3a96fd02961137c00a76145fb381d544&amp;ts=5e3a7d62</code></p>
+<p><code>https://manga.hdslb.com/bfs/manga/4cd38fde6581e146c249373c9ed120b75047004a.jpg@660w.jpg?token=2e740fd7ccfefec3f1f5d0d27e925e33&amp;ts=5e3a7d62</code></p>
+<p><code>https://manga.hdslb.com/bfs/manga/18a6e2e4739e7e3eb9888e7220b398fb2d0def9d.jpg@660w.jpg?token=0e8b573c3c40fa3c5554d2df6ec8b2cb&amp;ts=5e3a7d62</code></p>
+<p><code>https://manga.hdslb.com/bfs/manga/e6cbe3162d3c4b6e1175557a90d4a0e54562032f.jpg@660w.jpg?token=0d1a55fe1d27d3527a9340034cd5a35f&amp;ts=5e3a7d62</code></p>
+<p><code>https://manga.hdslb.com/bfs/manga/0c649ad9107997801dd4e45179323381b16dc50a.jpg@660w.jpg?token=fbdf6eb7df231dbe345f4411a32d56c6&amp;ts=5e3a7d62</code></p>
+<p>以上的链接地址特征</p>
+<ol>
+<li>以<code>https://manga.hdslb.com/bfs/manga/</code>开头</li>
+<li>尾部都跟有token和ts的参数，<code>?token=</code>和<code>&amp;ts=</code></li>
+<li><code>@660w.jpg</code>看起来是传入了请求图片的宽度和图片格式</li>
+<li>抛开<code>@</code>后面的尾部参数，请求的图片格式和<code>@</code>后面的尾部参数传入的格式一致</li>
+</ol>
+<p>根据特征，抓取漫画图片代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> puppeteer = <span class="built_in">require</span>(<span class="string">'puppeteer'</span>)</span><br><span class="line"><span class="keyword">const</span> browser = <span class="keyword">await</span> puppeteer.launch(&#123;</span><br><span class="line">            headless: <span class="literal">false</span>,</span><br><span class="line">            executablePath: <span class="string">'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'</span></span><br><span class="line">            &#125;)</span><br><span class="line"><span class="keyword">const</span> page = <span class="keyword">await</span> browser.newPage();</span><br><span class="line"><span class="keyword">await</span> page.setRequestInterception(<span class="literal">true</span>);</span><br><span class="line">page.on(<span class="string">'response'</span>,</span><br><span class="line">            <span class="function"><span class="keyword">function</span> (<span class="params">response</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">let</span> url = response.url().toString()</span><br><span class="line">                <span class="keyword">let</span> tokenStart = url.indexOf(<span class="string">'?token='</span>)</span><br><span class="line">                <span class="keyword">let</span> tsStart = url.indexOf(<span class="string">'&amp;ts='</span>)</span><br><span class="line">                <span class="comment">// 捕获目标url</span></span><br><span class="line">                <span class="keyword">if</span> (url.indexOf(<span class="string">'manga.hdslb.com/bfs/manga/'</span>) !== <span class="number">-1</span></span><br><span class="line">                    &amp;&amp; tokenStart !== <span class="number">-1</span></span><br><span class="line">                    &amp;&amp; tsStart !== <span class="number">-1</span>)&#123;</span><br><span class="line">                    <span class="comment">// 尾部参数请求的格式</span></span><br><span class="line">                    <span class="keyword">let</span> imgParamStart = url.indexOf(<span class="string">'@'</span>)</span><br><span class="line">                    <span class="keyword">if</span> (imgParamStart !== <span class="number">-1</span>)&#123;</span><br><span class="line">                        <span class="comment">// 图片本身的格式</span></span><br><span class="line">                        <span class="keyword">let</span> suffix = url.substring(imgParamStart - <span class="number">3</span>, imgParamStart)</span><br><span class="line">                        <span class="comment">// 请求图片的参数</span></span><br><span class="line">                        <span class="keyword">let</span> imgParam = url.substring(imgParamStart, tokenStart)</span><br><span class="line">                        <span class="keyword">let</span> imgWidthEnd = imgParam.indexOf(<span class="string">'w'</span>)</span><br><span class="line">                        <span class="comment">// 请求图片的宽度</span></span><br><span class="line">                        <span class="keyword">let</span> imgWidth = imgParam.substring(<span class="number">1</span>, imgWidthEnd)</span><br><span class="line">                        <span class="keyword">let</span> imgFormatStart = imgParam.indexOf(<span class="string">'.'</span>)</span><br><span class="line">                        <span class="comment">// 请求图片的格式</span></span><br><span class="line">                        <span class="keyword">let</span> imgFormat = imgParam.substring(imgFormatStart + <span class="number">1</span>,tokenStart)</span><br><span class="line">                        <span class="comment">// 过滤图片信息</span></span><br><span class="line">                        <span class="keyword">if</span> (suffix === imgFormat)&#123;</span><br><span class="line">                            <span class="built_in">console</span>.log(response.url())</span><br><span class="line">                            <span class="keyword">let</span> data = response.url().toString();</span><br><span class="line">                            <span class="keyword">let</span> imgHeight = <span class="number">1320</span></span><br><span class="line">                            resolve(&#123;data, imgWidth, imgHeight&#125;)</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        )</span><br><span class="line"><span class="comment">// 跳转到目标网站</span></span><br><span class="line"><span class="keyword">await</span> page.goto(url)</span><br></pre></td></tr></table></figure>
+
+
+
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+    
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/24/DingDingRobot/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1295,105 +1396,6 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
   
 
     
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/21/Presentation/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            
-            <a href="/2018/10/21/Presentation/" class="post-title-link" itemprop="url">Presentation实现双屏异显</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2018-10-21 21:06:44 / Modified: 22:22:08" itemprop="dateCreated datePublished" datetime="2018-10-21T21:06:44+08:00">2018-10-21</time>
-            </span>
-          
-            
-
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<p>由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。</p>
-<hr>
-<p>Presentation是一个特殊的dialog，可以在辅屏上显示与主屏不一样的内容，设置里面也可以把“模拟第二屏”的功能打开，运行的时候会在左上角显示一个小窗口来显示第二屏的显示内容，Presentation在创建的时候需要和Display对象相关联，关联之前需要先获取显示设备，DisplayManager或MediaRouter都可以来获取显示设备。下面用最简单的两个例子来介绍，在主屏和辅屏上都显示一个不同内容的TextView文本。</p>
-<h1 id="设置权限"><a href="#设置权限" class="headerlink" title="设置权限"></a>设置权限</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_ALERT_WINDOW"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_OVERLAY_WINDOW"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-<h1 id="DisplayManager实现"><a href="#DisplayManager实现" class="headerlink" title="DisplayManager实现"></a>DisplayManager实现</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPresentation</span> <span class="keyword">extends</span> <span class="title">Presentation</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="title">MyPresentation</span><span class="params">(Context outerContext, Display display)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">super</span>(outerContext,display);</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">       <span class="meta">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">           setContentView(R.layout.second_screen);</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MyPresentation myPresentation;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        DisplayManager manager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);</span><br><span class="line">        Display[] displays = manager.getDisplays();</span><br><span class="line">        <span class="keyword">if</span> (presentationDisplays.length &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">// displays[0] 主屏 displays[1] 辅屏</span></span><br><span class="line">            myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>,displays[<span class="number">1</span>]);</span><br><span class="line">            myPresentation.getWindow().setType(</span><br><span class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</span><br><span class="line">            myPresentation.show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        onDestroy();</span><br><span class="line">        <span class="comment">//完全退出应用，取消双屏异显</span></span><br><span class="line">        Intent startMain = <span class="keyword">new</span> Intent(Intent.ACTION_MAIN);</span><br><span class="line">        startMain.addCategory(Intent.CATEGORY_HOME);</span><br><span class="line">        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">        startActivity(startMain);</span><br><span class="line">        System.exit(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>这里的activity_main和second_screen就是一个xml布局，放了一个不同内容的TextView文本，代码就不贴了，可以看到DisplayManager的getDisplays方法可以返回一个可显示的Display数组，也就是当前可以连接的屏幕列表，第一个元素是主屏的Display对象，第二个元素是辅屏的Display对象，然后把辅屏的Display对象传入到Presentation的构造函数中绑定，设置窗口类型就可以展示了。</p>
-<h1 id="MediaRouter实现"><a href="#MediaRouter实现" class="headerlink" title="MediaRouter实现"></a>MediaRouter实现</h1><p>这里就只贴辅屏的Display对象获取并传入到Presentation的构造函数中绑定的代码，因为其余部分都是一样的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">MediaRouter mediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);</span><br><span class="line">MediaRouter.RouteInfo route = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);</span><br><span class="line"><span class="keyword">if</span>(route != <span class="keyword">null</span>) &#123;</span><br><span class="line">    Display display = route.getPresentationDisplay();</span><br><span class="line">    <span class="keyword">if</span> (display != <span class="keyword">null</span>) &#123;</span><br><span class="line">        myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>, display);</span><br><span class="line">        myPresentation.getWindow().setType(</span><br><span class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</span><br><span class="line">        myPresentation.show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>MediaRouter与DisplayManager不同的是MediaRouter会直接绑定周围最合适的设备。总的来说，这两个API实现的思路大致相同，都是要自定义Presentation，获取到一个辅屏的Display对象传入到Presentation的构造函数中进行绑定，Presentation初始化完成后设置窗口类型然后展示。</p>
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-    
   </div>
 
   
@@ -1443,7 +1445,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1495,7 +1497,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
