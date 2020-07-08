@@ -63,7 +63,7 @@
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="放假前在公司看到有同事在玩树莓派，觉得挺有意思，之前也曾经了解过，但是一直都没有下定决定买一个玩玩，这次也算是被同事拉下水吧，趁着这次放假的机会，在淘宝上买了个最新的树莓派3B+ 来学习一下，从小白开始树莓派的折腾之旅。想到自己有linux的基础应该上手不会太难，没想到还是踩了不少的坑，在购买的时候淘宝店家说会有技术支持，结果放假了完全不回消息😔，不过遇到的问题还是自己慢慢踩坑爬出来了，在这里">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-06T13:53:20.506Z">
+<meta property="og:updated_time" content="2020-06-26T09:02:23.474Z">
 <meta name="twitter:card" content="summary">
   <link rel="canonical" href="http://yoursite.com/2019/02/04/RaspberryStart/">
 
@@ -279,7 +279,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-06 21:53:20" itemprop="dateModified" datetime="2020-03-06T21:53:20+08:00">2020-03-06</time>
+                <time title="Modified: 2020-06-26 17:02:23" itemprop="dateModified" datetime="2020-06-26T17:02:23+08:00">2020-06-26</time>
               </span>
             
           
@@ -349,8 +349,16 @@
 <ol>
 <li>安装dlna<br><code>apt-get install minidlna</code></li>
 <li>修改配置文件<br><code>sudo vi /etc/minidlna.conf</code><br><code>media_dir=/home/pi/Downloads</code><br>修改media_dir的变量指向资源路径，这里我是挂载U盘上的资源，遇到了一个坑，需要刷新资源索引，耗了很长时间，网上很多说dlna刷新命令是<code>sudo service minidlna force-reload</code>我发现并没有作用，以为是配置文件的问题改了很多次，还是不起作用，后来发现资源刷新的正确姿势是这样：<br><code>sudo minidlna -R</code><br>然后重启服务：<br><code>sudo service minidlna restart</code><br>设置开机启动<br><code>sudo update-rc.d minidlna defaults</code><br>访问<code>http://树莓派ip地址:8200</code>查看当前服务器上的资源类型和数量<h1 id="smaba服务器搭建"><a href="#smaba服务器搭建" class="headerlink" title="smaba服务器搭建"></a>smaba服务器搭建</h1></li>
-<li>安装smaba<br><code>sudo apt-get install samba samba-common-bin</code><br>第二个命令也遇到过一个坑，就是smaba的部分依赖库已经安装，且版本高于smaba依赖的版本，这个时候命令行是不会安装smaba的，网上说需要把这些已经安装的依赖库卸载掉重新安装，但是我试了这种方式仍旧无效，最后我根据当前的树莓派系统版本找到了国内的镜像源，切换apt源以后再安装就可以了。</li>
+<li>安装smaba<br><code>sudo apt-get install samba samba-common-bin</code><br>第二个命令也遇到过一个坑，就是smaba的部分依赖库已经安装，且版本高于smaba依赖的版本，这个时候命令行是不会安装smaba的，网上说需要把这些已经安装的依赖库卸载掉重新安装，但是我试了这种方式仍旧无效，最后我根据当前的树莓派系统版本找到了国内的镜像源（阿里），切换apt源以后再安装就可以了。</li>
 <li>修改配置文件<br><code>sudo vi /etc/samba/smb.conf</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[share]           #共享文件的名称， 将在网络上以此名称显示</span><br><span class="line">path = /home/pi/Downloads         #共享文件的路径</span><br><span class="line">valid users = pi        #允许访问的用户</span><br><span class="line">browseable = yes        #允许浏览</span><br><span class="line">public = yes        #共享开放</span><br><span class="line">writable = yes        #可写</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>创建共享文件夹<br><code>mkdir ~/Downloads</code><br>如果树莓派的内存卡不够用，我们一般需要挂载外置的U盘或硬盘</li>
+<li>创建挂载文件夹（挂载点）<br><code>mkdir ~/Downloads/diskMount</code></li>
+<li>挂载硬盘或U盘<br><code>sudo mount -o umask=0000 /dev/sda5 ~/Downloads/diskMount/</code></li>
+<li>如果是exfat格式的硬盘加上格式参数（兼容windows和mac）<br><code>sudo mount -t exfat -o umask=0000 /dev/sda5 ~/Downloads/diskMount/</code><br>挂载完后发现没有权限访问，需要对该文件夹下的所有文件赋予权限<br><code>sudo chmod -R 777 ~/Downloads</code><br>权限修改后需重启samba服务，文件即可访问<br><code>sudo service smbd restart</code><br>smaba4.9.5在服务启动后会在共享文件路径下生成color IA64 W32ALPHA W32MIPS W32PPC W32X86 WIN40 x64一堆文件夹，是默认配置了printer打印机引起的，这些文件夹放对应的驱动文件，如果我们注释了打印机相关的配置就不会在共享文件路径下生成这一堆文件夹<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#[printers]</span><br><span class="line">#   comment = All Printers</span><br><span class="line">#   browseable = no</span><br><span class="line">#   path = /var/spool/samba</span><br><span class="line">#   printable = yes</span><br><span class="line">#   guest ok = no</span><br><span class="line">#   read only = yes</span><br><span class="line">#   create mask = 0700</span><br><span class="line"></span><br><span class="line"># Windows clients look for this share name as a source of downloadable</span><br><span class="line"># printer drivers</span><br><span class="line">#[print$]</span><br><span class="line">#   comment = Printer Drivers</span><br><span class="line">#   path = /var/lib/samba/printers</span><br><span class="line">#   browseable = yes</span><br><span class="line">#   read only = yes</span><br><span class="line">#   guest ok = no</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="3">
 <li>将默认用户添加到samba<br><code>sudo smbpasswd -a pi</code></li>
 <li>重启smaba<br><code>sudo service samba restart</code></li>
 <li>配置开机启动<br><code>systemctl enable smdb</code><h1 id="ftp服务器搭建"><a href="#ftp服务器搭建" class="headerlink" title="ftp服务器搭建"></a>ftp服务器搭建</h1>ftp方便文件传输，而且vsftpd搭建服务器只有400k</li>
@@ -462,7 +470,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">40</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -475,7 +483,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -488,7 +496,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
