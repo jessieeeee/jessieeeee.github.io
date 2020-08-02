@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="随着JetPack的火热，google首推的Kotlin+LiveData+ViewModel+DataBinding的MVVM框架也越来越流行，在MVP的基础上，解决了P层带来的接口地狱和内存泄漏的问题，通信框架也从传统的handler，broadcast，interface到EventBus再到rxBus，最后到LiveDataBus，目前为止LiveDataBus确实是众多通信方案中最优的">
+<meta name="keywords" content="Architecture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LiveDataBus的封装">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;07&#x2F;24&#x2F;LiveDataBus&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="随着JetPack的火热，google首推的Kotlin+LiveData+ViewModel+DataBinding的MVVM框架也越来越流行，在MVP的基础上，解决了P层带来的接口地狱和内存泄漏的问题，通信框架也从传统的handler，broadcast，interface到EventBus再到rxBus，最后到LiveDataBus，目前为止LiveDataBus确实是众多通信方案中最优的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-07-08T15:31:33.482Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2020/07/24/LiveDataBus/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>LiveDataBus的封装 | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/24/LiveDataBus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            LiveDataBus的封装
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-07-24 20:16:11" itemprop="dateCreated datePublished" datetime="2020-07-24T20:16:11+08:00">2020-07-24</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-08 23:31:33" itemprop="dateModified" datetime="2020-07-08T23:31:33+08:00">2020-07-08</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>随着JetPack的火热，google首推的Kotlin+LiveData+ViewModel+DataBinding的MVVM框架也越来越流行，在MVP的基础上，解决了P层带来的接口地狱和内存泄漏的问题，通信框架也从传统的handler，broadcast，interface到EventBus再到rxBus，最后到LiveDataBus，目前为止LiveDataBus确实是众多通信方案中最优的，在LiveData的加持下，拥有体积小，易封装，易维护且可感知生命周期防止内存泄漏的特点，接下来记录一下LiveDataBus的封装过程</p>
+<hr>
+<h1 id="通信框架对比"><a href="#通信框架对比" class="headerlink" title="通信框架对比"></a>通信框架对比</h1><p>Handler 高耦合，不利于维护，内存泄漏</p>
+<p>BroadCast 性能差，传输数据有限，打乱代码的执行逻辑</p>
+<p>Interface 实现复杂，不利于维护</p>
+<p>RxBus 基于RxJava，学习成本高且依赖大</p>
+<p>EventBus 需解决混淆问题，无法感知生命周期，实现复杂</p>
+<h1 id="发布订阅模式和观察者模式区别"><a href="#发布订阅模式和观察者模式区别" class="headerlink" title="发布订阅模式和观察者模式区别"></a>发布订阅模式和观察者模式区别</h1><ul>
+<li><p>观察者模式：观察者和被观察者相互知道对方的存在</p>
+</li>
+<li><p>发布订阅模式：发布者和订阅者互相不知道对方的存在</p>
+</li>
+</ul>
+<h1 id="什么是LiveData"><a href="#什么是LiveData" class="headerlink" title="什么是LiveData"></a>什么是LiveData</h1><p>数据持有类，持有数据并且这个数据可以被观察者监听，它是和LifeCycle绑定的，在生命周期内使用有效，减少内存泄漏和引用问题</p>
+<h1 id="LiveData的特点"><a href="#LiveData的特点" class="headerlink" title="LiveData的特点"></a>LiveData的特点</h1><ol>
+<li>UI和数据保持一致：LiveData采用观察者模式，在数据变化时得到通知更新UI</li>
+<li>避免内存泄漏：观察者被绑定到组件的生命周期上，组件销毁时，观察者会立刻清理数据</li>
+<li>不会在Activity的stop状态下崩溃：当Activity处于后台，不会收到LiveData的延迟消息</li>
+<li>解决屏幕旋转重启问题：能收到最新的数</li>
+</ol>
+<h1 id="LiveDataBus的封装"><a href="#LiveDataBus的封装" class="headerlink" title="LiveDataBus的封装"></a>LiveDataBus的封装</h1><ol>
+<li>通过map维护一个消息事件和MutableLiveData的映射关系，MutableLiveData的类型默认为Object，接收任意类型，实现总线通信</li>
+<li>将LiveDataBus封装为一个单例类</li>
+<li>消息注册时，如果当前map中不存在，则先将消息和对应的MutableLiveData对象放入维护的map中，添加映射关系，返回当前map中缓存的MutableLiveData对象</li>
+</ol>
+<h2 id="粘性消息问题解决"><a href="#粘性消息问题解决" class="headerlink" title="粘性消息问题解决"></a>粘性消息问题解决</h2><p>具体现象：当前Activity给未启动的Activity发送一个消息，Activity在启动时能收到之前发送的消息</p>
+<h3 id="LiveData源码"><a href="#LiveData源码" class="headerlink" title="LiveData源码"></a>LiveData源码</h3><p>LifecycleBoundObserver</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStateChanged</span><span class="params">(@NonNull LifecycleOwner source,</span></span></span><br><span class="line"><span class="function"><span class="params">              @NonNull Lifecycle.Event event)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">if</span> (mOwner.getLifecycle().getCurrentState() == DESTROYED) &#123;</span><br><span class="line">              removeObserver(mObserver);</span><br><span class="line">              <span class="keyword">return</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          activeStateChanged(shouldBeActive());</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<p>LiveData的version初始化是-1，每次LiveData设置值都会version加1</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> mVersion = START_VERSION;</span><br><span class="line"> <span class="meta">@MainThread</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(T value)</span> </span>&#123;</span><br><span class="line">        assertMainThread(<span class="string">"setValue"</span>);</span><br><span class="line">        mVersion++;</span><br><span class="line">        mData = value;</span><br><span class="line">        dispatchingValue(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>LifeCircleOwner的状态变化时，会调LiveData.ObserverWrapper的activeStateChanged方法，如果这个时候ObserverWrapper的状态是active，就会调用LiveData的dispatchingValue，继续跟踪considerNotify，如果ObserverWrapper的mLastVersion小于LiveData的mVersion，会调mObserver的onChanged方法。所以LiveDataBus注册一个新的订阅者就会收到消息，即使消息发生在订阅之前。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">activeStateChanged</span><span class="params">(<span class="keyword">boolean</span> newActive)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (newActive == mActive) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// immediately set active state, so we'd never dispatch anything to inactive</span></span><br><span class="line">            <span class="comment">// owner</span></span><br><span class="line">            mActive = newActive;</span><br><span class="line">            <span class="keyword">boolean</span> wasInactive = LiveData.<span class="keyword">this</span>.mActiveCount == <span class="number">0</span>;</span><br><span class="line">            LiveData.<span class="keyword">this</span>.mActiveCount += mActive ? <span class="number">1</span> : -<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (wasInactive &amp;&amp; mActive) &#123;</span><br><span class="line">                onActive();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (LiveData.<span class="keyword">this</span>.mActiveCount == <span class="number">0</span> &amp;&amp; !mActive) &#123;</span><br><span class="line">                onInactive();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (mActive) &#123;</span><br><span class="line">                dispatchingValue(<span class="keyword">this</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dispatchingValue</span><span class="params">(@Nullable ObserverWrapper initiator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mDispatchingValue) &#123;</span><br><span class="line">            mDispatchInvalidated = <span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        mDispatchingValue = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            mDispatchInvalidated = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">if</span> (initiator != <span class="keyword">null</span>) &#123;</span><br><span class="line">                considerNotify(initiator);</span><br><span class="line">                initiator = <span class="keyword">null</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> (Iterator&lt;Map.Entry&lt;Observer&lt;? <span class="keyword">super</span> T&gt;, ObserverWrapper&gt;&gt; iterator =</span><br><span class="line">                        mObservers.iteratorWithAdditions(); iterator.hasNext(); ) &#123;</span><br><span class="line">                    considerNotify(iterator.next().getValue());</span><br><span class="line">                    <span class="keyword">if</span> (mDispatchInvalidated) &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">while</span> (mDispatchInvalidated);</span><br><span class="line">        mDispatchingValue = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">considerNotify</span><span class="params">(ObserverWrapper observer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!observer.mActive) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Check latest state b4 dispatch. Maybe it changed state but we didn't get the event yet.</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// we still first check observer.active to keep it as the entrance for events. So even if</span></span><br><span class="line">        <span class="comment">// the observer moved to an active state, if we've not received that event, we better not</span></span><br><span class="line">        <span class="comment">// notify for a more predictable notification order.</span></span><br><span class="line">        <span class="keyword">if</span> (!observer.shouldBeActive()) &#123;</span><br><span class="line">            observer.activeStateChanged(<span class="keyword">false</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (observer.mLastVersion &gt;= mVersion) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        observer.mLastVersion = mVersion;</span><br><span class="line">        <span class="comment">//noinspection unchecked</span></span><br><span class="line">        observer.mObserver.onChanged((T) mData);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Hook"><a href="#Hook" class="headerlink" title="Hook"></a>Hook</h3><p>在事件传递过程中拦截并监控事件的传输，修改事件传递流程<br>只要调用setValue版本号mVersion就会加1，此时版本号已经不一致导致onChange的调用，触发粘性事件，如果将mObservers.observer.mLastVersion修改为mVersion当前版本，就会在mObservers.observer.onChange调用前，也就是数据变化通知前return结束，这样就不调onChange方法<br>mObservers是Map对象，Map的item是键值对，observer是键值对的value，反射Map获取到Entry并获取到value也就是observer<br>继承MutableLiveData，重写observe方法，在注册监听时进行hook逻辑</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LiveDataBus</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, BusMutableLiveData&lt;Object&gt;&gt; bus;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LiveDataBus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        bus = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHolder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> LiveDataBus DEFAULT_BUS = <span class="keyword">new</span> LiveDataBus();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LiveDataBus <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.DEFAULT_BUS;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">MutableLiveData&lt;T&gt; <span class="title">with</span><span class="params">(String key, Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!bus.containsKey(key)) &#123;</span><br><span class="line">            bus.put(key, <span class="keyword">new</span> BusMutableLiveData&lt;&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (MutableLiveData&lt;T&gt;) bus.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MutableLiveData&lt;Object&gt; <span class="title">with</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> with(key, Object.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BusMutableLiveData</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">MutableLiveData</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 生命周期感知的注册监听处理，去除粘性事件</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">observe</span><span class="params">(@NonNull LifecycleOwner owner, @NonNull Observer&lt;T&gt; observer)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>.observe(owner, observer);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                hook(observer);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 去除粘性事件</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">hook</span><span class="params">(@NonNull Observer&lt;T&gt; observer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            <span class="comment">//get wrapper's version</span></span><br><span class="line">            Class&lt;LiveData&gt; classLiveData = LiveData.class;</span><br><span class="line">            Field fieldObservers = classLiveData.getDeclaredField(<span class="string">"mObservers"</span>);</span><br><span class="line">            fieldObservers.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            Object objectObservers = fieldObservers.get(<span class="keyword">this</span>);</span><br><span class="line">            Class&lt;?&gt; classObservers = objectObservers.getClass();</span><br><span class="line">            Method methodGet = classObservers.getDeclaredMethod(<span class="string">"get"</span>, Object.class);</span><br><span class="line">            methodGet.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            Object objectWrapperEntry = methodGet.invoke(objectObservers, observer);</span><br><span class="line">            Object objectWrapper = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">if</span> (objectWrapperEntry <span class="keyword">instanceof</span> Map.Entry) &#123;</span><br><span class="line">                objectWrapper = ((Map.Entry) objectWrapperEntry).getValue();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (objectWrapper == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"Wrapper can not be bull!"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            Class&lt;?&gt; classObserverWrapper = objectWrapper.getClass().getSuperclass();</span><br><span class="line">            Field fieldLastVersion = classObserverWrapper.getDeclaredField(<span class="string">"mLastVersion"</span>);</span><br><span class="line">            fieldLastVersion.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">//get livedata's version</span></span><br><span class="line">            Field fieldVersion = classLiveData.getDeclaredField(<span class="string">"mVersion"</span>);</span><br><span class="line">            fieldVersion.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            Object objectVersion = fieldVersion.get(<span class="keyword">this</span>);</span><br><span class="line">            <span class="comment">//set wrapper's version</span></span><br><span class="line">            fieldLastVersion.set(objectWrapper, objectVersion);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对非生命周期感知的observeForever方法，生成的wrapper不是LifecycleBoundObserver而是AlwaysActiveObserver，没有办法在observeForever调用完后再改AlwaysActiveObserver的version，因为注册监听时直接调了wrapper.activeStateChanged(true)而不是在LifeCircleOwner的状态变化时。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">  <span class="meta">@MainThread</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">observeForever</span><span class="params">(@NonNull Observer&lt;? <span class="keyword">super</span> T&gt; observer)</span> </span>&#123;</span><br><span class="line">      assertMainThread(<span class="string">"observeForever"</span>);</span><br><span class="line">      AlwaysActiveObserver wrapper = <span class="keyword">new</span> AlwaysActiveObserver(observer);</span><br><span class="line">      ObserverWrapper existing = mObservers.putIfAbsent(observer, wrapper);</span><br><span class="line">      <span class="keyword">if</span> (existing != <span class="keyword">null</span> &amp;&amp; existing <span class="keyword">instanceof</span> LiveData.LifecycleBoundObserver) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Cannot add the same observer"</span></span><br><span class="line">                  + <span class="string">" with different lifecycles"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (existing != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      wrapper.activeStateChanged(<span class="keyword">true</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">AlwaysActiveObserver</span> <span class="keyword">extends</span> <span class="title">ObserverWrapper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">      AlwaysActiveObserver(Observer&lt;? <span class="keyword">super</span> T&gt; observer) &#123;</span><br><span class="line">          <span class="keyword">super</span>(observer);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">boolean</span> <span class="title">shouldBeActive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>可以用ObserverWrapper，包装真正的回调传给observeForever，回调时检查调用栈，如果回调是observeForever方法，那么就不调真正的回调</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 包装类包裹真正的Observer，处理非生命周期感知的注册监听</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ObserverWrapper</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Observer</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Observer&lt;T&gt; observer;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ObserverWrapper</span><span class="params">(Observer&lt;T&gt; observer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.observer = observer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChanged</span><span class="params">(@Nullable T t)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (observer != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 目标方法不调onChanged</span></span><br><span class="line">            <span class="keyword">if</span> (isCallOnObserve()) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            observer.onChanged(t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isCallOnObserve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();</span><br><span class="line">        <span class="keyword">if</span> (stackTrace != <span class="keyword">null</span> &amp;&amp; stackTrace.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (StackTraceElement element : stackTrace) &#123;</span><br><span class="line">            <span class="comment">// 如果当前是LiveData对象且为observeForever方法</span></span><br><span class="line">                <span class="keyword">if</span> (<span class="string">"android.arch.lifecycle.LiveData"</span>.equals(element.getClassName()) &amp;&amp;</span><br><span class="line">                        <span class="string">"observeForever"</span>.equals(element.getMethodName())) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改BusMutableLiveData增加对非生命周期感知的注册监听处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BusMutableLiveData</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">MutableLiveData</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> Map&lt;Observer, Observer&gt; observerMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 生命周期感知的注册监听处理，去除粘性事件</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">observe</span><span class="params">(@NonNull LifecycleOwner owner, @NonNull Observer&lt;T&gt; observer)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>.observe(owner, observer);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                hook(observer);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 非生命周期感知的注册监听处理，去除粘性事件</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">observeForever</span><span class="params">(@NonNull Observer&lt;T&gt; observer)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!observerMap.containsKey(observer)) &#123;</span><br><span class="line">                observerMap.put(observer, <span class="keyword">new</span> ObserverWrapper(observer));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">super</span>.observeForever(observerMap.get(observer));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 非生命周期感知取消注册监听</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeObserver</span><span class="params">(@NonNull Observer&lt;T&gt; observer)</span> </span>&#123;</span><br><span class="line">            Observer realObserver = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">if</span> (observerMap.containsKey(observer)) &#123;</span><br><span class="line">                realObserver = observerMap.remove(observer);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                realObserver = observer;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">super</span>.removeObserver(realObserver);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 去除粘性事件</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">hook</span><span class="params">(@NonNull Observer&lt;T&gt; observer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            <span class="comment">//get wrapper's version</span></span><br><span class="line">            Class&lt;LiveData&gt; classLiveData = LiveData.class;</span><br><span class="line">            Field fieldObservers = classLiveData.getDeclaredField(<span class="string">"mObservers"</span>);</span><br><span class="line">            fieldObservers.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            Object objectObservers = fieldObservers.get(<span class="keyword">this</span>);</span><br><span class="line">            Class&lt;?&gt; classObservers = objectObservers.getClass();</span><br><span class="line">            Method methodGet = classObservers.getDeclaredMethod(<span class="string">"get"</span>, Object.class);</span><br><span class="line">            methodGet.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            Object objectWrapperEntry = methodGet.invoke(objectObservers, observer);</span><br><span class="line">            Object objectWrapper = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">if</span> (objectWrapperEntry <span class="keyword">instanceof</span> Map.Entry) &#123;</span><br><span class="line">                objectWrapper = ((Map.Entry) objectWrapperEntry).getValue();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (objectWrapper == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"Wrapper can not be bull!"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            Class&lt;?&gt; classObserverWrapper = objectWrapper.getClass().getSuperclass();</span><br><span class="line">            Field fieldLastVersion = classObserverWrapper.getDeclaredField(<span class="string">"mLastVersion"</span>);</span><br><span class="line">            fieldLastVersion.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">//get livedata's version</span></span><br><span class="line">            Field fieldVersion = classLiveData.getDeclaredField(<span class="string">"mVersion"</span>);</span><br><span class="line">            fieldVersion.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            Object objectVersion = fieldVersion.get(<span class="keyword">this</span>);</span><br><span class="line">            <span class="comment">//set wrapper's version</span></span><br><span class="line">            fieldLastVersion.set(objectWrapper, objectVersion);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Architecture/" rel="tag"># Architecture</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/06/29/ReflectStudy/" rel="next" title="注解反射-学习笔记">
+                  <i class="fa fa-chevron-left"></i> 注解反射-学习笔记
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#通信框架对比"><span class="nav-number">1.</span> <span class="nav-text">通信框架对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#发布订阅模式和观察者模式区别"><span class="nav-number">2.</span> <span class="nav-text">发布订阅模式和观察者模式区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是LiveData"><span class="nav-number">3.</span> <span class="nav-text">什么是LiveData</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LiveData的特点"><span class="nav-number">4.</span> <span class="nav-text">LiveData的特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LiveDataBus的封装"><span class="nav-number">5.</span> <span class="nav-text">LiveDataBus的封装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#粘性消息问题解决"><span class="nav-number">5.1.</span> <span class="nav-text">粘性消息问题解决</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LiveData源码"><span class="nav-number">5.1.1.</span> <span class="nav-text">LiveData源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hook"><span class="nav-number">5.1.2.</span> <span class="nav-text">Hook</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: 'fb735b0a4b0fa2d21b486b017285e177',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>
