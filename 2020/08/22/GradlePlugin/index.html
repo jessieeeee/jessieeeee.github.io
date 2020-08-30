@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="国外的疫情越来越严重，不排除有卷土重来的可能，今年突如其来的疫情影响着每一个人，就业形势也不容乐观，不管是企业还是个人都要共同面对这次生存考验，今年的毕业生也是非常的不容易，不管外界如何变化，持续强化自己的专业技能永远是立身之本，提升自己的核心竞争力永远是生存之道。最近学了一些自定义gradle插件相关的知识，开发了自动上传fir并发送钉钉消息的gradle插件，提升了个人和团队的工作效率，在此">
+<meta name="keywords" content="groovy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gradle插件自定义">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;08&#x2F;22&#x2F;GradlePlugin&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="国外的疫情越来越严重，不排除有卷土重来的可能，今年突如其来的疫情影响着每一个人，就业形势也不容乐观，不管是企业还是个人都要共同面对这次生存考验，今年的毕业生也是非常的不容易，不管外界如何变化，持续强化自己的专业技能永远是立身之本，提升自己的核心竞争力永远是生存之道。最近学了一些自定义gradle插件相关的知识，开发了自动上传fir并发送钉钉消息的gradle插件，提升了个人和团队的工作效率，在此">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;GradlePlugin1.png">
+<meta property="og:updated_time" content="2020-08-02T17:37:51.105Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;GradlePlugin1.png">
+  <link rel="canonical" href="http://yoursite.com/2020/08/22/GradlePlugin/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Gradle插件自定义 | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/22/GradlePlugin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            Gradle插件自定义
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-08-22 15:08:59" itemprop="dateCreated datePublished" datetime="2020-08-22T15:08:59+08:00">2020-08-22</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-03 01:37:51" itemprop="dateModified" datetime="2020-08-03T01:37:51+08:00">2020-08-03</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>国外的疫情越来越严重，不排除有卷土重来的可能，今年突如其来的疫情影响着每一个人，就业形势也不容乐观，不管是企业还是个人都要共同面对这次生存考验，今年的毕业生也是非常的不容易，不管外界如何变化，持续强化自己的专业技能永远是立身之本，提升自己的核心竞争力永远是生存之道。最近学了一些自定义gradle插件相关的知识，开发了自动上传fir并发送钉钉消息的gradle插件，提升了个人和团队的工作效率，在此记录并分享。</p>
+<hr>
+<p>由于公司当前的开发流程尚未用到Jenkins这类在线的自动化构建平台，开发流程仍然是开发者本地打包再上传fir托管平台并发送上传完成的消息到钉钉群里，再@相关的测试人员提醒可进行测试，这一系列流程化的操作显得过于繁琐。作为Android开发掌握groovy这门语言也是有必要的，毕竟这是Android studio的构建脚本语言且语法与java相似，完全可以利用构建脚本实现打包后自动上传到fir托管平台，再利用自定义钉钉机器人的官方api发送钉钉消息给相关的测试人员，解放双手，自动化这一系列的流程操作来提升工作效率，减少加班的可能，打包/上传/发消息这段时间喝杯咖啡放松一下不是更好吗？我决定把这个插件打包上传到JitPack分享给团队和网络上的其他人，因为帮更多的人提升工作效率确实是一件很cool的事情</p>
+<h1 id="实现自定义Gradle插件的三种方式"><a href="#实现自定义Gradle插件的三种方式" class="headerlink" title="实现自定义Gradle插件的三种方式"></a>实现自定义Gradle插件的三种方式</h1><h2 id="app的gradle文件中定义"><a href="#app的gradle文件中定义" class="headerlink" title="app的gradle文件中定义"></a>app的gradle文件中定义</h2><ol>
+<li>直接修改app的gradle文件，继承gradle的Plugin类，定义一个自定义插件的实现类，重写apply方法完成插件逻辑<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">apply <span class="string">plugin:</span> PluginImpl</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PluginImpl</span> <span class="keyword">implements</span> <span class="title">Plugin</span>&lt;<span class="title">Project</span>&gt;&#123;</span></span><br><span class="line">    <span class="meta">@override</span></span><br><span class="line">    <span class="keyword">void</span> apply(Project project)&#123;</span><br><span class="line">        println(<span class="string">"hello Plugin"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+优点：方便调试<br>缺点：跟app工程代码混在一起，无法给其它项目使用<h2 id="buildSrc目录定义"><a href="#buildSrc目录定义" class="headerlink" title="buildSrc目录定义"></a>buildSrc目录定义</h2>在工程目录下，新建buildSrc目录，在该目录下开发<br>新建文件夹src/main/groovy/xxx/xxx/xxx，其中xxx/xxx/xxx是包名，在这个目录下自定义gradle插件类PluginImpl<br>新建文件夹resource/META-INF/gradle-plugins，在这个目录下新建文件xxx.xxx.xxx.properties，声明插件实现类<code>implementation-class=xxx.xxx.xxx.PluginImpl</code><br><img src="/images/GradlePlugin1.png" alt="效果图"><br>优点：方便调试，与app工程分离<br>缺点：无法给其它项目使用</li>
+</ol>
+<h2 id="新增插件lib定义"><a href="#新增插件lib定义" class="headerlink" title="新增插件lib定义"></a>新增插件lib定义</h2><p>新建一个gradle插件的lib库，删除其它的所有文件，保持项目结构与buildSrc目录一样，在这个lib库下开发<br>优点：与app工程分离，可打包上传maven，在其它项目中引用并分享给其他人<br>缺点：调试稍微麻烦，需发布到本地仓库<br>以上三种方式最好的是第三种，与app工程分离，可发布到本地maven仓库下调试，也可以打包插件上传到私有的maven仓库或者公有maven仓库如JitPack分享给其他人</p>
+<h1 id="定义插件参数"><a href="#定义插件参数" class="headerlink" title="定义插件参数"></a>定义插件参数</h1><h2 id="定义fir配置参数"><a href="#定义fir配置参数" class="headerlink" title="定义fir配置参数"></a>定义fir配置参数</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.demo.plugin</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.inject.Inject</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FirExtension</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> String appName <span class="comment">//app名称</span></span><br><span class="line">    <span class="keyword">private</span> String iconPath <span class="comment">//图标路径</span></span><br><span class="line">    <span class="keyword">private</span> String token <span class="comment">//fir设置中的上传token</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    <span class="keyword">public</span> FirExtension() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String getAppName() &#123;</span><br><span class="line">        <span class="keyword">return</span> appName</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> setAppName(String appName) &#123;</span><br><span class="line">        <span class="keyword">this</span>.appName = appName</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String getIconPath() &#123;</span><br><span class="line">        <span class="keyword">return</span> iconPath</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> setIconPath(String iconPath) &#123;</span><br><span class="line">        <span class="keyword">this</span>.iconPath = iconPath</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String getToken() &#123;</span><br><span class="line">        <span class="keyword">return</span> token</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> setToken(String token) &#123;</span><br><span class="line">        <span class="keyword">this</span>.token = token</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String toString() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"FirExtension&#123;"</span> +</span><br><span class="line">                <span class="string">"appName='"</span> + appName + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", iconPath='"</span> + iconPath + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", token='"</span> + token + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="定义钉钉配置参数"><a href="#定义钉钉配置参数" class="headerlink" title="定义钉钉配置参数"></a>定义钉钉配置参数</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.demo.plugin</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.inject.Inject</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DingTalkExtension</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> String webHook <span class="comment">// 钉钉自定义机器人的webhook</span></span><br><span class="line">    <span class="keyword">private</span> String title <span class="comment">// 消息标题</span></span><br><span class="line">    <span class="keyword">private</span> String content <span class="comment">// 内容</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isAtAll <span class="comment">// 是否@所有人</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; atMobiles <span class="comment">// 手机号列表，单独@某些人</span></span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    <span class="keyword">public</span> DingTalkExtension() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String getWebHook() &#123;</span><br><span class="line">        <span class="keyword">return</span> webHook</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> setWebHook(String webHook) &#123;</span><br><span class="line">        <span class="keyword">this</span>.webHook = webHook</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String getTitle() &#123;</span><br><span class="line">        <span class="keyword">return</span> title</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> setTitle(String title) &#123;</span><br><span class="line">        <span class="keyword">this</span>.title = title</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String getContent() &#123;</span><br><span class="line">        <span class="keyword">return</span> content</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> setContent(String content) &#123;</span><br><span class="line">        <span class="keyword">this</span>.content = content</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> getIsAtAll() &#123;</span><br><span class="line">        <span class="keyword">return</span> isAtAll</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> setIsAtAll(<span class="keyword">boolean</span> isAtAll) &#123;</span><br><span class="line">        <span class="keyword">this</span>.isAtAll = isAtAll</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    List&lt;String&gt; getAtMobiles() &#123;</span><br><span class="line">        <span class="keyword">return</span> atMobiles</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> setAtMobiles(List&lt;String&gt; atMobiles) &#123;</span><br><span class="line">        <span class="keyword">this</span>.atMobiles = atMobiles</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String toString() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"DingTalkExtension&#123;"</span> +</span><br><span class="line">                <span class="string">"webHook='"</span> + webHook + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", title='"</span> + title + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", content='"</span> + content + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", isAtAll="</span> + isAtAll +</span><br><span class="line">                <span class="string">", atMobiles="</span> + atMobiles +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="定义插件参数-1"><a href="#定义插件参数-1" class="headerlink" title="定义插件参数"></a>定义插件参数</h2><ul>
+<li>结合上面两类参数配置<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.demo.plugin</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.gradle.api.Action</span><br><span class="line"><span class="keyword">import</span> org.gradle.api.model.ObjectFactory</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UploadApkPluginExtension</span> &#123;</span></span><br><span class="line">    FirExtension firExtension</span><br><span class="line">    DingTalkExtension dingTalkExtension</span><br><span class="line">    <span class="keyword">public</span> UploadApkPluginExtension(ObjectFactory objectFactory) &#123;</span><br><span class="line">        firExtension = objectFactory.newInstance(FirExtension.<span class="keyword">class</span>)</span><br><span class="line">        dingTalkExtension = objectFactory.newInstance(DingTalkExtension.<span class="keyword">class</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> fir(Action&lt;FirExtension&gt; action) &#123;</span><br><span class="line">        action.execute(firExtension)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> dingTalk(Action&lt;DingTalkExtension&gt; action)&#123;</span><br><span class="line">        action.execute(dingTalkExtension)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="插件逻辑"><a href="#插件逻辑" class="headerlink" title="插件逻辑"></a>插件逻辑</h1>groovy中我们仍然可以使用okhttp，Gson这类Android中常用的开源框架来实现网络请求，Json序列化/反序列化相关的逻辑，封装网络请求工具类，最后在自定义Plugin中调用这个工具类完成自动化<h2 id="引入开源库"><a href="#引入开源库" class="headerlink" title="引入开源库"></a>引入开源库</h2>修改插件lib中的gradle文件<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">apply <span class="string">plugin:</span> <span class="string">'java-library'</span></span><br><span class="line">apply <span class="string">plugin:</span> <span class="string">'groovy'</span></span><br><span class="line">apply <span class="string">plugin:</span> <span class="string">'maven'</span></span><br><span class="line">dependencies &#123;</span><br><span class="line">    implementation fileTree(<span class="string">dir:</span> <span class="string">'libs'</span>, <span class="string">include:</span> [<span class="string">'*.jar'</span>])</span><br><span class="line">    implementation gradleApi()<span class="comment">//gradle sdk</span></span><br><span class="line">    implementation localGroovy()<span class="comment">//groovy sdk</span></span><br><span class="line">    implementation <span class="string">'com.squareup.okhttp3:okhttp:4.7.2'</span></span><br><span class="line">    implementation <span class="string">'com.google.code.gson:gson:2.8.6'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">    jcenter()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="网络请求工具类"><a href="#网络请求工具类" class="headerlink" title="网络请求工具类"></a>网络请求工具类</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.demo.plugin</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.google.gson.Gson</span><br><span class="line"><span class="keyword">import</span> okhttp3.*</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OkHttpUtil</span>&#123;</span></span><br><span class="line">    OkHttpClient okHttpClient</span><br><span class="line">    Gson gson</span><br><span class="line">    DingTalk dingTalk <span class="comment">// 序列化钉钉消息工具类</span></span><br><span class="line">    <span class="keyword">public</span> OkHttpUtil()&#123;</span><br><span class="line">        okHttpClient = <span class="keyword">new</span> OkHttpClient.Builder()</span><br><span class="line">                .connectTimeout(<span class="number">10</span>, TimeUnit.SECONDS)</span><br><span class="line">                .readTimeout(<span class="number">60</span>, TimeUnit.SECONDS).build()</span><br><span class="line">        gson = <span class="keyword">new</span> Gson()</span><br><span class="line">        dingTalk = <span class="keyword">new</span> DingTalk()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 获取fir上传证书</span></span><br><span class="line">    BundleApp getCert(String appPackage, String apiTokenFir)&#123;</span><br><span class="line"></span><br><span class="line">        FormBody.Builder build = <span class="keyword">new</span> FormBody.Builder()</span><br><span class="line">        build.add(<span class="string">"bundle_id"</span>, appPackage)</span><br><span class="line">        build.add(<span class="string">"api_token"</span>, apiTokenFir)</span><br><span class="line">        build.add(<span class="string">"type"</span>, <span class="string">"android"</span>)</span><br><span class="line">        Request request = <span class="keyword">new</span> Request.Builder().url(<span class="string">"http://api.bq04.com/apps"</span>).post(build.build()).build()</span><br><span class="line">        Response response = okHttpClient.newCall(request).execute()</span><br><span class="line">        String result = response.body.string()</span><br><span class="line">        <span class="keyword">return</span> gson.fromJson(result, BundleApp.<span class="keyword">class</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 上传apk到fir</span></span><br><span class="line">    String uploadApk(String apkPath,String key,String token,String appName,String appVersion,String appBuild,String fileName,String upload_url) &#123;</span><br><span class="line">        RequestBody fileBody = RequestBody.create(MediaType.parse(<span class="string">"application/octet-stream"</span>), <span class="keyword">new</span> File(apkPath))</span><br><span class="line">        MultipartBody body = <span class="keyword">new</span> MultipartBody.Builder()</span><br><span class="line">                .setType(MediaType.parse(<span class="string">"multipart/form-data"</span>))</span><br><span class="line">                .addFormDataPart(<span class="string">"key"</span>, key)</span><br><span class="line">                .addFormDataPart(<span class="string">"token"</span>, token)</span><br><span class="line">                .addFormDataPart(<span class="string">"x:name"</span>, appName)</span><br><span class="line">                .addFormDataPart(<span class="string">"x:version"</span>, appVersion)</span><br><span class="line">                .addFormDataPart(<span class="string">"x:build"</span>, appBuild)</span><br><span class="line">                .addFormDataPart(<span class="string">"file"</span>, fileName, fileBody)</span><br><span class="line">                .build()</span><br><span class="line">        Request requestApk = <span class="keyword">new</span> Request.Builder().url(upload_url).post(body).build()</span><br><span class="line"></span><br><span class="line">        Response responseApk = okHttpClient.newCall(requestApk).execute()</span><br><span class="line">        <span class="keyword">return</span> responseApk.body.string()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 上传icon到fir</span></span><br><span class="line">    String uploadIcon(String apkIconPath,String keyIcon,String tokenIcon,String upload_urlIcon)&#123;</span><br><span class="line">        RequestBody fileBodyIcon = RequestBody.create(MediaType.parse(<span class="string">"application/octet-stream"</span>),<span class="keyword">new</span> File(apkIconPath))</span><br><span class="line">        MultipartBody bodyIcon = <span class="keyword">new</span> MultipartBody.Builder()</span><br><span class="line">                .setType(MediaType.parse(<span class="string">"multipart/form-data"</span>))</span><br><span class="line">                .addFormDataPart(<span class="string">"key"</span>, keyIcon)</span><br><span class="line">                .addFormDataPart(<span class="string">"token"</span>, tokenIcon)</span><br><span class="line">                .addFormDataPart(<span class="string">"file"</span>, <span class="string">"icon.png"</span>, fileBodyIcon)</span><br><span class="line">                .build()</span><br><span class="line">        Request requestIcon = <span class="keyword">new</span> Request.Builder().url(upload_urlIcon).post(bodyIcon).build()</span><br><span class="line">        Response responseIcon = okHttpClient.newCall(requestIcon).execute()</span><br><span class="line">        <span class="keyword">return</span> responseIcon.body.string()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ApkInfo getApkUrl(String appPackage, String apiTokenFir) &#123;</span><br><span class="line">        <span class="comment">// 获取成功连接</span></span><br><span class="line">        String queryurl =</span><br><span class="line">                <span class="string">"http://api.bq04.com/apps/latest/$appPackage?api_token=$apiTokenFir&amp;type=android"</span></span><br><span class="line">        Request requestUrl = <span class="keyword">new</span> Request.Builder().url(queryurl).get().build()</span><br><span class="line">        Response responseUrl = okHttpClient.newCall(requestUrl).execute()</span><br><span class="line">        String result = responseUrl.body.string()</span><br><span class="line">        <span class="keyword">return</span> gson.fromJson(result,ApkInfo.<span class="keyword">class</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 发送钉钉链接消息</span></span><br><span class="line">    <span class="keyword">void</span> sendDingTalkLink(String text,String title,String url,String webHook)&#123;</span><br><span class="line">        RequestBody linkBody = FormBody.create(MediaType.parse(<span class="string">"application/json; charset=utf-8"</span>)</span><br><span class="line">                , dingTalk.createLinkMsg(text,title,url))</span><br><span class="line">        Request linkDingTalk = <span class="keyword">new</span> Request.Builder().url(webHook)</span><br><span class="line">                .post(linkBody).build()</span><br><span class="line">        Response responseLink = okHttpClient.newCall(linkDingTalk).execute()</span><br><span class="line">        String result = responseLink.body.string()</span><br><span class="line">        println(<span class="string">"已发送钉钉链接:$result"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 发送钉钉文本消息</span></span><br><span class="line">    <span class="keyword">void</span> sendDingTalkMsg(String text,String webHook,<span class="keyword">boolean</span> isAtAll,List&lt;String&gt; atMobiles)&#123;</span><br><span class="line">        RequestBody textBody = FormBody.create(MediaType.parse(<span class="string">"application/json; charset=utf-8"</span>)</span><br><span class="line">                , dingTalk.createTextMsg(text,atMobiles,isAtAll))</span><br><span class="line">        Request textDingTalk = <span class="keyword">new</span> Request.Builder().url(webHook)</span><br><span class="line">                .post(textBody).build()</span><br><span class="line">        Response responseText = okHttpClient.newCall(textDingTalk).execute()</span><br><span class="line">        String result = responseText.body.string()</span><br><span class="line">        println(<span class="string">"已发送钉钉消息:$result"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="序列化工具类"><a href="#序列化工具类" class="headerlink" title="序列化工具类"></a>序列化工具类</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.demo.plugin</span><br><span class="line"><span class="keyword">import</span> com.google.gson.Gson</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DingTalk</span> &#123;</span></span><br><span class="line">    Gson gson</span><br><span class="line">    <span class="keyword">public</span> DingTalk()&#123;</span><br><span class="line">        gson = <span class="keyword">new</span> Gson()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 定义钉钉链接消息的bean类</span></span><br><span class="line">    <span class="keyword">def</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkMsg</span>&#123;</span></span><br><span class="line">        String msgtype</span><br><span class="line">        Link link</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> LinkMsg(String msgtype,Link link)&#123;</span><br><span class="line">            <span class="keyword">this</span>.msgtype = msgtype</span><br><span class="line">            <span class="keyword">this</span>.link = link</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="class"><span class="keyword">class</span> <span class="title">Link</span>&#123;</span></span><br><span class="line">        String title</span><br><span class="line">        String text</span><br><span class="line">        String messageUrl</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Link(String title,String text,String messageUrl)&#123;</span><br><span class="line">            <span class="keyword">this</span>.title = title</span><br><span class="line">            <span class="keyword">this</span>.text = text</span><br><span class="line">            <span class="keyword">this</span>.messageUrl = messageUrl</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义钉钉文本消息的bean类</span></span><br><span class="line">    <span class="keyword">def</span> <span class="class"><span class="keyword">class</span> <span class="title">TextMsg</span>&#123;</span></span><br><span class="line">        String msgtype</span><br><span class="line">        Text text</span><br><span class="line">        At at</span><br><span class="line">        <span class="keyword">public</span> TextMsg(String msgtype,Text text,At at)&#123;</span><br><span class="line">            <span class="keyword">this</span>.msgtype = msgtype</span><br><span class="line">            <span class="keyword">this</span>.text = text</span><br><span class="line">            <span class="keyword">this</span>.at = at</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="class"><span class="keyword">class</span> <span class="title">At</span>&#123;</span></span><br><span class="line">        List&lt;String&gt; atMobiles = <span class="keyword">new</span> ArrayList&lt;&gt;()</span><br><span class="line">        <span class="keyword">boolean</span> isAtAll = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">public</span> At(List&lt;String&gt; atMobiles,<span class="keyword">boolean</span> isAtAll)&#123;</span><br><span class="line">            <span class="keyword">this</span>.atMobiles = atMobiles</span><br><span class="line">            <span class="keyword">if</span> (!atMobiles.isEmpty())&#123;</span><br><span class="line">                <span class="keyword">this</span>.isAtAll = <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.isAtAll = isAtAll</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="class"><span class="keyword">class</span> <span class="title">Text</span>&#123;</span></span><br><span class="line">        String content</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Text(String content)&#123;</span><br><span class="line">            <span class="keyword">this</span>.content = content</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构建一个钉钉链接消息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> text String</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> title String</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> url String</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String createLinkMsg(String text ,String title,String url) &#123;</span><br><span class="line">        Link link = <span class="keyword">new</span> Link(title,text,url)</span><br><span class="line">        LinkMsg linkMsg = <span class="keyword">new</span> LinkMsg(<span class="string">"link"</span>,link)</span><br><span class="line">        <span class="keyword">return</span> gson.toJson(linkMsg)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构建一个钉钉文本消息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> msgtype String</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> content String</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> text String</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String createTextMsg(String content,List&lt;String&gt; atMobiles,<span class="keyword">boolean</span> isAtAll)&#123;</span><br><span class="line">        Text text = <span class="keyword">new</span> Text(content)</span><br><span class="line">        At at = <span class="keyword">new</span> At(atMobiles,isAtAll)</span><br><span class="line">        TextMsg textMsg = <span class="keyword">new</span> TextMsg(<span class="string">"text"</span>, text, at )</span><br><span class="line">        <span class="keyword">return</span> gson.toJson(textMsg)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="反序列化bean类定义"><a href="#反序列化bean类定义" class="headerlink" title="反序列化bean类定义"></a>反序列化bean类定义</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.demo.plugin;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApkInfo</span> &#123;</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * name : fir.im</span></span><br><span class="line"><span class="comment">     * version : 1.0</span></span><br><span class="line"><span class="comment">     * changelog : 更新日志</span></span><br><span class="line"><span class="comment">     * versionShort : 1.0.5</span></span><br><span class="line"><span class="comment">     * build : 6</span></span><br><span class="line"><span class="comment">     * installUrl : http://download.bq04.com/v2/app/install/xxxxxxxxxxxxxxxxxxxx?download_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxx</span></span><br><span class="line"><span class="comment">     * install_url : http://download.bq04.com/v2/app/install/xxxxxxxxxxxxxxxx?download_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxx</span></span><br><span class="line"><span class="comment">     * update_url : http://fir.im/fir</span></span><br><span class="line"><span class="comment">     * binary : &#123;"fsize":6446245&#125;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String version;</span><br><span class="line">    <span class="keyword">private</span> String changelog;</span><br><span class="line">    <span class="keyword">private</span> String versionShort;</span><br><span class="line">    <span class="keyword">private</span> String build;</span><br><span class="line">    <span class="keyword">private</span> String installUrl;</span><br><span class="line">    <span class="keyword">private</span> String install_url;</span><br><span class="line">    <span class="keyword">private</span> String update_url;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String getName() &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> setName(String name) &#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String getVersion() &#123;</span><br><span class="line">        <span class="keyword">return</span> version;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> setVersion(String version) &#123;</span><br><span class="line">        <span class="keyword">this</span>.version = version;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String getChangelog() &#123;</span><br><span class="line">        <span class="keyword">return</span> changelog;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> setChangelog(String changelog) &#123;</span><br><span class="line">        <span class="keyword">this</span>.changelog = changelog;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String getVersionShort() &#123;</span><br><span class="line">        <span class="keyword">return</span> versionShort;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> setVersionShort(String versionShort) &#123;</span><br><span class="line">        <span class="keyword">this</span>.versionShort = versionShort;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String getBuild() &#123;</span><br><span class="line">        <span class="keyword">return</span> build;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> setBuild(String build) &#123;</span><br><span class="line">        <span class="keyword">this</span>.build = build;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String getInstallUrl() &#123;</span><br><span class="line">        <span class="keyword">return</span> installUrl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> setInstallUrl(String installUrl) &#123;</span><br><span class="line">        <span class="keyword">this</span>.installUrl = installUrl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String getInstall_url() &#123;</span><br><span class="line">        <span class="keyword">return</span> install_url;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> setInstall_url(String install_url) &#123;</span><br><span class="line">        <span class="keyword">this</span>.install_url = install_url;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String getUpdate_url() &#123;</span><br><span class="line">        <span class="keyword">return</span> update_url;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> setUpdate_url(String update_url) &#123;</span><br><span class="line">        <span class="keyword">this</span>.update_url = update_url;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.demo.plugin;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BundleApp</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * id : 5592ceb6537069f2a8000000</span></span><br><span class="line"><span class="comment">     * type : ios</span></span><br><span class="line"><span class="comment">     * short : yk37</span></span><br><span class="line"><span class="comment">     * cert : &#123;"icon":&#123;"key":"xxxxx","token":"xxxxxx","upload_url":"http://upload.qiniu.com"&#125;,"binary":&#123;"key":"xxxxx","token":"xxxxxx","upload_url":"http://upload.qiniu.com"&#125;&#125;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> CertBean cert;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> CertBean getCert() &#123;</span><br><span class="line">        <span class="keyword">return</span> cert;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> setCert(CertBean cert) &#123;</span><br><span class="line">        <span class="keyword">this</span>.cert = cert;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">CertBean</span> &#123;</span></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * icon : &#123;"key":"xxxxx","token":"xxxxxx","upload_url":"http://upload.qiniu.com"&#125;</span></span><br><span class="line"><span class="comment">         * binary : &#123;"key":"xxxxx","token":"xxxxxx","upload_url":"http://upload.qiniu.com"&#125;</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> IconBean icon;</span><br><span class="line">        <span class="keyword">private</span> BinaryBean binary;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> IconBean getIcon() &#123;</span><br><span class="line">            <span class="keyword">return</span> icon;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> setIcon(IconBean icon) &#123;</span><br><span class="line">            <span class="keyword">this</span>.icon = icon;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> BinaryBean getBinary() &#123;</span><br><span class="line">            <span class="keyword">return</span> binary;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> setBinary(BinaryBean binary) &#123;</span><br><span class="line">            <span class="keyword">this</span>.binary = binary;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">IconBean</span> &#123;</span></span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * key : xxxxx</span></span><br><span class="line"><span class="comment">             * token : xxxxxx</span></span><br><span class="line"><span class="comment">             * upload_url : http://upload.qiniu.com</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">private</span> String key;</span><br><span class="line">            <span class="keyword">private</span> String token;</span><br><span class="line">            <span class="keyword">private</span> String upload_url;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> String getKey() &#123;</span><br><span class="line">                <span class="keyword">return</span> key;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> setKey(String key) &#123;</span><br><span class="line">                <span class="keyword">this</span>.key = key;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> String getToken() &#123;</span><br><span class="line">                <span class="keyword">return</span> token;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> setToken(String token) &#123;</span><br><span class="line">                <span class="keyword">this</span>.token = token;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> String getUpload_url() &#123;</span><br><span class="line">                <span class="keyword">return</span> upload_url;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> setUpload_url(String upload_url) &#123;</span><br><span class="line">                <span class="keyword">this</span>.upload_url = upload_url;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BinaryBean</span> &#123;</span></span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * key : xxxxx</span></span><br><span class="line"><span class="comment">             * token : xxxxxx</span></span><br><span class="line"><span class="comment">             * upload_url : http://upload.qiniu.com</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">private</span> String key;</span><br><span class="line">            <span class="keyword">private</span> String token;</span><br><span class="line">            <span class="keyword">private</span> String upload_url;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> String getKey() &#123;</span><br><span class="line">                <span class="keyword">return</span> key;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> setKey(String key) &#123;</span><br><span class="line">                <span class="keyword">this</span>.key = key;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> String getToken() &#123;</span><br><span class="line">                <span class="keyword">return</span> token;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> setToken(String token) &#123;</span><br><span class="line">                <span class="keyword">this</span>.token = token;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> String getUpload_url() &#123;</span><br><span class="line">                <span class="keyword">return</span> upload_url;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> setUpload_url(String upload_url) &#123;</span><br><span class="line">                <span class="keyword">this</span>.upload_url = upload_url;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="自定义Plugin"><a href="#自定义Plugin" class="headerlink" title="自定义Plugin"></a>自定义Plugin</h2><ol>
+<li>继承gradle的Plugin类，重写apply方法中实现插件逻辑</li>
+<li>在assemble任务后执行插件相关的逻辑</li>
+</ol>
+<ul>
+<li>兼容Debug/Release两种打包方式和各个flavor下的打包任务，在这些任务打包完成后执行插件逻辑，采用”assemble” + variant.name.capitalize() +”Fir”的打包命令灵活配置</li>
+<li>如渠道名为googlePlay下打debug/release包则打包任务名为assembleGooglePlayDebug/assembleGooglePlayRelease<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.demo.plugin</span><br><span class="line"><span class="keyword">import</span> org.gradle.api.Plugin</span><br><span class="line"><span class="keyword">import</span> org.gradle.api.Project</span><br><span class="line"><span class="keyword">import</span> org.gradle.api.Task</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PluginImpl</span> <span class="keyword">implements</span> <span class="title">Plugin</span>&lt;<span class="title">Project</span>&gt; &#123;</span></span><br><span class="line">    UploadApkPluginExtension extension</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">void</span> apply(Project project) &#123;</span><br><span class="line">        extension = project.extensions.create(<span class="string">'uploadApk'</span>, UploadApkPluginExtension.<span class="keyword">class</span>, project.getObjects())</span><br><span class="line">        <span class="keyword">if</span> (project.android.hasProperty(<span class="string">"applicationVariants"</span>)) &#123;</span><br><span class="line">            project.android.applicationVariants.all &#123; variant -&gt;</span><br><span class="line">                <span class="comment">// 定义gradle任务名称</span></span><br><span class="line">                Task uploadFir = project.task(<span class="string">"assemble$&#123;variant.name.capitalize()&#125;Fir"</span>).doLast &#123;</span><br><span class="line">                    println(<span class="string">"开始上传Fir"</span>)</span><br><span class="line">                    <span class="keyword">def</span> (String appPackage, String apiTokenFir, String apkPath, String fileName, String appName, String appVersion, String appBuild, String apkIconPath) = getParams(project, variant)</span><br><span class="line">                    OkHttpUtil okHttpUtil = <span class="keyword">new</span> OkHttpUtil()</span><br><span class="line">                    BundleApp bundleApp = okHttpUtil.getCert(appPackage,apiTokenFir)</span><br><span class="line">                    println(<span class="string">"获取凭证信息成功"</span>)</span><br><span class="line">                    BundleApp.CertBean certBean = bundleApp.getCert()</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 上传apk</span></span><br><span class="line">                    println(<span class="string">"上传apk中..."</span>)</span><br><span class="line">                    String key = certBean.getBinary().getKey()</span><br><span class="line">                    String token = certBean.getBinary().getToken()</span><br><span class="line">                    String upload_url = certBean.getBinary().getUpload_url()</span><br><span class="line"></span><br><span class="line">                    String jsonApk = okHttpUtil.uploadApk(apkPath,key,token,appName,appVersion,appBuild,fileName,upload_url)</span><br><span class="line">                    println(<span class="string">"上传apk文件返回结果:$jsonApk"</span>)</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 上传icon</span></span><br><span class="line">                    println(<span class="string">"上传Icon中..."</span>)</span><br><span class="line">                    String keyIcon = certBean.getIcon().getKey()</span><br><span class="line">                    String tokenIcon = certBean.getIcon().getToken()</span><br><span class="line">                    String upload_urlIcon = certBean.getIcon().getUpload_url()</span><br><span class="line"></span><br><span class="line">                    String jsonIcon = okHttpUtil.uploadIcon(apkIconPath,keyIcon,tokenIcon,upload_urlIcon)</span><br><span class="line">                    println(<span class="string">"上传Icon返回结果:$jsonIcon"</span>)</span><br><span class="line"></span><br><span class="line">                    ApkInfo apkInfo = okHttpUtil.getApkUrl(appPackage,apiTokenFir)</span><br><span class="line">                    println(<span class="string">"下载链接:$&#123;apkInfo.installUrl&#125;"</span>)</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">def</span> (String content, String title, String webHook, <span class="keyword">boolean</span> isAtAll,List&lt;String&gt; atMobiles) = getDingTalkParams()</span><br><span class="line">                    String dingTalkMsg = <span class="string">"点击跳转gilos下载链接(版本号:$appBuild    版本名称:$appVersion)"</span></span><br><span class="line">                    <span class="keyword">if</span> (content.length() &gt; <span class="number">0</span>)&#123;</span><br><span class="line">                        dingTalkMsg = <span class="string">"$&#123;dingTalkMsg&#125;，此次更新:$content"</span></span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">/**</span></span><br><span class="line"><span class="comment">                     * 发送钉钉消息</span></span><br><span class="line"><span class="comment">                     */</span></span><br><span class="line">                    okHttpUtil.sendDingTalkLink(dingTalkMsg,title,apkInfo.installUrl,webHook)</span><br><span class="line">                    okHttpUtil.sendDingTalkMsg(content,webHook,isAtAll,atMobiles)</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 在assembleDebug执行后执行</span></span><br><span class="line">                uploadFir.dependsOn project.tasks[<span class="string">"assemble$&#123;variant.name.capitalize()&#125;"</span>]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取钉钉消息配置相关的参数并返回</span></span><br><span class="line">    <span class="keyword">private</span> List getDingTalkParams() &#123;</span><br><span class="line">        String webHook = extension.getDingTalkExtension().getWebHook()</span><br><span class="line">        String title = extension.getDingTalkExtension().getTitle()</span><br><span class="line">        String content = extension.getDingTalkExtension().getContent()</span><br><span class="line">        String isAtAll = extension.getDingTalkExtension().getIsAtAll()</span><br><span class="line">        List&lt;String&gt; atMobiles = extension.getDingTalkExtension().getAtMobiles()</span><br><span class="line">        [content, title, webHook, isAtAll, atMobiles]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取相关gradle配置文件和fir配置相关的参数并返回</span></span><br><span class="line">    <span class="keyword">private</span> List getParams(Project project, variant) &#123;</span><br><span class="line">        String appName = extension.getFirExtension().getAppName()</span><br><span class="line">        String appPackage = project.android.defaultConfig.applicationId</span><br><span class="line">        String appVersion = project.android.defaultConfig.versionName</span><br><span class="line">        String appBuild = project.android.defaultConfig.versionCode</span><br><span class="line">        String apkPath = variant.outputs.first().outputFile</span><br><span class="line">        String fileName = apkPath.substring(apkPath.lastIndexOf(<span class="string">"\\"</span>) + <span class="number">1</span>, apkPath.length())</span><br><span class="line">        String apkIconPath = project.android.applicationVariants.first().outputs.first().outputFile.parent.split(<span class="string">"build"</span>)[<span class="number">0</span>] + extension.getFirExtension().getIconPath()</span><br><span class="line">        String apiTokenFir = extension.getFirExtension().getToken()</span><br><span class="line">        <span class="comment">// 获取上传凭证</span></span><br><span class="line"><span class="comment">//                        println("appName:$appName")</span></span><br><span class="line"><span class="comment">//                        println("appPackage:$appPackage")</span></span><br><span class="line"><span class="comment">//                        println("appVersion:$&#123;appVersion&#125;")</span></span><br><span class="line"><span class="comment">//                        println("appBuild:$&#123;appBuild&#125;")</span></span><br><span class="line"><span class="comment">//                        println("apiTokenFir:$&#123;apiTokenFir&#125;")</span></span><br><span class="line"><span class="comment">//                        println("apkIconPath:$&#123;apkIconPath&#125;")</span></span><br><span class="line">        println(<span class="string">"文件路径:$apkPath"</span>)</span><br><span class="line">        println(<span class="string">"文件名称:$fileName"</span>)</span><br><span class="line">        [appPackage, apiTokenFir, apkPath, fileName, appName, appVersion, appBuild, apkIconPath]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="声明插件"><a href="#声明插件" class="headerlink" title="声明插件"></a>声明插件</h2>在lib的配置文件xxx.xxx.xxx.properties（xxx.xxx.xxx是插件定义类所在的包名）中声明插件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.demo.plugin.PluginImpl</span><br></pre></td></tr></table></figure>
+<h3 id="获取所有打包任务下的插件执行命令"><a href="#获取所有打包任务下的插件执行命令" class="headerlink" title="获取所有打包任务下的插件执行命令"></a>获取所有打包任务下的插件执行命令</h3>variant.name.capitalize()这个参数是打包任务名称首字母大写，如不确定当前的打包任务名称，可以增加app的gradle代码，打印所有的打包任务名称来获取插件的执行命令，同步一下即可输出<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">project.android.applicationVariants.all &#123; variant -&gt;</span><br><span class="line">   println(<span class="string">"assemble$&#123;variant.name.capitalize()&#125;Fir"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="插件上传"><a href="#插件上传" class="headerlink" title="插件上传"></a>插件上传</h1><h2 id="上传到maven仓库"><a href="#上传到maven仓库" class="headerlink" title="上传到maven仓库"></a>上传到maven仓库</h2>上传本地仓库实际上就是生成maven工程的本地文件夹再引用，方便调试<br>增加插件lib的gradle文件代码<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">uploadArchives &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenDeployer &#123;</span><br><span class="line">            repository(<span class="string">url:</span> uri(<span class="string">'../repo'</span>)) <span class="comment">// 上传到本地仓库调试</span></span><br><span class="line">            <span class="comment">// 上传到远程仓库</span></span><br><span class="line">            <span class="comment">//  repository(url: "xxx.xxx.xxx:xxxx/repo私有仓库maven地址") &#123;</span></span><br><span class="line">            <span class="comment">//    authentication(userName: "用户名", password: "密码")</span></span><br><span class="line">            <span class="comment">// &#125;</span></span><br><span class="line">            pom.groupId = <span class="string">'com.demo.plugin'</span><span class="comment">//插件lib包名</span></span><br><span class="line">            pom.artifactId = <span class="string">'firPlugin'</span></span><br><span class="line">            pom.version = <span class="string">'0.4'</span> <span class="comment">//插件版本号</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+执行gradle uploadArchives命令上传<h2 id="上传到远程仓库（私有maven-公有maven）"><a href="#上传到远程仓库（私有maven-公有maven）" class="headerlink" title="上传到远程仓库（私有maven/公有maven）"></a>上传到远程仓库（私有maven/公有maven）</h2></li>
+</ul>
+<h1 id="使用插件"><a href="#使用插件" class="headerlink" title="使用插件"></a>使用插件</h1><ul>
+<li>修改根目录的gradle文件<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Top-level build file where you can add configuration options common to all sub-projects/modules.</span></span><br><span class="line">buildscript &#123;</span><br><span class="line">    ext.kotlin_version = <span class="string">"1.3.72"</span></span><br><span class="line">    repositories &#123;</span><br><span class="line"><span class="comment">//      maven &#123; url './repo' &#125; //本地Maven仓库地址</span></span><br><span class="line"><span class="comment">//      maven &#123; url 'xxx.xxx.xxx:xxxx/repository/release'&#125; // 私有仓库引用</span></span><br><span class="line">        maven &#123; url <span class="string">'https://jitpack.io'</span> &#125; <span class="comment">//Jitpack仓库引用</span></span><br><span class="line">       </span><br><span class="line">        google()</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath <span class="string">"com.android.tools.build:gradle:4.0.0"</span></span><br><span class="line">        classpath <span class="string">"org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"</span></span><br><span class="line">        classpath <span class="string">'com.github.jessieeeee:upload-apk-fir-plugin:0.7'</span> <span class="comment">//Jitpack插件引用</span></span><br><span class="line"><span class="comment">//        classpath 'com.demo.plugin:firPlugin:0.4' // 本地/私有仓库插件引用</span></span><br><span class="line">        <span class="comment">// <span class="doctag">NOTE:</span> Do not place your application dependencies here; they belong</span></span><br><span class="line">        <span class="comment">// in the individual module build.gradle files</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        google()</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">task clean(<span class="string">type:</span> Delete) &#123;</span><br><span class="line">    delete rootProject.buildDir</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>修改app的gradle文件，引入插件并进行相关配置<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">apply <span class="string">plugin:</span> <span class="string">'com.demo.plugin'</span></span><br><span class="line">uploadApk &#123;</span><br><span class="line">    fir &#123;</span><br><span class="line">        appName = <span class="string">"你的app名称"</span></span><br><span class="line">        iconPath = <span class="string">"src/main/res/mipmap-xxxhdpi/ic_launcher.png"</span></span><br><span class="line">        token = <span class="string">"fir平台的token"</span></span><br><span class="line">    &#125;</span><br><span class="line">    dingTalk&#123;</span><br><span class="line">        webHook = <span class="string">"钉钉机器人的webhook"</span></span><br><span class="line">        title = <span class="string">"Android：xxx打包完成"</span></span><br><span class="line">        content = <span class="string">"带关键字的消息内容"</span> <span class="comment">//这个关键字跟自定义钉钉机器人的安全设置有关</span></span><br><span class="line">        isAtAll = <span class="literal">false</span>  <span class="comment">// 是否at所有人</span></span><br><span class="line">        atMobiles = [<span class="string">"手机号1"</span>,<span class="string">"手机号2"</span>]   <span class="comment">//at某些人</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+最后贴上github完整项目地址：<a href="https://github.com/jessieeeee/upload-apk-fir-plugin，欢迎star,issue" target="_blank" rel="noopener">https://github.com/jessieeeee/upload-apk-fir-plugin，欢迎star,issue</a>~</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/groovy/" rel="tag"># groovy</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/08/03/DexEncryption/" rel="next" title="APK加固技术初探">
+                  <i class="fa fa-chevron-left"></i> APK加固技术初探
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#实现自定义Gradle插件的三种方式"><span class="nav-number">1.</span> <span class="nav-text">实现自定义Gradle插件的三种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#app的gradle文件中定义"><span class="nav-number">1.1.</span> <span class="nav-text">app的gradle文件中定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buildSrc目录定义"><span class="nav-number">1.2.</span> <span class="nav-text">buildSrc目录定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新增插件lib定义"><span class="nav-number">1.3.</span> <span class="nav-text">新增插件lib定义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定义插件参数"><span class="nav-number">2.</span> <span class="nav-text">定义插件参数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义fir配置参数"><span class="nav-number">2.1.</span> <span class="nav-text">定义fir配置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义钉钉配置参数"><span class="nav-number">2.2.</span> <span class="nav-text">定义钉钉配置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义插件参数-1"><span class="nav-number">2.3.</span> <span class="nav-text">定义插件参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#插件逻辑"><span class="nav-number">3.</span> <span class="nav-text">插件逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引入开源库"><span class="nav-number">3.1.</span> <span class="nav-text">引入开源库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络请求工具类"><span class="nav-number">3.2.</span> <span class="nav-text">网络请求工具类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#序列化工具类"><span class="nav-number">3.3.</span> <span class="nav-text">序列化工具类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#反序列化bean类定义"><span class="nav-number">3.4.</span> <span class="nav-text">反序列化bean类定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义Plugin"><span class="nav-number">3.5.</span> <span class="nav-text">自定义Plugin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#声明插件"><span class="nav-number">3.6.</span> <span class="nav-text">声明插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取所有打包任务下的插件执行命令"><span class="nav-number">3.6.1.</span> <span class="nav-text">获取所有打包任务下的插件执行命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#插件上传"><span class="nav-number">4.</span> <span class="nav-text">插件上传</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#上传到maven仓库"><span class="nav-number">4.1.</span> <span class="nav-text">上传到maven仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上传到远程仓库（私有maven-公有maven）"><span class="nav-number">4.2.</span> <span class="nav-text">上传到远程仓库（私有maven/公有maven）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用插件"><span class="nav-number">5.</span> <span class="nav-text">使用插件</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: '50f0e5b7e7593b54ea6b353e9daaa779',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

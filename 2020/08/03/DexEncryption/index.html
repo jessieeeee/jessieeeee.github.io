@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="加密技术这块不仅涉及到很多JAVA基础，加密技术还涉及到很多Android底层知识，JAVA反射，JAVA IO，apk的启动流程，类的加载机制，dex文件的构造，APK打包的过程，而这些东西又正好是面试的常考点，是深入学习Android的必经之路，这次从原理入手，手写一个简单的加固框架，在这里做一个记录，如果有不对的地方欢迎指出和交流。  加固的主要目的是为了防止反编译，代码遭到阅读和窃取甚至">
+<meta name="keywords" content="FrameWork">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APK加固技术初探">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;08&#x2F;03&#x2F;DexEncryption&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="加密技术这块不仅涉及到很多JAVA基础，加密技术还涉及到很多Android底层知识，JAVA反射，JAVA IO，apk的启动流程，类的加载机制，dex文件的构造，APK打包的过程，而这些东西又正好是面试的常考点，是深入学习Android的必经之路，这次从原理入手，手写一个简单的加固框架，在这里做一个记录，如果有不对的地方欢迎指出和交流。  加固的主要目的是为了防止反编译，代码遭到阅读和窃取甚至">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-08-05T16:04:57.005Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2020/08/03/DexEncryption/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>APK加固技术初探 | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/03/DexEncryption/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            APK加固技术初探
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-08-03 21:44:18" itemprop="dateCreated datePublished" datetime="2020-08-03T21:44:18+08:00">2020-08-03</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-06 00:04:57" itemprop="dateModified" datetime="2020-08-06T00:04:57+08:00">2020-08-06</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>加密技术这块不仅涉及到很多JAVA基础，加密技术还涉及到很多Android底层知识，JAVA反射，JAVA IO，apk的启动流程，类的加载机制，dex文件的构造，APK打包的过程，而这些东西又正好是面试的常考点，是深入学习Android的必经之路，这次从原理入手，手写一个简单的加固框架，在这里做一个记录，如果有不对的地方欢迎指出和交流。</p>
+<hr>
+<p>加固的主要目的是为了防止反编译，代码遭到阅读和窃取甚至重新打包上架的事情发生，那反编译的过程是什么呢？</p>
+<ol>
+<li>zip解压apk</li>
+<li>dex2jar把class.dex转成jar包</li>
+<li>jd-gui看class文件源码</li>
+</ol>
+<h1 id="加固的原理"><a href="#加固的原理" class="headerlink" title="加固的原理"></a>加固的原理</h1><p>所以加固的关键是对dex文件用加密算法进行加密，防止可执行部分的源码被阅读，此时就需要一个壳程序负责解密原dex文件，然后再合并原dex和壳dex重新签名打包成新的apk，运行时壳程序解密，获得原dex重新手动类加载</p>
+<h1 id="apk的打包流程"><a href="#apk的打包流程" class="headerlink" title="apk的打包流程"></a>apk的打包流程</h1><ol>
+<li>APT工具处理资源文件（xml资源如布局、AndroidManifest），生成R.java</li>
+<li>AIDL工具处理AIDL文件，生成相应的Java文件</li>
+<li>Javac工具编译Java，生成Class文件</li>
+<li>DX工具将Class文件转换成DEX文件</li>
+<li>ApkBuilder工具将资源文件和DEX文件打包成APK</li>
+<li>KeyStore签名APK</li>
+<li>正式版APK用ZipAlign工具对齐</li>
+</ol>
+<h1 id="实现加固"><a href="#实现加固" class="headerlink" title="实现加固"></a>实现加固</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    	</span><br><span class="line">    	<span class="keyword">byte</span>[] mainDexData; <span class="comment">// 存储源apk中的源dex文件 </span></span><br><span class="line">    	<span class="keyword">byte</span>[] aarData;     <span class="comment">// 存储壳中的壳dex文件</span></span><br><span class="line">    	<span class="keyword">byte</span>[] mergeDex;    <span class="comment">// 存储壳dex 和源dex 的合并的新dex文件</span></span><br><span class="line">    	</span><br><span class="line">    	<span class="comment">// 删除source/apk/temp目录下所有文件</span></span><br><span class="line">    	File tempFileApk = <span class="keyword">new</span> File(<span class="string">"source/apk/temp"</span>);</span><br><span class="line">    	<span class="keyword">if</span> (tempFileApk.exists()) &#123;</span><br><span class="line">			File[]files = tempFileApk.listFiles();</span><br><span class="line">			<span class="keyword">for</span>(File file: files)&#123;</span><br><span class="line">				<span class="keyword">if</span> (file.isFile()) &#123;</span><br><span class="line">					file.delete();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">    	<span class="comment">// 删除source/aar/temp目录下所有文件</span></span><br><span class="line">    	File tempFileAar = <span class="keyword">new</span> File(<span class="string">"source/aar/temp"</span>);</span><br><span class="line">    	<span class="keyword">if</span> (tempFileAar.exists()) &#123;</span><br><span class="line">    		File[]files = tempFileAar.listFiles();</span><br><span class="line">			<span class="keyword">for</span>(File file: files)&#123;</span><br><span class="line">				<span class="keyword">if</span> (file.isFile()) &#123;</span><br><span class="line">					file.delete();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">    	</span><br><span class="line">        <span class="comment">//第一步 处理原始apk 加密dex</span></span><br><span class="line">        AES.init(AES.DEFAULT_PWD);</span><br><span class="line">        <span class="comment">//待加固的apk</span></span><br><span class="line">        File apkFile = <span class="keyword">new</span> File(<span class="string">"source/apk/app-debug.apk"</span>);</span><br><span class="line">        <span class="comment">//创建临时文件夹</span></span><br><span class="line">        File newApkFile = <span class="keyword">new</span> File(apkFile.getParent() + File.separator + <span class="string">"temp"</span>);</span><br><span class="line">        <span class="keyword">if</span>(!newApkFile.exists()) &#123;</span><br><span class="line">        	newApkFile.mkdirs();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//加密apk文件并写入到临时文件夹获取主dex</span></span><br><span class="line">        File mainDexFile = AES.encryptAPKFile(apkFile,newApkFile);</span><br><span class="line">        <span class="comment">//临时文件夹存在，重命名dex文件</span></span><br><span class="line">        <span class="keyword">if</span> (newApkFile.isDirectory()) &#123;</span><br><span class="line">			File[] listFiles = newApkFile.listFiles();</span><br><span class="line">			<span class="keyword">for</span> (File file : listFiles) &#123;</span><br><span class="line">				<span class="keyword">if</span> (file.isFile()) &#123;</span><br><span class="line">					<span class="keyword">if</span> (file.getName().endsWith(<span class="string">".dex"</span>)) &#123;</span><br><span class="line">						String name = file.getName();</span><br><span class="line">						System.out.println(<span class="string">"rename step1:"</span>+name);</span><br><span class="line">						<span class="keyword">int</span> cursor = name.indexOf(<span class="string">".dex"</span>);</span><br><span class="line">						String newName = file.getParent()+ File.separator + name.substring(<span class="number">0</span>, cursor) + <span class="string">"_"</span> + <span class="string">".dex"</span>;</span><br><span class="line">						System.out.println(<span class="string">"rename step2:"</span>+newName);</span><br><span class="line">						file.renameTo(<span class="keyword">new</span> File(newName));</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 第二步 处理aar 获得壳dex</span></span><br><span class="line">    	File aarFile = <span class="keyword">new</span> File(<span class="string">"source/aar/mylibrary-debug.aar"</span>);</span><br><span class="line">    	<span class="comment">// jar包转dex文件</span></span><br><span class="line">        File aarDex  = Dx.jar2Dex(aarFile);</span><br><span class="line">        <span class="comment">//读取dex文件为byte数组</span></span><br><span class="line">        aarData = Utils.getBytes(aarDex);   </span><br><span class="line">        <span class="comment">// 创建一个classes.dex文件</span></span><br><span class="line">        File tempMainDex = <span class="keyword">new</span> File(newApkFile.getPath() + File.separator + <span class="string">"classes.dex"</span>);</span><br><span class="line">        <span class="keyword">if</span> (!tempMainDex.exists()) &#123;</span><br><span class="line">			tempMainDex.createNewFile();</span><br><span class="line">		&#125;</span><br><span class="line">        <span class="comment">// 写入byte数组到classes.dex文件</span></span><br><span class="line">        FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(tempMainDex);</span><br><span class="line">        <span class="keyword">byte</span>[] fbytes = Utils.getBytes(aarDex);</span><br><span class="line">        fos.write(fbytes);</span><br><span class="line">        fos.flush();</span><br><span class="line">        fos.close();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 第三步 打包签名</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">// 创建未签名apk的文件夹</span></span><br><span class="line">        File unsignedApk = <span class="keyword">new</span> File(<span class="string">"result/apk-unsigned.apk"</span>);</span><br><span class="line">        unsignedApk.getParentFile().mkdirs();</span><br><span class="line">        <span class="comment">// 合并壳dex和加密dex，压缩newApkFile中的文件为unsignedApk</span></span><br><span class="line">        Zip.zip(newApkFile, unsignedApk);</span><br><span class="line">        <span class="comment">// 对unsignedApk文件签名输出签名后的文件apk-signed.apk</span></span><br><span class="line">        File signedApk = <span class="keyword">new</span> File(<span class="string">"result/apk-signed.apk"</span>);</span><br><span class="line">        Signature.signature(unsignedApk, signedApk);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Zip压缩工具类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Zip</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 解压文件到目标文件夹</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unZip</span><span class="params">(File zip, File dir)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 删除已存在的目标文件夹</span></span><br><span class="line">            dir.delete();</span><br><span class="line">            <span class="comment">// 包装成压缩文件对象</span></span><br><span class="line">            ZipFile zipFile = <span class="keyword">new</span> ZipFile(zip);</span><br><span class="line">            <span class="comment">// 获取被压缩的所有文件</span></span><br><span class="line">            Enumeration&lt;? extends ZipEntry&gt; entries = zipFile.entries();</span><br><span class="line">            <span class="comment">// 遍历被压缩的文件</span></span><br><span class="line">            <span class="keyword">while</span> (entries.hasMoreElements()) &#123;</span><br><span class="line">                ZipEntry zipEntry = entries.nextElement();</span><br><span class="line">                String name = zipEntry.getName();</span><br><span class="line">                <span class="comment">// 如果是META-INF/CERT.RSA，META-INF/CERT.SF，META-INF/MANIFEST.MF文件就跳过</span></span><br><span class="line">                <span class="keyword">if</span> (name.equals(<span class="string">"META-INF/CERT.RSA"</span>) || name.equals(<span class="string">"META-INF/CERT.SF"</span>) || name</span><br><span class="line">                        .equals(<span class="string">"META-INF/MANIFEST.MF"</span>)) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 如果当前压缩文件不是一个文件夹，就输出到目标文件夹</span></span><br><span class="line">                <span class="keyword">if</span> (!zipEntry.isDirectory()) &#123;</span><br><span class="line">                    File file = <span class="keyword">new</span> File(dir, name);</span><br><span class="line">                    <span class="keyword">if</span> (!file.getParentFile().exists()) file.getParentFile().mkdirs();</span><br><span class="line">                    FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">                    InputStream is = zipFile.getInputStream(zipEntry);</span><br><span class="line">                    <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">                    <span class="keyword">int</span> len;</span><br><span class="line">                    <span class="keyword">while</span> ((len = is.read(buffer)) != -<span class="number">1</span>) &#123;</span><br><span class="line">                        fos.write(buffer, <span class="number">0</span>, len);</span><br><span class="line">                    &#125;</span><br><span class="line">                    is.close();</span><br><span class="line">                    fos.close();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            zipFile.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">zip</span><span class="params">(File dir, File zip)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">// 删除已存在的压缩文件</span></span><br><span class="line">        zip.delete();</span><br><span class="line">        <span class="comment">// 压缩文件并对输出文件做CRC32校验</span></span><br><span class="line">        CheckedOutputStream cos = <span class="keyword">new</span> CheckedOutputStream(<span class="keyword">new</span> FileOutputStream(</span><br><span class="line">                zip), <span class="keyword">new</span> CRC32());</span><br><span class="line">        ZipOutputStream zos = <span class="keyword">new</span> ZipOutputStream(cos);</span><br><span class="line">        compress(dir, zos, <span class="string">""</span>);</span><br><span class="line">        zos.flush();</span><br><span class="line">        zos.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">compress</span><span class="params">(File srcFile, ZipOutputStream zos,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 String basePath)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (srcFile.isDirectory()) &#123;</span><br><span class="line">            compressDir(srcFile, zos, basePath);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            compressFile(srcFile, zos, basePath);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">compressDir</span><span class="params">(File dir, ZipOutputStream zos,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    String basePath)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        File[] files = dir.listFiles();</span><br><span class="line">        <span class="comment">// 文件夹为空，构建空目录</span></span><br><span class="line">        <span class="keyword">if</span> (files.length &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            ZipEntry entry = <span class="keyword">new</span> ZipEntry(basePath + dir.getName() + <span class="string">"/"</span>);</span><br><span class="line">            zos.putNextEntry(entry);</span><br><span class="line">            zos.closeEntry();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 递归压缩</span></span><br><span class="line">        <span class="keyword">for</span> (File file : files) &#123;</span><br><span class="line">            compress(file, zos, basePath + dir.getName() + <span class="string">"/"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">compressFile</span><span class="params">(File file, ZipOutputStream zos, String dir)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">// 当前文件路径</span></span><br><span class="line">        String dirName = dir + file.getName();</span><br><span class="line">        <span class="comment">// 文件新名称拼接</span></span><br><span class="line">        String[] dirNameNew = dirName.split(<span class="string">"/"</span>);</span><br><span class="line">        StringBuffer buffer = <span class="keyword">new</span> StringBuffer();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (dirNameNew.length &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; dirNameNew.length; i++) &#123;</span><br><span class="line">                buffer.append(<span class="string">"/"</span>);</span><br><span class="line">                buffer.append(dirNameNew[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            buffer.append(<span class="string">"/"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 创建压缩文件并写入数据</span></span><br><span class="line">        ZipEntry entry = <span class="keyword">new</span> ZipEntry(buffer.toString().substring(<span class="number">1</span>));</span><br><span class="line">        zos.putNextEntry(entry);</span><br><span class="line">        BufferedInputStream bis = <span class="keyword">new</span> BufferedInputStream(<span class="keyword">new</span> FileInputStream(</span><br><span class="line">                file));</span><br><span class="line">        <span class="keyword">int</span> count;</span><br><span class="line">        <span class="keyword">byte</span> data[] = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">while</span> ((count = bis.read(data, <span class="number">0</span>, <span class="number">1024</span>)) != -<span class="number">1</span>) &#123;</span><br><span class="line">            zos.write(data, <span class="number">0</span>, count);</span><br><span class="line">        &#125;</span><br><span class="line">        bis.close();</span><br><span class="line">        zos.closeEntry();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AES对称加密工具类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AES</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 默认密码</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_PWD = <span class="string">"abcdefghijklmnop"</span>;</span><br><span class="line">    <span class="comment">// </span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String algorithmStr = <span class="string">"AES/ECB/PKCS5Padding"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Cipher encryptCipher;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Cipher decryptCipher;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(String password)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">        	<span class="comment">// 创建加密对象,ECB模式,PKCS5Padding填充方式</span></span><br><span class="line">            encryptCipher = Cipher.getInstance(algorithmStr);</span><br><span class="line">            <span class="comment">// 创建解密对象</span></span><br><span class="line">            decryptCipher = Cipher.getInstance(algorithmStr);</span><br><span class="line">            <span class="comment">// 获取密码字节数组</span></span><br><span class="line">            <span class="keyword">byte</span>[] keyStr = password.getBytes();</span><br><span class="line">            <span class="comment">// 生成加密密钥</span></span><br><span class="line">            SecretKeySpec key = <span class="keyword">new</span> SecretKeySpec(keyStr, <span class="string">"AES"</span>);</span><br><span class="line">            <span class="comment">// 初始化加密对象</span></span><br><span class="line">            encryptCipher.init(Cipher.ENCRYPT_MODE, key);</span><br><span class="line">            <span class="comment">// 初始化解密对象</span></span><br><span class="line">            decryptCipher.init(Cipher.DECRYPT_MODE, key);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchAlgorithmException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchPaddingException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvalidKeyException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> srcAPKfile  源文件所在位置</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> dstApkFile  目标文件</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span>             加密后的新dex 文件</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">encryptAPKFile</span><span class="params">(File srcAPKfile, File dstApkFile)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (srcAPKfile == <span class="keyword">null</span>) &#123;</span><br><span class="line">        	System.out.println(<span class="string">"encryptAPKFile :srcAPKfile null"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 解压源文件到目标文件夹</span></span><br><span class="line">        Zip.unZip(srcAPKfile, dstApkFile);</span><br><span class="line">        <span class="comment">// 获得目标文件夹所有的dex</span></span><br><span class="line">        File[] dexFiles = dstApkFile.listFiles(<span class="keyword">new</span> FilenameFilter() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">accept</span><span class="params">(File file, String s)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> s.endsWith(<span class="string">".dex"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        </span><br><span class="line">        File mainDexFile = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] mainDexData = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">// 遍历所有的dex文件，找到并记录主dex文件并获得加密后的字节数组</span></span><br><span class="line">        <span class="keyword">for</span> (File dexFile: dexFiles) &#123;</span><br><span class="line">        	<span class="comment">// 获取dex的字节数组</span></span><br><span class="line">            <span class="keyword">byte</span>[] buffer = Utils.getBytes(dexFile);</span><br><span class="line">            <span class="comment">// 加密后的字节数组</span></span><br><span class="line">            <span class="keyword">byte</span>[] encryptBytes = AES.encrypt(buffer);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (dexFile.getName().endsWith(<span class="string">"classes.dex"</span>)) &#123;</span><br><span class="line">                mainDexData = encryptBytes;</span><br><span class="line">                mainDexFile = dexFile;</span><br><span class="line">            &#125;</span><br><span class="line">           <span class="comment">//用加密后的字节数组替换原来的数据</span></span><br><span class="line">            FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(dexFile);</span><br><span class="line">            fos.write(encryptBytes);</span><br><span class="line">            fos.flush();</span><br><span class="line">            fos.close();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 返回主dex文件</span></span><br><span class="line">        <span class="keyword">return</span> mainDexFile;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 对字节数组加密返回</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] encrypt(<span class="keyword">byte</span>[] content) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] result = encryptCipher.doFinal(content);</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalBlockSizeException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (BadPaddingException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 字节数组解密返回</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] decrypt(<span class="keyword">byte</span>[] content) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] result = decryptCipher.doFinal(content);</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalBlockSizeException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (BadPaddingException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>dx转换工具类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Dx</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">jar2Dex</span><span class="params">(File aarFile)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="comment">// 创建临时文件夹</span></span><br><span class="line">        File fakeDex = <span class="keyword">new</span> File(aarFile.getParent() + File.separator + <span class="string">"temp"</span>);</span><br><span class="line">        <span class="comment">// 解压aar到临时文件夹下</span></span><br><span class="line">        Zip.unZip(aarFile, fakeDex);</span><br><span class="line">        <span class="comment">// 过滤找到classes.jar</span></span><br><span class="line">        File[] files = fakeDex.listFiles(<span class="keyword">new</span> FilenameFilter() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">accept</span><span class="params">(File file, String s)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> s.equals(<span class="string">"classes.jar"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">// aar文件不存在抛异常</span></span><br><span class="line">        <span class="keyword">if</span> (files == <span class="keyword">null</span> || files.length &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"the aar is invalidate"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 将classes.jar转classes.dex</span></span><br><span class="line">        File classes_jar = files[<span class="number">0</span>];</span><br><span class="line">        <span class="comment">// 创建classes.dex文件</span></span><br><span class="line">        File aarDex = <span class="keyword">new</span> File(classes_jar.getParentFile(), <span class="string">"classes.dex"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//使用android tools里面的dx.bat，调windows下的命令</span></span><br><span class="line">        Dx.dxCommand(aarDex, classes_jar);</span><br><span class="line">        <span class="keyword">return</span> aarDex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">dxCommand</span><span class="params">(File aarDex, File classes_jar)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">        Runtime runtime = Runtime.getRuntime();</span><br><span class="line">        Process process = runtime.exec(<span class="string">"cmd.exe /C dx --dex --output="</span> + aarDex.getAbsolutePath() + <span class="string">" "</span> +</span><br><span class="line">                classes_jar.getAbsolutePath());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            process.waitFor();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 转换失败，输出错误到文件并抛异常</span></span><br><span class="line">        <span class="keyword">if</span> (process.exitValue() != <span class="number">0</span>) &#123;</span><br><span class="line">        	InputStream inputStream = process.getErrorStream();</span><br><span class="line">        	<span class="keyword">int</span> len;</span><br><span class="line">        	<span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];</span><br><span class="line">        	ByteArrayOutputStream bos = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">        	<span class="keyword">while</span>((len=inputStream.read(buffer)) != -<span class="number">1</span>)&#123;</span><br><span class="line">        		bos.write(buffer,<span class="number">0</span>,len);</span><br><span class="line">        	&#125;</span><br><span class="line">        	System.out.println(<span class="keyword">new</span> String(bos.toByteArray(),<span class="string">"GBK"</span>));</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"dx run failed"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        process.destroy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>签名工具类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by LK on 2017/9/4.</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Signature</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">signature</span><span class="params">(File unsignedApk, File signedApk)</span> <span class="keyword">throws</span> InterruptedException, IOException </span>&#123;</span><br><span class="line">        <span class="comment">// 执行windows下的签名命令</span></span><br><span class="line">        String cmd[] = &#123;<span class="string">"cmd.exe"</span>, <span class="string">"/C "</span>,<span class="string">"jarsigner"</span>,  <span class="string">"-sigalg"</span>, <span class="string">"MD5withRSA"</span>,</span><br><span class="line">                <span class="string">"-digestalg"</span>, <span class="string">"SHA1"</span>,</span><br><span class="line">                <span class="string">"-keystore"</span>, <span class="string">"C:/Users/allen/.android/debug.keystore"</span>,</span><br><span class="line">                <span class="string">"-storepass"</span>, <span class="string">"android"</span>,</span><br><span class="line">                <span class="string">"-keypass"</span>, <span class="string">"android"</span>,</span><br><span class="line">                <span class="string">"-signedjar"</span>, signedApk.getAbsolutePath(),</span><br><span class="line">                unsignedApk.getAbsolutePath(),</span><br><span class="line">                <span class="string">"androiddebugkey"</span>&#125;;</span><br><span class="line">        Process process = Runtime.getRuntime().exec(cmd);</span><br><span class="line">        System.out.println(<span class="string">"start sign"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> waitResult = process.waitFor();</span><br><span class="line">            System.out.println(<span class="string">"waitResult: "</span> + waitResult);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"process.exitValue() "</span> + process.exitValue() );</span><br><span class="line">        <span class="comment">// 执行失败，输出错误到文件并抛异常</span></span><br><span class="line">        <span class="keyword">if</span> (process.exitValue() != <span class="number">0</span>) &#123;</span><br><span class="line">        	InputStream inputStream = process.getErrorStream();</span><br><span class="line">        	<span class="keyword">int</span> len;</span><br><span class="line">        	<span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];</span><br><span class="line">        	ByteArrayOutputStream bos = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">        	<span class="keyword">while</span>((len=inputStream.read(buffer)) != -<span class="number">1</span>)&#123;</span><br><span class="line">        		bos.write(buffer,<span class="number">0</span>,len);</span><br><span class="line">        	&#125;</span><br><span class="line">        	System.out.println(<span class="keyword">new</span> String(bos.toByteArray(),<span class="string">"GBK"</span>));</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"sign run failed"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"finish signed"</span>);</span><br><span class="line">        process.destroy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/FrameWork/" rel="tag"># FrameWork</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/07/24/LiveDataBus/" rel="next" title="LiveDataBus的封装">
+                  <i class="fa fa-chevron-left"></i> LiveDataBus的封装
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/08/22/GradlePlugin/" rel="prev" title="Gradle插件自定义">
+                  Gradle插件自定义 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#加固的原理"><span class="nav-number">1.</span> <span class="nav-text">加固的原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#apk的打包流程"><span class="nav-number">2.</span> <span class="nav-text">apk的打包流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现加固"><span class="nav-number">3.</span> <span class="nav-text">实现加固</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: 'c5d43b1e74d8cea3a8f89b17d58213ac',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>
