@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近在做性能优化的东西，研究了一下相关的内存监测，卡顿监测，以及ANR监测开源框架，对里面的核心原理做了总结，并手写一份简易版以便加深印象，为后续搭建线上日志监控做铺垫，在此做一个记录，线上监控框架可根据业务在此基础上做扩展。收集必要的日志信息，排查问题及时修复BUG，提升性能和稳定性，也是每个Android工程师必不可少的技能。  BlockCanary 通过采样工具类，在子线程中获取主线程的">
+<meta name="keywords" content="optimization">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手写LeakCanary&amp;&amp;BlockCanary&amp;&amp;AnrWatchDog">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;11&#x2F;29&#x2F;BlockCanaryAndLeakCanary&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="最近在做性能优化的东西，研究了一下相关的内存监测，卡顿监测，以及ANR监测开源框架，对里面的核心原理做了总结，并手写一份简易版以便加深印象，为后续搭建线上日志监控做铺垫，在此做一个记录，线上监控框架可根据业务在此基础上做扩展。收集必要的日志信息，排查问题及时修复BUG，提升性能和稳定性，也是每个Android工程师必不可少的技能。  BlockCanary 通过采样工具类，在子线程中获取主线程的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-11-22T09:46:42.327Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2020/11/29/BlockCanaryAndLeakCanary/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>手写LeakCanary&&BlockCanary&&AnrWatchDog | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/29/BlockCanaryAndLeakCanary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            手写LeakCanary&&BlockCanary&&AnrWatchDog
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-11-29 23:56:22" itemprop="dateCreated datePublished" datetime="2020-11-29T23:56:22+08:00">2020-11-29</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-22 17:46:42" itemprop="dateModified" datetime="2020-11-22T17:46:42+08:00">2020-11-22</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>最近在做性能优化的东西，研究了一下相关的内存监测，卡顿监测，以及ANR监测开源框架，对里面的核心原理做了总结，并手写一份简易版以便加深印象，为后续搭建线上日志监控做铺垫，在此做一个记录，线上监控框架可根据业务在此基础上做扩展。收集必要的日志信息，排查问题及时修复BUG，提升性能和稳定性，也是每个Android工程师必不可少的技能。</p>
+<hr>
+<h2 id="BlockCanary"><a href="#BlockCanary" class="headerlink" title="BlockCanary"></a>BlockCanary</h2><ol>
+<li>通过采样工具类，在子线程中获取主线程的堆栈信息并保存到Map，暴露一个接口返回采样结果</li>
+<li>通过日志监控类，实现Printer接口，判断是否卡顿（采样开始到采样结束的时间间隔是否超过阈值），如果卡顿调用接口获取返回的采样结果在子线程中日志打印</li>
+<li>App出现卡顿，会阻塞主线程的dispatchMessage，主线程Looper的loop方法中有一个Printer在每个Message处理前后被调用，所以设置主线程的MessageLogging为自定义的Printer<h3 id="采样工具类"><a href="#采样工具类" class="headerlink" title="采样工具类"></a>采样工具类</h3>开启一个采样子线程，设置原子变量记录本次是否采样保证多线程同步，避免重复开始和结束，开始采样post一个采样任务到子线程，存入当前时间戳和对应的主线程堆栈信息到Map中，如果本次仍然需采样继续延迟间隔时间执行采样任务，暴露一个获取主线程堆栈信息的接口方法，返回当前堆栈信息列表<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StackSampler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String SEPARATOR = <span class="string">"\r\n"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> SimpleDateFormat TIME_FORMATTER =</span><br><span class="line">            <span class="keyword">new</span> SimpleDateFormat(<span class="string">"MM-dd HH:mm:ss.SSS"</span>);</span><br><span class="line">    <span class="keyword">private</span> Handler mHandler;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;Long, String&gt; mStackMap = <span class="keyword">new</span> LinkedHashMap&lt;&gt;(); <span class="comment">//保存的主线程堆栈信息</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mMaxCount = <span class="number">100</span>; <span class="comment">// 最多保存100条</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mSampleInterval; <span class="comment">// 采样时间间隔</span></span><br><span class="line">    <span class="comment">// 本次是否采样</span></span><br><span class="line">    <span class="keyword">protected</span> AtomicBoolean mShouldSample = <span class="keyword">new</span> AtomicBoolean(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StackSampler</span><span class="params">(<span class="keyword">long</span> sampleInterval)</span> </span>&#123;</span><br><span class="line">        mSampleInterval = sampleInterval;</span><br><span class="line">        <span class="comment">// 开启采样子线程</span></span><br><span class="line">        HandlerThread handlerThread = <span class="keyword">new</span> HandlerThread(<span class="string">"block-canary-sampler"</span>);</span><br><span class="line">        handlerThread.start();</span><br><span class="line">        mHandler = <span class="keyword">new</span> Handler(handlerThread.getLooper());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 开始采样 执行堆栈</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startDump</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 避免重复开始</span></span><br><span class="line">        <span class="keyword">if</span> (mShouldSample.get()) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 设置采样标记</span></span><br><span class="line">        mShouldSample.set(<span class="keyword">true</span>);</span><br><span class="line">        <span class="comment">// 移除上一个采样任务，在采样间隔时间后执行采样</span></span><br><span class="line">        mHandler.removeCallbacks(mRunnable);</span><br><span class="line">        mHandler.postDelayed(mRunnable, mSampleInterval);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stopDump</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 避免重复结束</span></span><br><span class="line">        <span class="keyword">if</span> (!mShouldSample.get()) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 设置采样标记</span></span><br><span class="line">        mShouldSample.set(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">        mHandler.removeCallbacks(mRunnable);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">getStacks</span><span class="params">(<span class="keyword">long</span> startTime, <span class="keyword">long</span> endTime)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">synchronized</span> (mStackMap) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Long entryTime : mStackMap.keySet()) &#123;</span><br><span class="line">                <span class="comment">// 记录时间大于开始时间小于结束时间就放入返回列表中</span></span><br><span class="line">                <span class="keyword">if</span> (startTime &lt; entryTime &amp;&amp; entryTime &lt; endTime) &#123;</span><br><span class="line">                    result.add(TIME_FORMATTER.format(entryTime)</span><br><span class="line">                            + SEPARATOR</span><br><span class="line">                            + SEPARATOR</span><br><span class="line">                            + mStackMap.get(entryTime));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Runnable mRunnable = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">            <span class="comment">// 获得主线程堆栈信息并拼接到字符串</span></span><br><span class="line">            StackTraceElement[] stackTrace = Looper.getMainLooper().getThread().getStackTrace();</span><br><span class="line">            <span class="keyword">for</span> (StackTraceElement s : stackTrace) &#123;</span><br><span class="line">                sb.append(s.toString()).append(<span class="string">"\n"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">synchronized</span> (mStackMap) &#123;</span><br><span class="line">                <span class="comment">//最多保存100条堆栈信息，到了数量上限移除</span></span><br><span class="line">                <span class="keyword">if</span> (mStackMap.size() == mMaxCount) &#123;</span><br><span class="line">                    mStackMap.remove(mStackMap.keySet().iterator().next());</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 存入当前时间戳和对应的堆栈信息</span></span><br><span class="line">                mStackMap.put(System.currentTimeMillis(), sb.toString());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 如果本次要采样，设置延迟继续执行此任务</span></span><br><span class="line">            <span class="keyword">if</span> (mShouldSample.get()) &#123;</span><br><span class="line">                mHandler.postDelayed(mRunnable, mSampleInterval);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="卡顿监控工具类"><a href="#卡顿监控工具类" class="headerlink" title="卡顿监控工具类"></a>卡顿监控工具类</h3>初始化采样工具类，开启打印日志子线程，记录采样的开始时间和结束时间，如果时间大于设定的卡顿阈值则判定为卡顿状态，调用采样工具类获取主线程堆栈信息<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 卡顿监控工具类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogMonitor</span> <span class="keyword">implements</span> <span class="title">Printer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> StackSampler mStackSampler; <span class="comment">// 采样工具类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> mPrintingStarted = <span class="keyword">false</span>; <span class="comment">// 开始打印标记</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mStartTimestamp; <span class="comment">// 开始时间戳</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mBlockThresholdMillis = <span class="number">3000</span>; <span class="comment">// 卡顿阈值</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mSampleInterval = <span class="number">1000</span>; <span class="comment">// 采样频率</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Handler mLogHandler;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LogMonitor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 初始化采样工具类</span></span><br><span class="line">        mStackSampler = <span class="keyword">new</span> StackSampler(mSampleInterval);</span><br><span class="line">        <span class="comment">// 开启打印子线程</span></span><br><span class="line">        HandlerThread handlerThread = <span class="keyword">new</span> HandlerThread(<span class="string">"block-canary-io"</span>);</span><br><span class="line">        handlerThread.start();</span><br><span class="line">        mLogHandler = <span class="keyword">new</span> Handler(handlerThread.getLooper());</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(String x)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//从if到else会执行消息分发，如果执行耗时超过阈值，输出卡顿信息</span></span><br><span class="line">        <span class="keyword">if</span> (!mPrintingStarted) &#123;</span><br><span class="line">            <span class="comment">//记录开始时间</span></span><br><span class="line">            mStartTimestamp = System.currentTimeMillis();</span><br><span class="line">            mPrintingStarted = <span class="keyword">true</span>;</span><br><span class="line">            mStackSampler.startDump();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">long</span> endTime = System.currentTimeMillis();</span><br><span class="line">            mPrintingStarted = <span class="keyword">false</span>;</span><br><span class="line">            <span class="comment">//出现卡顿，通知卡顿事件</span></span><br><span class="line">            <span class="keyword">if</span> (isBlock(endTime)) &#123;</span><br><span class="line">                notifyBlockEvent(endTime);</span><br><span class="line">            &#125;</span><br><span class="line">            mStackSampler.stopDump();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">notifyBlockEvent</span><span class="params">(<span class="keyword">final</span> <span class="keyword">long</span> endTime)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 获得卡顿时主线程堆栈信息在子线程打印</span></span><br><span class="line">        mLogHandler.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                List&lt;String&gt; stacks = mStackSampler.getStacks(mStartTimestamp, endTime);</span><br><span class="line">                <span class="keyword">for</span> (String stack : stacks) &#123;</span><br><span class="line">                    Log.e(<span class="string">"block-canary"</span>, stack);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isBlock</span><span class="params">(<span class="keyword">long</span> endTime)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> endTime - mStartTimestamp &gt; mBlockThresholdMillis;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="卡顿监控入口"><a href="#卡顿监控入口" class="headerlink" title="卡顿监控入口"></a>卡顿监控入口</h3>设置主线程的MessageLogging为自定义的Printer<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BlockCanary</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">install</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        LogMonitor logMonitor = <span class="keyword">new</span> LogMonitor();</span><br><span class="line">        Looper.getMainLooper().setMessageLogging(logMonitor);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="LeakCanary"><a href="#LeakCanary" class="headerlink" title="LeakCanary"></a>LeakCanary</h2><p>Java中WeakReference和ReferenceQueue联合使用是监控某个对象是否被gc回收的手段，LeakCanary正是利用这个原理实现的。</p>
+<h3 id="WeakReference和ReferenceQueue联合使用"><a href="#WeakReference和ReferenceQueue联合使用" class="headerlink" title="WeakReference和ReferenceQueue联合使用"></a>WeakReference和ReferenceQueue联合使用</h3><p>创建一个对象，包装到弱引用对象中并关联引用队列，把对象置空，强制GC，取出引用队列的弱引用对象是否与关联时的弱引用对象相同</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">      <span class="comment">// 创建一个引用队列</span></span><br><span class="line">      ReferenceQueue referenceQueue = <span class="keyword">new</span> ReferenceQueue();</span><br><span class="line">      <span class="comment">// 创建一个对象</span></span><br><span class="line">      Object obj = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line">      <span class="comment">//把obj放入弱引用对象，并和一个引用队列关联</span></span><br><span class="line">      <span class="comment">//当obj被gc回收后，weakReference会被添加到与之关联的referenceQueue</span></span><br><span class="line">      WeakReference weakReference = <span class="keyword">new</span> WeakReference(obj,referenceQueue);</span><br><span class="line">      </span><br><span class="line">      <span class="comment">//把obj置空，让它没有强引用</span></span><br><span class="line">      obj = <span class="keyword">null</span>;</span><br><span class="line">      Runtime.getRuntime().gc(); <span class="comment">//强制gc</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">try</span>&#123;</span><br><span class="line">          Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">      &#125;<span class="keyword">catch</span> (Exception e)&#123;&#125;</span><br><span class="line"></span><br><span class="line">      Reference findRef = <span class="keyword">null</span>;</span><br><span class="line">      <span class="keyword">do</span>&#123;</span><br><span class="line">          findRef = referenceQueue.poll();</span><br><span class="line">          <span class="comment">//如果能找到上面的weakReference对象，说明obj被gc回收了</span></span><br><span class="line">          System.out.println(<span class="string">"findRef = "</span> +findRef + <span class="string">"是否等于上面的weakReference = "</span> + (findRef == weakReference));</span><br><span class="line">      &#125;<span class="keyword">while</span>(findRef !=<span class="keyword">null</span>);<span class="comment">// 把所有referenceQueue的weakReference对象找出来</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="封装包含key和name的弱引用类"><a href="#封装包含key和name的弱引用类" class="headerlink" title="封装包含key和name的弱引用类"></a>封装包含key和name的弱引用类</h3><p>继承WeakReference弱引用类，方便根据key删除对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KeyWeakReference</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">WeakReference</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String key;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">KeyWeakReference</span><span class="params">(T referent, String key, String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(referent);</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">KeyWeakReference</span><span class="params">(T referent, ReferenceQueue&lt;? <span class="keyword">super</span> T&gt; q, String key, String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(referent, q);</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setKey</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> StringBuffer sb = <span class="keyword">new</span> StringBuffer(<span class="string">"KeyWeakReference&#123;"</span>);</span><br><span class="line">        sb.append(<span class="string">"key='"</span>).append(key).append(<span class="string">'\''</span>);</span><br><span class="line">        sb.append(<span class="string">", name='"</span>).append(name).append(<span class="string">'\''</span>);</span><br><span class="line">        sb.append(<span class="string">'&#125;'</span>);</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="监控工具类"><a href="#监控工具类" class="headerlink" title="监控工具类"></a>监控工具类</h3><p>创建一个观察对象Map，怀疑对象Map和引用队列，先清理一遍被GC的对象，遍历引用队列的所有弱引用对象，清理观察对象Map和怀疑对象Map中对应的对象，被监控的对象生成UUID作为key，把对象放入弱引用并与引用队列关联，放入到观察对象Map中，5秒后判断该对象是否还存在观察对象Map中，还存在则说明没有被GC，将该对象移动到怀疑对象Map</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 观察对象Map</span></span><br><span class="line">    <span class="keyword">private</span> HashMap&lt;String, KeyWeakReference&gt; watchedReferences = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="comment">// 怀疑对象Map</span></span><br><span class="line">    <span class="keyword">private</span> HashMap&lt;String, KeyWeakReference&gt; retainedReferences = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//当被监视的对象被gc回收后，对象的弱引用就会被加入到引用队列</span></span><br><span class="line">    <span class="keyword">private</span> ReferenceQueue queue = <span class="keyword">new</span> ReferenceQueue();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Watcher</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取出引用队列的所有弱引用对象，清理观察对象Map和怀疑对象Map中对应的对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">removeWeaklyReachableReferences</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        KeyWeakReference findRef = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="comment">// 取出引用队列的弱引用对象</span></span><br><span class="line">            findRef = (KeyWeakReference) queue.poll();</span><br><span class="line">            <span class="comment">// 不为空说明对象被gc回收了，把对应的弱引用对象从观察对象Map，怀疑对象Map移除</span></span><br><span class="line">            <span class="keyword">if</span> (findRef != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 根据key把它从观察对象Map移除</span></span><br><span class="line">                Reference removedRef = watchedReferences.remove(findRef.getKey());</span><br><span class="line">                <span class="comment">// 如果removedRef为空，有可能被放入到怀疑对象Map了</span></span><br><span class="line">                <span class="comment">// 尝试从怀疑对象Map中移除</span></span><br><span class="line">                <span class="keyword">if</span> (removedRef == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    retainedReferences.remove(findRef.getKey());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">while</span> (findRef != <span class="keyword">null</span>);<span class="comment">// 把referenceQueue的所有弱引用取出来</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据key把对应的弱引用对象从观察对象Map移动到怀疑对象Map</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">moveToRetained</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"加入到怀疑列表..."</span>);</span><br><span class="line">        <span class="comment">// 加入怀疑对象Map前，做一次清理</span></span><br><span class="line">        removeWeaklyReachableReferences();</span><br><span class="line">        <span class="comment">// 根据key从观察对象Map中去找弱引用对象</span></span><br><span class="line">        KeyWeakReference retainedRef = watchedReferences.remove(key);</span><br><span class="line">        <span class="comment">// 发现还没有被删除，说明没有被回收</span></span><br><span class="line">        <span class="keyword">if</span> (retainedRef != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//从观察对象Map中移除,加入到怀疑对象Map</span></span><br><span class="line">            retainedReferences.put(key, retainedRef);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">watch</span><span class="params">(Object watchedReference, String referenceName)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//1. 先清理下观察对象Map和怀疑对象Map</span></span><br><span class="line">        removeWeaklyReachableReferences();</span><br><span class="line">        <span class="comment">//2. 被监视的对象生成唯一的uuid作为key</span></span><br><span class="line">        <span class="keyword">final</span> String key = UUID.randomUUID().toString();</span><br><span class="line">        <span class="comment">//3. 被监视的对象放入weakReference，并和一个引用队列关联</span></span><br><span class="line">        KeyWeakReference reference = <span class="keyword">new</span> KeyWeakReference(watchedReference, queue, key, <span class="string">""</span>);</span><br><span class="line">        <span class="comment">//4. 加入到观察对象Map</span></span><br><span class="line">        watchedReferences.put(key, reference);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//5. 延迟5秒后检查是否还在观察对象Map，如果还在，则加入到怀疑对象Map</span></span><br><span class="line">        Executor executor = Executors.newSingleThreadExecutor();</span><br><span class="line">        executor.execute(() -&gt; &#123;</span><br><span class="line">            Utils.sleep(<span class="number">5000</span>);</span><br><span class="line">            moveToRetained(key);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取泄漏对象Map</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HashMap&lt;String, KeyWeakReference&gt; <span class="title">getRetainedReferences</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        retainedReferences.forEach((key, keyWeakReference) -&gt; &#123;</span><br><span class="line">                    System.out.println(<span class="string">"key: "</span> + key + <span class="string">" , obj: "</span> + keyWeakReference.get() + <span class="string">" , keyWeakReference: "</span> + keyWeakReference);</span><br><span class="line">                &#125;</span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">return</span> retainedReferences;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="监控泄漏对象"><a href="#监控泄漏对象" class="headerlink" title="监控泄漏对象"></a>监控泄漏对象</h2><p>创建对象，调用监控工具类的监控方法，查看怀疑对象Map</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 初始化监控工具类</span></span><br><span class="line">        Watcher watcher = <span class="keyword">new</span> Watcher();</span><br><span class="line">        <span class="comment">// 创建对象并开始对象监控</span></span><br><span class="line">        Object obj = <span class="keyword">new</span> Object();</span><br><span class="line">        watcher.watch(obj,<span class="string">""</span>);</span><br><span class="line">         <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 释放对象</span></span><br><span class="line">        obj = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">// 强制GC</span></span><br><span class="line">        Runtime.getRuntime().gc();</span><br><span class="line">        sleep(<span class="number">100</span>);</span><br><span class="line">        System.runFinalization();</span><br><span class="line">        </span><br><span class="line">        System.out.println(<span class="string">"查看是否在怀疑对象Map："</span> + watcher.getRetainedReferences().size());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ANRWatchDog"><a href="#ANRWatchDog" class="headerlink" title="ANRWatchDog"></a>ANRWatchDog</h2><h3 id="FileObserver"><a href="#FileObserver" class="headerlink" title="FileObserver"></a>FileObserver</h3><p>监控Android系统的anr日志目录/data/anr/，利用FileObserver监控目录下的文件操作，间接监控ANR问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ANRFileObserver</span> <span class="keyword">extends</span> <span class="title">FileObserver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ANRFileObserver</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ANRFileObserver</span><span class="params">(String path, <span class="keyword">int</span> mask)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(path, mask);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEvent</span><span class="params">(<span class="keyword">int</span> event, @Nullable String path)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">switch</span> (event)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.ACCESS:<span class="comment">//文件被访问</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"ACCESS: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.ATTRIB:<span class="comment">//文件属性被修改，如 chmod、chown、touch 等</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"ATTRIB: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.CLOSE_NOWRITE:<span class="comment">//不可写文件被 close</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"CLOSE_NOWRITE: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.CLOSE_WRITE:<span class="comment">//可写文件被 close</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"CLOSE_WRITE: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.CREATE:<span class="comment">//创建新文件</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"CREATE: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.DELETE:<span class="comment">// 文件被删除，如 rm</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"DELETE: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.DELETE_SELF:<span class="comment">// 自删除，即一个可执行文件在执行时删除自己</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"DELETE_SELF: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.MODIFY:<span class="comment">//文件被修改</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"MODIFY: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.MOVE_SELF:<span class="comment">//自移动，即一个可执行文件在执行时移动自己</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"MOVE_SELF: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.MOVED_FROM:<span class="comment">//文件被移走，如 mv</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"MOVED_FROM: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.MOVED_TO:<span class="comment">//文件被移来，如 mv、cp</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"MOVED_TO: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> FileObserver.OPEN:<span class="comment">//文件被 open</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"OPEN: "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="comment">//CLOSE ： 文件被关闭，等同于(IN_CLOSE_WRITE | IN_CLOSE_NOWRITE)</span></span><br><span class="line">                <span class="comment">//ALL_EVENTS ： 包括上面的所有事件</span></span><br><span class="line">                Log.i(<span class="string">"Zero"</span>, <span class="string">"DEFAULT("</span> + event + <span class="string">"): "</span> + path);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><p>开启ANR监控后台线程，检查是否ANR，通过检查标志位和时间差判断规定时间内是否执行完成，如果没执行完成则可能发生ANR卡住了，那么打印主线程堆栈信息并调用回调接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ANRWatchDog</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"ANR"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> timeout = <span class="number">5000</span>; <span class="comment">// 超时阈值</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> ignoreDebugger = <span class="keyword">true</span>; <span class="comment">// 开启开关</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> ANRWatchDog sWatchdog;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Handler mainHandler = <span class="keyword">new</span> Handler(Looper.getMainLooper());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ANRChecker</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">boolean</span> mCompleted; <span class="comment">// 是否完成</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">long</span> mStartTime; <span class="comment">// 开始时间</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">long</span> executeTime = SystemClock.uptimeMillis(); <span class="comment">// 执行时间</span></span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (ANRWatchDog.<span class="keyword">this</span>) &#123;</span><br><span class="line">                mCompleted = <span class="keyword">true</span>;</span><br><span class="line">                executeTime = SystemClock.uptimeMillis();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">schedule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="comment">// 设置是否完成标记</span></span><br><span class="line">            mCompleted = <span class="keyword">false</span>;</span><br><span class="line">            <span class="comment">// 记录开始时间</span></span><br><span class="line">            mStartTime = SystemClock.uptimeMillis();</span><br><span class="line">            <span class="comment">// 结束任务，在主线程中重置完成标记，记录结束时间</span></span><br><span class="line">            mainHandler.postAtFrontOfQueue(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">boolean</span> <span class="title">isBlocked</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> !mCompleted || executeTime - mStartTime &gt;= timeout;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// anr监听接口</span></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ANRListener</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">onAnrHappened</span><span class="params">(String stackTraceInfo)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ANRChecker anrChecker = <span class="keyword">new</span> ANRChecker();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ANRListener anrListener;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addANRListener</span><span class="params">(ANRListener listener)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.anrListener = listener;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ANRWatchDog <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(sWatchdog == <span class="keyword">null</span>)&#123;</span><br><span class="line">            sWatchdog = <span class="keyword">new</span> ANRWatchDog();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sWatchdog;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ANRWatchDog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="string">"ANR-WatchDog-Thread"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@TargetApi</span>(Build.VERSION_CODES.JELLY_BEAN)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 设置为后台线程</span></span><br><span class="line">        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND); </span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="comment">// 没有被打断停止 </span></span><br><span class="line">            <span class="keyword">while</span> (!isInterrupted()) &#123;</span><br><span class="line">                <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">                    <span class="comment">// 检查是否anr</span></span><br><span class="line">                    anrChecker.schedule();</span><br><span class="line">                    <span class="keyword">long</span> waitTime = timeout;</span><br><span class="line">                    <span class="keyword">long</span> start = SystemClock.uptimeMillis();</span><br><span class="line">                    <span class="comment">// 防止假唤醒</span></span><br><span class="line">                    <span class="keyword">while</span> (waitTime &gt; <span class="number">0</span>) &#123; </span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            <span class="comment">// 等待超时时长后检查标志位</span></span><br><span class="line">                            wait(waitTime);</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                            Log.w(TAG, e.toString());</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">// 发现没有到阈值继续休眠</span></span><br><span class="line">                        waitTime = timeout - (SystemClock.uptimeMillis() - start);</span><br><span class="line">                    &#125; </span><br><span class="line">                    <span class="comment">// 如果没有阻塞跳过此次循环</span></span><br><span class="line">                    <span class="keyword">if</span> (!anrChecker.isBlocked()) &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 如果开关关闭并且在调试跳过此次循环</span></span><br><span class="line">                <span class="keyword">if</span> (!ignoreDebugger &amp;&amp; Debug.isDebuggerConnected()) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 打印堆栈信息并回调</span></span><br><span class="line">                String stackTraceInfo = getStackTraceInfo();</span><br><span class="line">                <span class="keyword">if</span> (anrListener != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    anrListener.onAnrHappened(stackTraceInfo);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            anrListener = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 获取主线程堆栈信息返回字符串</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getStackTraceInfo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (StackTraceElement stackTraceElement : Looper.getMainLooper().getThread().getStackTrace()) &#123;</span><br><span class="line">            stringBuilder</span><br><span class="line">                    .append(stackTraceElement.toString())</span><br><span class="line">                    .append(<span class="string">"\r\n"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> stringBuilder.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/optimization/" rel="tag"># optimization</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/10/30/LazyLoad/" rel="next" title="LazyLoad">
+                  <i class="fa fa-chevron-left"></i> LazyLoad
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BlockCanary"><span class="nav-number">1.</span> <span class="nav-text">BlockCanary</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#采样工具类"><span class="nav-number">1.1.</span> <span class="nav-text">采样工具类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#卡顿监控工具类"><span class="nav-number">1.2.</span> <span class="nav-text">卡顿监控工具类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#卡顿监控入口"><span class="nav-number">1.3.</span> <span class="nav-text">卡顿监控入口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LeakCanary"><span class="nav-number">2.</span> <span class="nav-text">LeakCanary</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WeakReference和ReferenceQueue联合使用"><span class="nav-number">2.1.</span> <span class="nav-text">WeakReference和ReferenceQueue联合使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装包含key和name的弱引用类"><span class="nav-number">2.2.</span> <span class="nav-text">封装包含key和name的弱引用类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控工具类"><span class="nav-number">2.3.</span> <span class="nav-text">监控工具类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控泄漏对象"><span class="nav-number">3.</span> <span class="nav-text">监控泄漏对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ANRWatchDog"><span class="nav-number">4.</span> <span class="nav-text">ANRWatchDog</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FileObserver"><span class="nav-number">4.1.</span> <span class="nav-text">FileObserver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程"><span class="nav-number">4.2.</span> <span class="nav-text">线程</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: '6850d28a3c7117548a46addd7ef661a8',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

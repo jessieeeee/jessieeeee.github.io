@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近公司的项目做性能优化，正在折腾Fragment懒加载的东西，由于项目迁移到了AndroidX，懒加载方案和以前有所不同，不过总体来说代码量少了很多，正好可以对新老版本的懒加载方案做一个对比，下面是关于AndroidX前和AndroidX后的fragment懒加载方案总结  AndroidX之前采用旧懒加载方案4步优化  View已加载且fragment可见时懒加载   当onViewCrea">
+<meta name="keywords" content="optimization">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LazyLoad">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;10&#x2F;30&#x2F;LazyLoad&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="最近公司的项目做性能优化，正在折腾Fragment懒加载的东西，由于项目迁移到了AndroidX，懒加载方案和以前有所不同，不过总体来说代码量少了很多，正好可以对新老版本的懒加载方案做一个对比，下面是关于AndroidX前和AndroidX后的fragment懒加载方案总结  AndroidX之前采用旧懒加载方案4步优化  View已加载且fragment可见时懒加载   当onViewCrea">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-11-01T15:57:33.649Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2020/10/30/LazyLoad/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>LazyLoad | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/30/LazyLoad/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            LazyLoad
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-10-30 23:45:01" itemprop="dateCreated datePublished" datetime="2020-10-30T23:45:01+08:00">2020-10-30</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-01 23:57:33" itemprop="dateModified" datetime="2020-11-01T23:57:33+08:00">2020-11-01</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>最近公司的项目做性能优化，正在折腾Fragment懒加载的东西，由于项目迁移到了AndroidX，懒加载方案和以前有所不同，不过总体来说代码量少了很多，正好可以对新老版本的懒加载方案做一个对比，下面是关于AndroidX前和AndroidX后的fragment懒加载方案总结</p>
+<hr>
+<h2 id="AndroidX之前采用旧懒加载方案"><a href="#AndroidX之前采用旧懒加载方案" class="headerlink" title="AndroidX之前采用旧懒加载方案"></a>AndroidX之前采用旧懒加载方案</h2><p>4步优化</p>
+<ol>
+<li>View已加载且fragment可见时懒加载</li>
+</ol>
+<ul>
+<li>当onViewCreated()方法执行时，表明View已经加载完毕，isViewCreated标记为true,并调lazyLoad()方法</li>
+<li>当setUserVisibleHint(boolean isVisibleToUser)执行时，isVisibleToUser为true并调lazyLoad()方法</li>
+<li>在lazyLoad()方法双重标记判断，再进行停止一切/加载数据事件分发</li>
+<li>定义抽象方法loadData()，子类重写进行加载数据<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> isViewCreated = <span class="keyword">false</span>;</span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        isViewCreated  = <span class="keyword">true</span>; <span class="comment">// View已加载</span></span><br><span class="line">        <span class="comment">// 此时正好可见</span></span><br><span class="line">        <span class="keyword">if</span> (getUserVisibleHint()) &#123;</span><br><span class="line">            setUserVisibleHint(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> rootView;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserVisibleHint</span><span class="params">(<span class="keyword">boolean</span> isVisibleToUser)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.setUserVisibleHint(isVisibleToUser);</span><br><span class="line">        <span class="comment">// View已加载</span></span><br><span class="line">        <span class="keyword">if</span> (isViewCreated) &#123;</span><br><span class="line">            <span class="comment">// 根据当前可见状态分发事件</span></span><br><span class="line">            <span class="keyword">if</span> (isVisibleToUser) &#123;</span><br><span class="line">                dispatchUserVisibleHint(<span class="keyword">true</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                dispatchUserVisibleHint(<span class="keyword">false</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchUserVisibleHint</span><span class="params">(<span class="keyword">boolean</span> visibleState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (visibleState) &#123;</span><br><span class="line">            <span class="comment">// 加载网络数据请求</span></span><br><span class="line">            onFragmentLoad();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 停止网络数据请求</span></span><br><span class="line">            onFragmentLoadStop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFragmentLoadStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        E(<span class="string">"onFragmentLoadStop"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFragmentLoad</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        E(<span class="string">"onFragmentLoad"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="2">
+<li>记录上一次状态与当前状态比较，保证变化过程，状态未改变不需要分发事件</li>
+</ol>
+<ul>
+<li>从可见到不可见，停止一切操作</li>
+<li>从不可见到可见，加载数据操作<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> isVisibleStateUP = <span class="keyword">false</span>; <span class="comment">// 记录上一次可见的状态</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserVisibleHint</span><span class="params">(<span class="keyword">boolean</span> isVisibleToUser)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.setUserVisibleHint(isVisibleToUser);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isViewCreated) &#123;</span><br><span class="line">            <span class="comment">// 当前可见且上一次不可见</span></span><br><span class="line">            <span class="keyword">if</span> (isVisibleToUser &amp;&amp; !isVisibleStateUP) &#123;</span><br><span class="line">                dispatchUserVisibleHint(<span class="keyword">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 当前不可见且上一次可见</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (!isVisibleToUser &amp;&amp; isVisibleStateUP)&#123;</span><br><span class="line">                dispatchUserVisibleHint(<span class="keyword">false</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchUserVisibleHint</span><span class="params">(<span class="keyword">boolean</span> visibleState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.isVisibleStateUP = visibleState;</span><br><span class="line">        <span class="keyword">if</span> (visibleState) &#123;</span><br><span class="line">            <span class="comment">// 加载网络数据请求</span></span><br><span class="line">            onFragmentLoad();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 停止网络数据请求</span></span><br><span class="line">            onFragmentLoadStop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="3">
+<li>启动新的Activity没有分发事件</li>
+</ol>
+<ul>
+<li>除了onCreate和setUserVisibleHint在onResume/onPause中也要分发事件<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResume</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">super</span>.onResume();</span><br><span class="line">      <span class="comment">// 当前可见且上一次不可见</span></span><br><span class="line">      <span class="keyword">if</span> (getUserVisibleHint() &amp;&amp; !isVisibleStateUP) &#123;</span><br><span class="line">          dispatchUserVisibleHint(<span class="keyword">true</span>);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPause</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">super</span>.onPause();</span><br><span class="line">      <span class="comment">// 当前不可见且上一次可见</span></span><br><span class="line">      <span class="keyword">if</span> (getUserVisibleHint() &amp;&amp; isVisibleStateUP) &#123;</span><br><span class="line">          dispatchUserVisibleHint(<span class="keyword">false</span>);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="4">
+<li>双重嵌套下子Fragment无法接收到事件<br>需判断父fragment是否可见，当前fragment可见，父fragment上一次不可见时手动遍历分发每个fragment停止一切操作/加载数据事件<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 判断父fragment是否可见 </span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isParentInvisible</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="comment">// 获取父fragment</span></span><br><span class="line">     Fragment parentFragment = getParentFragment();</span><br><span class="line">     <span class="comment">// 父fragment是懒加载fragment的实例</span></span><br><span class="line">     <span class="keyword">if</span> (parentFragment <span class="keyword">instanceof</span> LazyFragment) &#123;</span><br><span class="line">         LazyFragment fragment = (LazyFragment) parentFragment;</span><br><span class="line">         <span class="comment">// 父fragment不可见</span></span><br><span class="line">         <span class="keyword">return</span> !fragment.isVisibleStateUP;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchUserVisibleHint</span><span class="params">(<span class="keyword">boolean</span> visibleState)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">this</span>.isVisibleStateUP = visibleState;</span><br><span class="line">     <span class="comment">// 当前fragment可见且父fragment不可见，不分发事件</span></span><br><span class="line">     <span class="keyword">if</span> (visibleState &amp;&amp; isParentInvisible()) &#123;</span><br><span class="line">         <span class="keyword">return</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (visibleState) &#123;</span><br><span class="line">         onFragmentLoad();</span><br><span class="line">         <span class="comment">// 分发子fragment可见事件</span></span><br><span class="line">         dispatchChildVisibleState(<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         onFragmentLoadStop();</span><br><span class="line">         <span class="comment">// 分发子fragment不可见事件</span></span><br><span class="line">         dispatchChildVisibleState(<span class="keyword">false</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">dispatchChildVisibleState</span><span class="params">(<span class="keyword">boolean</span> state)</span> </span>&#123;</span><br><span class="line">     FragmentManager fragmentManager = getChildFragmentManager();</span><br><span class="line">     List&lt;Fragment&gt; fragments = fragmentManager.getFragments();</span><br><span class="line">     <span class="keyword">if</span> (fragments != <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="comment">// 遍历子Fragment分发事件</span></span><br><span class="line">         <span class="keyword">for</span> (Fragment fragment: fragments) &#123;</span><br><span class="line">             <span class="comment">// fragment是懒加载实例未被隐藏且可见</span></span><br><span class="line">             <span class="keyword">if</span> (fragment <span class="keyword">instanceof</span> LazyFragment &amp;&amp;</span><br><span class="line">                     !fragment.isHidden() &amp;&amp;</span><br><span class="line">                     fragment.getUserVisibleHint()) &#123;</span><br><span class="line">                 ((LazyFragment5)fragment).dispatchUserVisibleHint(state);</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="AndroidX之后采用新懒加载方案"><a href="#AndroidX之后采用新懒加载方案" class="headerlink" title="AndroidX之后采用新懒加载方案"></a>AndroidX之后采用新懒加载方案</h2>Google在Androidx在FragmentTransaction中增加了setMaxLifecycle方法控制Fragment 调用的最大的生命周期函数。该方法可以设置活跃状态下Fragment最大状态，如果该Fragment 超过了设置的最大状态，会强制将Fragment降级到正确的状态<h3 id="viewPager下设置adapter的behavior"><a href="#viewPager下设置adapter的behavior" class="headerlink" title="viewPager下设置adapter的behavior"></a>viewPager下设置adapter的behavior</h3>BEHAVIOR_SET_USER_VISIBLE_HINT:Fragment对用户可见状态发生改变时，setUserVisibleHint方法会被调用。<br>BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT:当前选中的Fragment在Lifecycle.State#RESUMED状态，其他不可见的 Fragment限制在Lifecycle.State#STARTED状态<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">open class <span class="title">FragmentLazyPagerAdapter</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    fragmentManager: FragmentManager,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">private</span> val fragments: MutableList&lt;Fragment&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">private</span> val titles: MutableList&lt;String&gt;</span></span></span><br><span class="line"><span class="function"><span class="params">)</span> : <span class="title">FragmentPagerAdapter</span><span class="params">(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function">override fun <span class="title">getItem</span><span class="params">(position: Int)</span> </span>= fragments[position]</span><br><span class="line"></span><br><span class="line">    <span class="function">override fun <span class="title">getCount</span><span class="params">()</span> </span>= fragments.size</span><br><span class="line"></span><br><span class="line">    <span class="function">override fun <span class="title">getPageTitle</span><span class="params">(position: Int)</span> </span>= titles[position]</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="封装懒加载fragment"><a href="#封装懒加载fragment" class="headerlink" title="封装懒加载fragment"></a>封装懒加载fragment</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">abstract class LazyFragment : Fragment() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 是否加载过标记</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isLoaded = <span class="keyword">false</span></span><br><span class="line"></span><br><span class="line">    <span class="function">override fun <span class="title">onResume</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onResume()</span><br><span class="line">        <span class="keyword">if</span> (!isLoaded) &#123;</span><br><span class="line">            lazyInit()</span><br><span class="line">            Log.d(TAG, <span class="string">"lazyInit:!!!!!!!"</span>)</span><br><span class="line">            isLoaded = <span class="keyword">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">override fun <span class="title">onDestroyView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroyView()</span><br><span class="line">        isLoaded = <span class="keyword">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> fun <span class="title">lazyInit</span><span class="params">()</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="add-show-hide时设置最大生命周期-未使用viewPager"><a href="#add-show-hide时设置最大生命周期-未使用viewPager" class="headerlink" title="add/show/hide时设置最大生命周期(未使用viewPager)"></a>add/show/hide时设置最大生命周期(未使用viewPager)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化fragment</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> fun <span class="title">loadFragmentsTransaction</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    @IdRes containerViewId: Int,</span></span></span><br><span class="line"><span class="function"><span class="params">    showPosition: Int,</span></span></span><br><span class="line"><span class="function"><span class="params">    fragmentManager: FragmentManager,</span></span></span><br><span class="line"><span class="function"><span class="params">    vararg fragments: Fragment</span></span></span><br><span class="line"><span class="function"><span class="params">)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (fragments.isNotEmpty()) &#123;</span><br><span class="line">        fragmentManager.beginTransaction().apply &#123;</span><br><span class="line">            <span class="keyword">for</span> (index in fragments.indices) &#123;</span><br><span class="line">                val fragment = fragments[index]</span><br><span class="line">                add(containerViewId, fragment, fragment.javaClass.name)</span><br><span class="line">                <span class="keyword">if</span> (showPosition == index) &#123;</span><br><span class="line">                    setMaxLifecycle(fragment, Lifecycle.State.RESUMED)</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    hide(fragment)</span><br><span class="line">                    setMaxLifecycle(fragment, Lifecycle.State.STARTED)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;.commit()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> IllegalStateException(</span><br><span class="line">            <span class="string">"fragments must not empty"</span></span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 展示/隐藏fragment</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> fun <span class="title">showHideFragmentTransaction</span><span class="params">(fragmentManager: FragmentManager, showFragment: Fragment)</span> </span>&#123;</span><br><span class="line">    fragmentManager.beginTransaction().apply &#123;</span><br><span class="line">        show(showFragment)</span><br><span class="line">        setMaxLifecycle(showFragment, Lifecycle.State.RESUMED)</span><br><span class="line"></span><br><span class="line">        <span class="comment">//获取其中所有的fragment,其他的fragment进行隐藏</span></span><br><span class="line">        val fragments = fragmentManager.fragments</span><br><span class="line">        <span class="keyword">for</span> (fragment in fragments) &#123;</span><br><span class="line">            <span class="keyword">if</span> (fragment != showFragment) &#123;</span><br><span class="line">                hide(fragment)</span><br><span class="line">                setMaxLifecycle(fragment, Lifecycle.State.STARTED)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;.commit()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Fragment嵌套下的问题"><a href="#Fragment嵌套下的问题" class="headerlink" title="Fragment嵌套下的问题"></a>Fragment嵌套下的问题</h3>第一次初始化时，同级不可见的Fragment仍然要调生命周期方法，需增加Fragment是否可见的判断<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">abstract class LazyFragment : Fragment() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isLoaded = <span class="keyword">false</span></span><br><span class="line"></span><br><span class="line">    <span class="function">override fun <span class="title">onResume</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onResume()</span><br><span class="line">        <span class="comment">//增加Fragment是否可见的判断</span></span><br><span class="line">        <span class="keyword">if</span> (!isLoaded &amp;&amp; !isHidden) &#123;</span><br><span class="line">            lazyInit()</span><br><span class="line">            Log.d(TAG, <span class="string">"lazyInit:!!!!!!!"</span>)</span><br><span class="line">            isLoaded = <span class="keyword">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">override fun <span class="title">onDestroyView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroyView()</span><br><span class="line">        isLoaded = <span class="keyword">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> fun <span class="title">lazyInit</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="ViewPager2懒加载"><a href="#ViewPager2懒加载" class="headerlink" title="ViewPager2懒加载"></a>ViewPager2懒加载</h2>最新的ViewPager2默认就实现了懒加载，可以说不用任何处理</li>
+</ol>
+<p>但是ViewPager2中的RecyclerView可以缓存Fragment的数量是有限的，会造成Fragment的多次销毁和创建，也可通过setOffscreenPageLimit()方法设置预加载数量，再用AndroidX下的懒加载fragment方式去处理</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/optimization/" rel="tag"># optimization</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/09/30/DexEncryption/" rel="next" title="APK加固技术初探">
+                  <i class="fa fa-chevron-left"></i> APK加固技术初探
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/11/29/BlockCanaryAndLeakCanary/" rel="prev" title="手写LeakCanary&&BlockCanary&&AnrWatchDog">
+                  手写LeakCanary&&BlockCanary&&AnrWatchDog <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AndroidX之前采用旧懒加载方案"><span class="nav-number">1.</span> <span class="nav-text">AndroidX之前采用旧懒加载方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AndroidX之后采用新懒加载方案"><span class="nav-number">2.</span> <span class="nav-text">AndroidX之后采用新懒加载方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#viewPager下设置adapter的behavior"><span class="nav-number">2.1.</span> <span class="nav-text">viewPager下设置adapter的behavior</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装懒加载fragment"><span class="nav-number">2.2.</span> <span class="nav-text">封装懒加载fragment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#add-show-hide时设置最大生命周期-未使用viewPager"><span class="nav-number">2.3.</span> <span class="nav-text">add/show/hide时设置最大生命周期(未使用viewPager)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fragment嵌套下的问题"><span class="nav-number">2.4.</span> <span class="nav-text">Fragment嵌套下的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewPager2懒加载"><span class="nav-number">3.</span> <span class="nav-text">ViewPager2懒加载</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: 'e2115152d60438dfbd21676da36ab01d',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>
