@@ -235,6 +235,215 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/21/Presentation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2018/10/21/Presentation/" class="post-title-link" itemprop="url">Presentation实现双屏异显</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2018-10-21 21:06:44 / Modified: 22:22:08" itemprop="dateCreated datePublished" datetime="2018-10-21T21:06:44+08:00">2018-10-21</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>由于公司的项目需求，需要在一台搭载Android系统的显示设备的两块屏幕上显示不同的内容，该设备拥有一块主屏和一块辅屏，这里就需要使用双屏异显的技术，以前没有接触过这一块的知识，经过一段时间的熟悉后顺利实现双屏异显，其实Android实现双屏异显并不难而且Google提供了现成的API，用Presentation这个类去实现，只不过没接触过的时候觉得挺高大上的，在此做一个简单的记录。</p>
+<hr>
+<p>Presentation是一个特殊的dialog，可以在辅屏上显示与主屏不一样的内容，设置里面也可以把“模拟第二屏”的功能打开，运行的时候会在左上角显示一个小窗口来显示第二屏的显示内容，Presentation在创建的时候需要和Display对象相关联，关联之前需要先获取显示设备，DisplayManager或MediaRouter都可以来获取显示设备。下面用最简单的两个例子来介绍，在主屏和辅屏上都显示一个不同内容的TextView文本。</p>
+<h1 id="设置权限"><a href="#设置权限" class="headerlink" title="设置权限"></a>设置权限</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_ALERT_WINDOW"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.SYSTEM_OVERLAY_WINDOW"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="DisplayManager实现"><a href="#DisplayManager实现" class="headerlink" title="DisplayManager实现"></a>DisplayManager实现</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPresentation</span> <span class="keyword">extends</span> <span class="title">Presentation</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="title">MyPresentation</span><span class="params">(Context outerContext, Display display)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">super</span>(outerContext,display);</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">       <span class="meta">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">           setContentView(R.layout.second_screen);</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MyPresentation myPresentation;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        DisplayManager manager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);</span><br><span class="line">        Display[] displays = manager.getDisplays();</span><br><span class="line">        <span class="keyword">if</span> (presentationDisplays.length &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">// displays[0] 主屏 displays[1] 辅屏</span></span><br><span class="line">            myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>,displays[<span class="number">1</span>]);</span><br><span class="line">            myPresentation.getWindow().setType(</span><br><span class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</span><br><span class="line">            myPresentation.show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        onDestroy();</span><br><span class="line">        <span class="comment">//完全退出应用，取消双屏异显</span></span><br><span class="line">        Intent startMain = <span class="keyword">new</span> Intent(Intent.ACTION_MAIN);</span><br><span class="line">        startMain.addCategory(Intent.CATEGORY_HOME);</span><br><span class="line">        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">        startActivity(startMain);</span><br><span class="line">        System.exit(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这里的activity_main和second_screen就是一个xml布局，放了一个不同内容的TextView文本，代码就不贴了，可以看到DisplayManager的getDisplays方法可以返回一个可显示的Display数组，也就是当前可以连接的屏幕列表，第一个元素是主屏的Display对象，第二个元素是辅屏的Display对象，然后把辅屏的Display对象传入到Presentation的构造函数中绑定，设置窗口类型就可以展示了。</p>
+<h1 id="MediaRouter实现"><a href="#MediaRouter实现" class="headerlink" title="MediaRouter实现"></a>MediaRouter实现</h1><p>这里就只贴辅屏的Display对象获取并传入到Presentation的构造函数中绑定的代码，因为其余部分都是一样的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">MediaRouter mediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);</span><br><span class="line">MediaRouter.RouteInfo route = mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);</span><br><span class="line"><span class="keyword">if</span>(route != <span class="keyword">null</span>) &#123;</span><br><span class="line">    Display display = route.getPresentationDisplay();</span><br><span class="line">    <span class="keyword">if</span> (display != <span class="keyword">null</span>) &#123;</span><br><span class="line">        myPresentation = <span class="keyword">new</span> MyPresentation(<span class="keyword">this</span>, display);</span><br><span class="line">        myPresentation.getWindow().setType(</span><br><span class="line">                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);</span><br><span class="line">        myPresentation.show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>MediaRouter与DisplayManager不同的是MediaRouter会直接绑定周围最合适的设备。总的来说，这两个API实现的思路大致相同，都是要自定义Presentation，获取到一个辅屏的Display对象传入到Presentation的构造函数中进行绑定，Presentation初始化完成后设置窗口类型然后展示。</p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+    
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/25/PuppeteerStart/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2018/08/25/PuppeteerStart/" class="post-title-link" itemprop="url">nodejs爬虫-puppeteer入门</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2018-08-25 14:33:58" itemprop="dateCreated datePublished" datetime="2018-08-25T14:33:58+08:00">2018-08-25</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-11-02 23:58:24" itemprop="dateModified" datetime="2018-11-02T23:58:24+08:00">2018-11-02</time>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>又是很久没有写博客了，最近忙着一个开源项目，做一个免费漫画app，抓取网易和腾讯漫画的web数据，用nodejs+koa+mongoose+socket.io搭建这个app的后端服务，客户端用react-native编写，同时适配ios和Android。本人是做Android开发的，想借此机会打开全栈技术的大门，给自己的技术栈增加一些广度。对于一个app开发者来说，app的数据源总是一个很头疼的问题，虽然现在免费的api接口有很多，但是类型就那么几种，想做一些感兴趣的app但是苦于找不到数据源。之前学react-native的时候也做过一个开源项目高仿韩寒的one一个<a href="https://github.com/jessieeeee/SimpleOne" target="_blank" rel="noopener">SimpleOne传送门</a>，这个app的数据全是通过抓包工具抓取官方app的接口地址（用charles或fidder即可），分析数据获得，由于数据没有做加密，所以没有花太多的成本。但是毕竟是别人的接口，出现问题不是自己可控的。后来了解到google的一个web自动化测试框架puppeteer，解析html抓取dom节点，这下就可以通过服务端访问web，抓取数据，提供接口将抓取到的数据返回给客户端，做自己感兴趣的应用了。而且自己本来对服务端的技术也感兴趣，索性借此机会学下nodejs相关的服务端技术。下面就对puppeteer这个自动化框架爬虫做一个入门总结，接触不久，如有不对的地方欢迎指正。</p>
+<hr>
+<h1 id="puppeteer框架背景"><a href="#puppeteer框架背景" class="headerlink" title="puppeteer框架背景"></a>puppeteer框架背景</h1><p>puppeteer是 Google Chrome 团队官方的无界面（Headless）Chrome 工具，它是一个 Node 库， web 应用自动化测试框架，提供了一些高级的 API 来控制Chrome浏览器。你也可以在开发过程中开启浏览器，实时查看运行过程方便调试。那它可以做写什么呢？</p>
+<ul>
+<li>生成页面的截图和PDF。</li>
+<li>抓取SPA并生成预先呈现的内容（即“SSR”）。</li>
+<li>从网站抓取你需要的内容。</li>
+<li>自动表单提交，UI测试，键盘输入等</li>
+<li>创建一个最新的自动化测试环境。使用最新的JavaScript和浏览器功能，直接在最新版本的Chrome中运行测试。</li>
+<li>捕获您的网站的时间线跟踪，以帮助诊断性能问题。</li>
+</ul>
+<h1 id="为什么要选择puppeteer？"><a href="#为什么要选择puppeteer？" class="headerlink" title="为什么要选择puppeteer？"></a>为什么要选择puppeteer？</h1><p>nodejs的爬虫框架有很多，要根据具体的业务进行选择，比如说cheerio一类的静态网页爬虫框架就只能爬取服务端渲染的网页，不能爬取JavaScript运行后的数据，但很多时候我们需要爬取的是动态网页，而puppeteer可以完整的模拟浏览器获取网页，访问dom，且框架的运行效率也很不错，<br>支持调用Chrome的API来操纵Web，相比较Selenium或是PhantomJs，它最大的特点就是它的操作Dom可以完全在内存中进行模拟既在V8引擎中处理而不打开浏览器，是Chrome团队在维护，拥有更好的兼容性和前景。</p>
+<h1 id="puppeteer如何使用？"><a href="#puppeteer如何使用？" class="headerlink" title="puppeteer如何使用？"></a>puppeteer如何使用？</h1><h2 id="安装puppeteer"><a href="#安装puppeteer" class="headerlink" title="安装puppeteer"></a>安装puppeteer</h2><p>这里有个安装的坑，别看puppeteer的安装只有<code>npm i puppeteer</code>这么一条简单的命令，但是在国内安装起来也不是这么容易的，因为它默认会去下载Chromium作为抓取数据的客户端，国内基本下载不下来，安装会失败。即使我开着ss，仍然失败了，Orz….比如说像下面这样报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ERROR: Failed to download Chromium r515411! Set &quot;PUPPETEER_SKIP_CHROMIUM_DOWNLOA</span><br><span class="line">D&quot; env variable to skip download.</span><br></pre></td></tr></table></figure>
+<p>我发现从最新的1.7的版本开始分离出一个轻量版的puppeteer核心库，默认不去下载Chromium。<br>当然网上也有很多教程说先忽略跳过，再去手动下载Chromium，后面可能还有一些坑要跳，个人感觉比较麻烦，这里有一个方便快捷的办法。无意中发现一个库<a href="https://github.com/valleykid/puppeteer-cn" target="_blank" rel="noopener">puppeteer-cn传送门</a>，和puppeteer完全一样，你完全可以用puppeteer-cn代替之。这个包会先去检测本地Chrome版本是否大于59，再决定是否通过一个国内源下载Chromium。这个库下载速度很快，直接就安装好了Chromium。</p>
+<h2 id="使用puppeteer"><a href="#使用puppeteer" class="headerlink" title="使用puppeteer"></a>使用puppeteer</h2><p>这个无非是一些常规的API调用，可以查阅<a href="https://github.com/GoogleChrome/puppeteer/blob/v1.7.0/docs/api.md" target="_blank" rel="noopener">官方的文档</a>来实现一些自己想要的功能，这里给出一个快速上手的小例子。由于我的app是抓取免费漫画，下面就给出抓取网易免费漫画的例子</p>
+<ol>
+<li>引入puppeteer工具类<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> puppeteer = <span class="built_in">require</span>(<span class="string">'puppeteer-cn'</span>)　<span class="comment">//抓取工具类</span></span><br></pre></td></tr></table></figure></li>
+<li>设置模拟的pc设备<br>设置浏览器的尺寸和userAgent<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 模拟pc设备mac</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> viewPort = &#123;</span><br><span class="line">    width: <span class="number">1920</span>,</span><br><span class="line">    height: <span class="number">1080</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> userAgent = <span class="string">'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'</span></span><br><span class="line"><span class="keyword">await</span> page.setViewport(viewPort);</span><br><span class="line"><span class="keyword">await</span> page.setUserAgent(userAgent);</span><br></pre></td></tr></table></figure></li>
+<li>初始化请求客户端<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 启动了一个Chrome实例</span></span><br><span class="line"><span class="keyword">let</span> browser = <span class="keyword">await</span> puppeteer.launch(&#123; <span class="attr">headless</span>: <span class="literal">true</span> &#125;)</span><br><span class="line"><span class="comment">// 浏览器中创建一个新的页面</span></span><br><span class="line"><span class="keyword">await</span> browser.newPage()</span><br></pre></td></tr></table></figure>
+headless 设置为true，则不展示Chromium的访问界面，在开发过程中，为了方便调试，最好设置成false，可以实时查看运行过程。</li>
+<li>跳转到目标网站<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> url = <span class="string">'https://manhua.163.com/category?sort=2&amp;sf=1'</span></span><br><span class="line"><span class="comment">// 跳转到目标网站</span></span><br><span class="line"><span class="keyword">await</span> page.goto(url)</span><br><span class="line"><span class="comment">// 等待时长</span></span><br><span class="line"><span class="keyword">await</span> page.waitFor(<span class="number">200</span>)</span><br></pre></td></tr></table></figure>
+这个地址正好是网易漫画的官方地址在漫画列表中过滤出免费漫画</li>
+<li>抓取数据，并返回</li>
+</ol>
+<ul>
+<li>首先分析抓取到的页面数据，找出目标dom节点，<br>可以在调试的Chromium中或者在自己打开一个chrome浏览器中按下查看网页代码。<br>调出审查元素界面<br>Mac：command+option+I<br>windows/linux：ctrl+shift+I<br><img src="/images/PuppeteerStart.png" alt="图"><br>从网页代码中，我们可以找出目标数据和相关的dom节点。带有<code>comic-item</code>类选择器的div就是漫画列表的每一个数据项，其中子节点<code>cover</code>类选择器div就是数据项的图片信息部分，里面的子元素img标签的src属性就是漫画封面的图片地址。而<code>comic-info</code>类选择器的div就是数据项的文字信息部分，里面的子元素<code>.title</code>类选择器的div中包含的文字就是标题，<code>span</code>标签中包含的文字就是当前章节，<code>.muted</code>类选择器div中的文字就是点击量，漫画的跳转链接在<code>a</code>标签中的<code>href</code>属性中，得到完整的地址需要做一个拼接。<br>puppeteer是通过seletor选择器去获取元素的，了解一部分前端知识的人来说并不陌生，也没什么难度。分析完了以后，我们就可以从目标dom中提取到想要返回的数据。<br>所以最后的抓取代码如下:<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> targetUrl = <span class="string">'https://manhua.163.com'</span></span><br><span class="line"><span class="keyword">return</span> <span class="keyword">await</span> page.evaluate(<span class="function">(<span class="params">targetUrl</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> data = []</span><br><span class="line">    <span class="keyword">let</span> elements = <span class="built_in">document</span>.querySelectorAll(<span class="string">'.comic-item'</span>) <span class="comment">// 获取所有漫画元素</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> element <span class="keyword">of</span> elements) &#123; <span class="comment">// 循环</span></span><br><span class="line">        <span class="keyword">let</span> title = element.querySelector(<span class="string">'.comic-info .title'</span>).innerText <span class="comment">// 获取标题</span></span><br><span class="line">        <span class="keyword">let</span> chapter = element.querySelector(<span class="string">'.comic-info span'</span>).innerText　<span class="comment">// 获取章节</span></span><br><span class="line">        <span class="keyword">let</span> clickNum = element.querySelector(<span class="string">'.comic-info div.muted'</span>).innerText <span class="comment">//　获取点击量</span></span><br><span class="line">        <span class="keyword">let</span> link = element.querySelector(<span class="string">'.comic-info a'</span>).getAttribute(<span class="string">'href'</span>)</span><br><span class="line">        link = targetUrl + link</span><br><span class="line">        <span class="keyword">let</span> cover = element.querySelector(<span class="string">'.cover img'</span>).getAttribute(<span class="string">'src'</span>)</span><br><span class="line">        <span class="comment">// let id = link.replace('https://manhua.163.com/source/','')</span></span><br><span class="line">        <span class="keyword">let</span> id = link.substring(link.lastIndexOf(<span class="string">'/'</span>)+<span class="number">1</span>,link.length)</span><br><span class="line">        data.push(&#123; id, title, chapter, clickNum, link, cover &#125;) <span class="comment">// 存入数组</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line">&#125;, targetUrl)</span><br></pre></td></tr></table></figure>
+通过seletor选择器去获取元素，有两种方法可以获取目标节点，一个是通过page.evaluate这个api获取到html内容后，在回调函数中调用dom节点选择器相关api获取，这个回调函数无法打印log，无法内部断点，也无法直接访问外部的变量，需要通过api最后一个参数进行传参访问，最后返回一个操作结果。另一个方法就是通过puppeteer的选择器相关api直接获取。<br>比如说这样：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取匹配选择器'div.portrait-player .img-box'下的所有节点</span></span><br><span class="line"><span class="keyword">let</span> imgs = <span class="keyword">await</span> page.$$(<span class="string">'div.portrait-player .img-box'</span>)</span><br><span class="line"><span class="comment">// 获取匹配选择器'div.portrait-player .img-box'下的第一个节点</span></span><br><span class="line"><span class="keyword">let</span> img = <span class="keyword">await</span> page.$$(<span class="string">'div.portrait-player .img-box'</span>)</span><br><span class="line"><span class="comment">// 获取匹配选择器'div.portrait-player .img-box'下的所有节点并返回数量</span></span><br><span class="line"><span class="keyword">let</span> imagesLen = <span class="keyword">await</span> page.$$<span class="built_in">eval</span>(<span class="string">'div.portrait-player .img-box'</span>, imgs =&gt; imgs.length)</span><br><span class="line"><span class="comment">// 获取匹配选择器'div.portrait-player .img-box'下的第一个节点并返回节点的style属性中的高度值并去掉'px'单位字符串</span></span><br><span class="line"><span class="keyword">let</span> imgHeight =<span class="keyword">await</span> page.$<span class="built_in">eval</span>(<span class="string">'div.portrait-player .img-box'</span>, img =&gt; img.style.height.replace(<span class="string">'px'</span>,<span class="string">''</span>))</span><br></pre></td></tr></table></figure>
+<code>page.$$</code> 抓取该选择器匹配的所有节点，对应dom获取节点querySelectorAll这个api，如果没有匹配的返回null<br><code>page.$</code> 抓取该选择器匹配的第一个节点并返回给回调函数，对应dom获取节点querySelector这个api，如果没有匹配的返回null，<br><code>page.$$eval</code> 比起<code>page.$$</code>多了一个回调函数进行抓取后的操作，抓取该选择器匹配的所有节点并返回给回调函数，在回调函数中进行数据转换操作后再返回函数结果，如果没有匹配的是抛出一个异常<br><code>page.$eval</code> 比起<code>page.$</code>多了一个回调函数进行抓取后的操作，抓取该选择器匹配的第一个节点并返回给回调函数，在回调函数中进行数据转换操作后再返回函数结果，如果没有匹配的是抛出一个异常</li>
+</ul>
+<p>当然，puppeteer提供的api操作远不止这些，这只是一个快速上手的小例子，更多有趣的玩法，可以参考官方的文档，这里就不一一列举了。</p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+    
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/RN-CallNative-Android/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1394,292 +1603,6 @@ ubuntu自带开机启动项设置工具 startupapplications点击add添加<br>na
   
 
     
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/12/Java8-NewFeatures/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            
-            <a href="/2017/11/12/Java8-NewFeatures/" class="post-title-link" itemprop="url">java8新特性学习</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2017-11-12 21:51:24" itemprop="dateCreated datePublished" datetime="2017-11-12T21:51:24+08:00">2017-11-12</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2018-08-28 19:01:18" itemprop="dateModified" datetime="2018-08-28T19:01:18+08:00">2018-08-28</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>java9已经发布一段时间了，AndroidStudio才开始支持Java 8，Java 8是Java的一个重大版本，虽然这些新特性令Java开发人员十分期待，但同时也需要花不少精力去学习，对于android开发者而言了解Java8的新特性是必要的，虽然现在Google力推kotlin，但是Java仍然是排名第一的使用最广泛的语言，社区依旧很活跃，也是处于不断进步和发展中，而且在新特性中我们能看到一些kotlin的影子。</p>
-<h1 id="lambda表达式的支持"><a href="#lambda表达式的支持" class="headerlink" title="lambda表达式的支持"></a>lambda表达式的支持</h1><p>格式为：(入参) -&gt; {函数体}</p>
-<h2 id="基本形式："><a href="#基本形式：" class="headerlink" title="基本形式："></a>基本形式：</h2><p>入参和返回值的类型可被编译器推测，入参一个参数不需要括号，无参直接写为<code>（）</code>，函数体多行可加上括号</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; a + b;</span><br><span class="line">(a, b) -&gt; a - b;</span><br><span class="line">(<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; &#123; <span class="keyword">return</span> a * b; &#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="用法："><a href="#用法：" class="headerlink" title="用法："></a>用法：</h2><h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>以前的写法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (String player : players) &#123;  </span><br><span class="line">     System.out.print(player + <span class="string">"; "</span>);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>lambda写法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">players.forEach((player) -&gt; System.out.print(player + <span class="string">"; "</span>));</span><br></pre></td></tr></table></figure>
-<h3 id="ui回调"><a href="#ui回调" class="headerlink" title="ui回调"></a>ui回调</h3><p>以前的写法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">check_all.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">           <span class="meta">@Override</span></span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">               </span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br></pre></td></tr></table></figure>
-<p>lambda写法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">check_all.setOnClickListener(v-&gt;&#123;&#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h3><p>以前的写法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        System.out.println(<span class="string">"Hello world !"</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
-<p>lambda写法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Thread(() -&gt; System.out.println(<span class="string">"Hello world !"</span>)).start();</span><br></pre></td></tr></table></figure>
-<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><p>以前的写法:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Arrays.sort(players, <span class="keyword">new</span> Comparator&lt;String&gt;() &#123;  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(String s1, String s2)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> (s1.length() - s2.length());  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>lambda写法:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.length() - s2.length()));</span><br></pre></td></tr></table></figure>
-<h3 id="结合Stream"><a href="#结合Stream" class="headerlink" title="结合Stream"></a>结合Stream</h3><p>Stream是对集合的包装，通常和lambda一起使用。 使用lambdas可以支持许多操作,如 map, filter, limit, sorted, count, min, max, sum, collect 等等。<br>定义一个类，医生</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Doctor</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String degree;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> salary;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Doctor</span><span class="params">(String name, <span class="keyword">int</span> age, String degree, <span class="keyword">int</span> salary)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">        <span class="keyword">this</span>.degree = degree;</span><br><span class="line">        <span class="keyword">this</span>.salary = salary;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDegree</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> degree;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDegree</span><span class="params">(String degree)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.degree = degree;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSalary</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> salary;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSalary</span><span class="params">(<span class="keyword">int</span> salary)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.salary = salary;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>先初始化医生列表，foreach循环输出</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Doctor&gt; doctors =<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"joe"</span>,<span class="number">20</span>,<span class="string">"bachelor"</span>,<span class="number">2000</span>));</span><br><span class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"jack"</span>,<span class="number">23</span>,<span class="string">"bachelor"</span>,<span class="number">2300</span>));</span><br><span class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"kris"</span>,<span class="number">27</span>,<span class="string">"Master"</span>,<span class="number">4200</span>));</span><br><span class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"bob"</span>,<span class="number">28</span>,<span class="string">"doctor"</span>,<span class="number">5000</span>));</span><br><span class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"tom"</span>,<span class="number">26</span>,<span class="string">"Master"</span>,<span class="number">4400</span>));</span><br><span class="line"> doctors.add(<span class="keyword">new</span> Doctor(<span class="string">"jay"</span>,<span class="number">29</span>,<span class="string">"doctor"</span>,<span class="number">5500</span>));</span><br><span class="line"></span><br><span class="line"> doctors.forEach(</span><br><span class="line">         (doctor)-&gt;&#123;</span><br><span class="line">             System.out.println(doctor.getName());</span><br><span class="line"></span><br><span class="line">         &#125;</span><br><span class="line">         );</span><br></pre></td></tr></table></figure>
-<p>过滤器filter()，过滤出年龄大于25岁且学历为博士的医生</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">doctors.stream().filter( doctor -&gt; doctor.getAge()&gt;<span class="number">25</span>)</span><br><span class="line">                .filter(doctor -&gt; <span class="string">"doctor"</span>.equals(doctor.getDegree()))</span><br><span class="line">                .forEach(doctor -&gt; System.out.println(doctor.getName()));</span><br></pre></td></tr></table></figure>
-<p>limit方法，限制结果个数，年龄大于25的前三个医生</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">doctors.stream().filter( doctor -&gt; doctor.getAge()&gt;<span class="number">25</span>)</span><br><span class="line">              .limit(<span class="number">3</span>)</span><br><span class="line">              .forEach(doctor -&gt; System.out.println(doctor.getName()));</span><br></pre></td></tr></table></figure>
-<p>sorted方法，按薪水由多到少排序</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">doctors.stream().sorted((d1,d2)-&gt;d2.getSalary()-d1.getSalary())</span><br><span class="line">        .forEach(</span><br><span class="line">                (doctor)-&gt;&#123;</span><br><span class="line">                    System.out.println(doctor.getName());</span><br><span class="line">                &#125;</span><br><span class="line">        );</span><br></pre></td></tr></table></figure>
-<p>min和max方法，找出最低和最高的薪水</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Doctor doctor1=doctors.stream().min((d1,d2)-&gt;d1.getSalary()-d2.getSalary()).get();</span><br><span class="line">System.out.print(doctor1.getName());</span><br><span class="line"></span><br><span class="line">Doctor doctor2=doctors.stream().min((d1,d2)-&gt;d1.getSalary()-d2.getSalary()).get();</span><br><span class="line">System.out.print(doctor2.getName());</span><br></pre></td></tr></table></figure>
-
-<p>结合 map 方法,使用 collect 方法来将我们的结果集放到一个字符串,一个 Set 中<br>将所有医生的名字拼接在一个string中，用逗号隔开</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String names=doctors.stream().map(Doctor::getName).collect(joining(<span class="string">","</span>));</span><br><span class="line">System.out.print(names);</span><br></pre></td></tr></table></figure>
-<p>将所有医生的名字存放到一个set中</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Set&lt;String&gt; doctorSet=doctors.stream().map(Doctor::getName).collect(Collectors.toSet());</span><br><span class="line">octorSet.forEach((name)-&gt;System.out.println(name));</span><br></pre></td></tr></table></figure>
-<p>summaryStatistics方法获得stream中元素的汇总数据，求和，平均值，最大最小值，个数</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">IntSummaryStatistics statistics=doctors.stream()</span><br><span class="line">                .mapToInt(doctor-&gt;doctor.getSalary())</span><br><span class="line">                .summaryStatistics();</span><br><span class="line">System.out.println(statistics.getSum());</span><br><span class="line">System.out.println(statistics.getAverage());</span><br><span class="line">System.out.println(statistics.getMax());</span><br><span class="line">System.out.println(statistics.getMin());</span><br><span class="line">System.out.println(statistics.getCount());</span><br></pre></td></tr></table></figure>
-<h1 id="接口的默认方法和静态方法"><a href="#接口的默认方法和静态方法" class="headerlink" title="接口的默认方法和静态方法"></a>接口的默认方法和静态方法</h1><p>默认方法和抽象方法之间的区别在于抽象方法需要实现，而默认方法不需要。接口提供的默认方法可以被接口的实现类继承或者覆写。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> String <span class="title">defaultMethod</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"this is default method"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> <span class="keyword">implements</span> <span class="title">MyInterface</span></span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在接口中可以定义静态方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span></span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">default</span> String <span class="title">defaultMethod</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"this is default method"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">static</span> String <span class="title">staticMethod</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"this is static method"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="方法的引用方式"><a href="#方法的引用方式" class="headerlink" title="方法的引用方式"></a>方法的引用方式</h1><p>初始化数组</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Function&lt;Integer, String[]&gt; fun = x -&gt; <span class="keyword">new</span> String[x];</span><br><span class="line">String[] strs = fun.apply(<span class="number">10</span>);</span><br><span class="line">System.out.println(strs.length);</span><br><span class="line">Function&lt;Integer,String[]&gt; fun1 = String[]::<span class="keyword">new</span>;</span><br><span class="line">strs = fun1.apply(<span class="number">20</span>);</span><br><span class="line">System.out.println(strs.length);</span><br></pre></td></tr></table></figure>
-<p>构造方法的引用 Class::new只针对无参构造，若该类只有有参构造，需要添加一个无参构造方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Supplier&lt;Student&gt; supplier=Student::<span class="keyword">new</span>;</span><br><span class="line">Student student=supplier.get();</span><br><span class="line">student.setName(<span class="string">"小明"</span>);</span><br><span class="line">System.out.println(student.getName());</span><br></pre></td></tr></table></figure>
-<p>有参构造调用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Supplier&lt;Student&gt; supplier=()-&gt;<span class="keyword">new</span> Student(<span class="string">"小张"</span>,<span class="string">"man"</span>,<span class="number">12</span>);</span><br><span class="line">Student student=supplier.get();</span><br><span class="line">System.out.println(student.getName());</span><br></pre></td></tr></table></figure>
-<p>静态方法调用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Supplier&lt;String&gt; supplier=Student::saying;</span><br><span class="line">System.out.println(supplier.get());</span><br></pre></td></tr></table></figure>
-<p>成员方法调用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Supplier&lt;Student&gt; supplier=Student::<span class="keyword">new</span>;</span><br><span class="line">Student student=supplier.get();</span><br><span class="line">Consumer&lt;String&gt; consumer1=student::setName;</span><br><span class="line">consumer1.accept(<span class="string">"小明"</span>);</span><br><span class="line">Consumer&lt;Integer&gt; consumer2=student::setAge;</span><br><span class="line">consumer2.accept(<span class="number">18</span>);</span><br><span class="line">System.out.println(student.getName()+<span class="string">":"</span>+student.getAge());</span><br></pre></td></tr></table></figure>
-<h1 id="注解的变化"><a href="#注解的变化" class="headerlink" title="注解的变化"></a>注解的变化</h1><h2 id="支持重复注解"><a href="#支持重复注解" class="headerlink" title="支持重复注解"></a>支持重复注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Filter</span>( <span class="string">"filter1"</span> )</span><br><span class="line"><span class="meta">@Filter</span>( <span class="string">"filter2"</span> )</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Filterable</span> </span>&#123;        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>调用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Filterable.class.getAnnoation(Filters.class)</span><br></pre></td></tr></table></figure>
-<p>控制台输出：<br>filter1<br>filter2</p>
-<h2 id="注解使用范围扩大"><a href="#注解使用范围扩大" class="headerlink" title="注解使用范围扩大"></a>注解使用范围扩大</h2><p>java8可以使用在任何元素上：局部变量、方法、接口、类和泛型，甚至可以用在函数的异常定义上。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>( RetentionPolicy.RUNTIME )</span><br><span class="line"><span class="meta">@Target</span>( &#123; ElementType.TYPE_USE, ElementType.TYPE_PARAMETER &#125; )</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> NonEmpty &#123;        </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Holder</span>&lt; @<span class="title">NonEmpty</span> <span class="title">T</span> &gt; <span class="keyword">extends</span> @<span class="title">NonEmpty</span> <span class="title">Object</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> <span class="keyword">throws</span> @NonEmpty Exception </span>&#123;            </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SuppressWarnings</span>( <span class="string">"unused"</span> )</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Holder&lt; String &gt; holder = <span class="keyword">new</span> <span class="meta">@NonEmpty</span> Holder&lt; String &gt;();        </span><br><span class="line">    <span class="meta">@NonEmpty</span> Collection&lt; <span class="meta">@NonEmpty</span> String &gt; strings = <span class="keyword">new</span> ArrayList&lt;&gt;();        </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="Map新增方法"><a href="#Map新增方法" class="headerlink" title="Map新增方法"></a>Map新增方法</h1><p>初始化一个map</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Integer, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">map.put(<span class="number">1</span>, <span class="string">"Tom"</span>);</span><br><span class="line">map.put(<span class="number">2</span>, <span class="string">"Bob"</span>);</span><br><span class="line">map.put(<span class="number">3</span>, <span class="string">"Jack"</span>);</span><br></pre></td></tr></table></figure>
-<h2 id="forEach-遍历"><a href="#forEach-遍历" class="headerlink" title="forEach 遍历"></a>forEach 遍历</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map.forEach((key,value)-&gt;System.out.println(key+<span class="string">":"</span>+value));</span><br></pre></td></tr></table></figure>
-<h2 id="getOrDefault"><a href="#getOrDefault" class="headerlink" title="getOrDefault"></a>getOrDefault</h2><p>如果指定的key存在，则返回该key对应的value，如果不存在，则返回指定的值。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(map.getOrDefault(<span class="number">4</span>, <span class="string">"name"</span>));</span><br></pre></td></tr></table></figure>
-<h2 id="replaceAll修改所有的value值"><a href="#replaceAll修改所有的value值" class="headerlink" title="replaceAll修改所有的value值"></a>replaceAll修改所有的value值</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//所有value前面加上一个编号</span></span><br><span class="line">map.replaceAll((key,value)-&gt;<span class="string">"20000"</span>+key+value);</span><br><span class="line">map.forEach((key,value)-&gt;System.out.println(key+<span class="string">":"</span>+value));</span><br></pre></td></tr></table></figure>
-<h2 id="putIfAbsent返回key对应的value，如果value为空则填入一个值"><a href="#putIfAbsent返回key对应的value，如果value为空则填入一个值" class="headerlink" title="putIfAbsent返回key对应的value，如果value为空则填入一个值"></a>putIfAbsent返回key对应的value，如果value为空则填入一个值</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">map.putIfAbsent(<span class="number">3</span>, <span class="string">"xiaoming"</span>);</span><br><span class="line">map.putIfAbsent(<span class="number">4</span>, <span class="string">"xiaoming"</span>);</span><br><span class="line"><span class="comment">//Jack</span></span><br><span class="line">System.out.println(map.get(<span class="number">3</span>));</span><br><span class="line"><span class="comment">//xiaoming</span></span><br><span class="line">System.out.println(map.get(<span class="number">4</span>));</span><br></pre></td></tr></table></figure>
-<h2 id="remove指定元素删除"><a href="#remove指定元素删除" class="headerlink" title="remove指定元素删除"></a>remove指定元素删除</h2><p>如果key获取的value值与给的value值相等，则删除这个元素</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">map.remove(<span class="number">1</span>, <span class="string">"Bob"</span>);</span><br><span class="line"><span class="comment">// 未删除成功， 输出 Tom</span></span><br><span class="line">System.out.println(map.get(<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">map.remove(<span class="number">2</span>, <span class="string">"Bob"</span>);</span><br><span class="line"><span class="comment">// 删除成功，输出 null</span></span><br><span class="line">System.out.println(map.get(<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
-<h2 id="replace替换"><a href="#replace替换" class="headerlink" title="replace替换"></a>replace替换</h2><p>如果key获取的value值与给的value值相等，则把这个value替换成一个新的value</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">map.replace(<span class="number">3</span>, <span class="string">"Tom"</span>, <span class="string">"Joe"</span>);</span><br><span class="line"><span class="comment">// 未替换成功，输出 Jack</span></span><br><span class="line">System.out.println(map.get(<span class="number">3</span>));</span><br><span class="line">map.replace(<span class="number">1</span>, <span class="string">"Tom"</span>, <span class="string">"Joe"</span>);</span><br><span class="line"><span class="comment">// 替换成功， 输出 Joe</span></span><br><span class="line">System.out.println(map.get(<span class="number">1</span>));</span><br></pre></td></tr></table></figure>
-<p>如果map中存在key，则替换成value值，替换成功返回旧值，否则返回null</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//输出Tom</span></span><br><span class="line">System.out.println( map.replace(<span class="number">1</span>, <span class="string">"Joe"</span>));</span><br><span class="line"><span class="comment">//输出Joe</span></span><br><span class="line">System.out.println( map.get(<span class="number">1</span>));</span><br><span class="line"><span class="comment">//输出null</span></span><br><span class="line">System.out.println( map.replace(<span class="number">4</span>, <span class="string">"Joe"</span>));</span><br><span class="line"><span class="comment">//输出null</span></span><br><span class="line">System.out.println( map.get(<span class="number">4</span>));</span><br></pre></td></tr></table></figure>
-<h2 id="computeIfAbsent"><a href="#computeIfAbsent" class="headerlink" title="computeIfAbsent"></a>computeIfAbsent</h2><p>如果指定的key不存在，则可通过key计算value为新的值</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">map.computeIfAbsent(<span class="number">1</span>,key-&gt;key+<span class="string">"newName"</span>);</span><br><span class="line"><span class="comment">//输出Tom</span></span><br><span class="line">System.out.println(map.get(<span class="number">1</span>));</span><br><span class="line">map.computeIfAbsent(<span class="number">4</span>,key-&gt;key+<span class="string">"newName"</span>);</span><br><span class="line"><span class="comment">//输出4newName</span></span><br><span class="line">System.out.println(map.get(<span class="number">4</span>));</span><br></pre></td></tr></table></figure>
-
-<h2 id="computeIfPresent"><a href="#computeIfPresent" class="headerlink" title="computeIfPresent"></a>computeIfPresent</h2><p>如果指定的key存在，则根据key和value计算一个新的newValue, 如果这个newValue不为null，则设置key新的值为这个newValue, 如果newValue为null, 则删除该key的值</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">map.computeIfPresent(<span class="number">1</span>, (key, value) -&gt; key + <span class="string">"新的值:"</span> + value);</span><br><span class="line"><span class="comment">// 输出1新的值:Tom</span></span><br><span class="line">System.out.println(map.get(<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">map.computeIfPresent(<span class="number">2</span>, (key, value) -&gt; <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// 输出 null</span></span><br><span class="line">System.out.println(map.get(<span class="number">2</span>));</span><br></pre></td></tr></table></figure>
-<h2 id="compute"><a href="#compute" class="headerlink" title="compute"></a>compute</h2><p>如果指定的key不存在，则设置指定的value值，否则根据key和value计算一个新的newValue, 如果这个newValue不为null，则设置key新的值为这个newValue, 如果newValue为null, 则删除该key的值。<br>这个解释有点长，容易绕，实际上用if-else可以很简单的表达</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!key.exist())&#123;</span><br><span class="line">   map.computeIfAbsent(key,key-&gt;key+<span class="string">"newValue"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">   map.computeIfPresent(key, (key, value) -&gt; key + <span class="string">"新的值:"</span> + value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>所以就是if key不存在，调computeIfAbsent，否则调computeIfPresent</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">map.compute(<span class="number">4</span>,(key,value)-&gt;key+<span class="string">":"</span>+value+<span class="string">"新的值"</span>);</span><br><span class="line"><span class="comment">//输出 4:null新的值</span></span><br><span class="line">System.out.println(map.get(<span class="number">4</span>));</span><br><span class="line">map.compute(<span class="number">1</span>,(key,value)-&gt;key+<span class="string">":"</span>+<span class="string">"新的值"</span>);</span><br><span class="line"><span class="comment">//输出 1:新的值</span></span><br><span class="line">System.out.println(map.get(<span class="number">1</span>));</span><br></pre></td></tr></table></figure>
-
-<h2 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h2><p>如果指定的key不存在，直接设置指定值，如果存在根据旧的value，指定值计算出新的值newValue, 如果这个newValue不为空，设置key的新值newValue，如果newValue为null, 则删除该key。最后返回当前最新的值</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">//输出 指定的名字</span></span><br><span class="line">System.out.println(map.merge(<span class="number">4</span>,<span class="string">"指定的名字"</span>,(oldValue,assignValue)-&gt;oldValue+<span class="string">","</span>+assignValue));</span><br><span class="line"><span class="comment">//输出 Tom,指定的名字</span></span><br><span class="line">System.out.println(map.merge(<span class="number">1</span>,<span class="string">"指定的名字"</span>,(oldValue,assignValue)-&gt;oldValue+<span class="string">","</span>+assignValue));</span><br><span class="line"><span class="comment">//输出 null</span></span><br><span class="line">System.out.println(map.merge(<span class="number">1</span>,<span class="string">"指定的名字"</span>,(oldValue,assignValue)-&gt;<span class="keyword">null</span>));</span><br></pre></td></tr></table></figure>
-<h1 id="空指针判断类Optional"><a href="#空指针判断类Optional" class="headerlink" title="空指针判断类Optional"></a>空指针判断类Optional</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">String str1=<span class="keyword">null</span>;</span><br><span class="line">String str2=<span class="string">"abc"</span>;</span><br><span class="line"><span class="comment">//创建初始化Optional对象，可为空的</span></span><br><span class="line">Optional&lt;String&gt; optionalStr1=Optional.ofNullable(str1);</span><br><span class="line"><span class="comment">//创建初始化Optional对象，不可为空，会抛异常</span></span><br><span class="line">Optional&lt;String&gt; optionalStr2=Optional.of(str2);</span><br><span class="line">System.out.println(<span class="string">"第一个参数是否存在"</span>+optionalStr1.isPresent());</span><br><span class="line">System.out.println(<span class="string">"第二个参数是否存在"</span>+optionalStr2.isPresent());</span><br><span class="line"><span class="comment">//不存在时返回默认值，存在时返回该值</span></span><br><span class="line">String getStr1=optionalStr1.orElse(<span class="string">"这个值不存在的默认值"</span>);</span><br><span class="line"><span class="comment">//返回该值，该值必须存在</span></span><br><span class="line">String getStr2=optionalStr2.get();</span><br><span class="line">System.out.println(getStr1);</span><br><span class="line">System.out.println(getStr2);</span><br></pre></td></tr></table></figure>
-<h1 id="日期和时间Joda-Time的支持"><a href="#日期和时间Joda-Time的支持" class="headerlink" title="日期和时间Joda-Time的支持"></a>日期和时间Joda-Time的支持</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取当前的日期时间</span></span><br><span class="line">LocalDateTime currentTime = LocalDateTime.now();</span><br><span class="line">System.out.println(<span class="string">"当前时间: "</span> + currentTime);</span><br><span class="line"><span class="comment">// 获取当前日期</span></span><br><span class="line">LocalDate currentDate = currentTime.toLocalDate();</span><br><span class="line">System.out.println(<span class="string">"当前日期: "</span> + currentDate);</span><br><span class="line">System.out.println(<span class="string">"年"</span>+currentDate.getYear()+<span class="string">"月"</span>+currentDate.getMonthOfYear()+<span class="string">"日"</span>+currentDate.getDayOfMonth());</span><br><span class="line"><span class="comment">// 修改当前时间的月份和年份</span></span><br><span class="line">currentDate.withYear(<span class="number">2013</span>).withMonthOfYear(<span class="number">3</span>);</span><br><span class="line">System.out.println(<span class="string">"修改后的日期: "</span> + currentDate);</span><br><span class="line"><span class="comment">// 日期格式化</span></span><br><span class="line">System.out.println(currentDate.toString(<span class="string">"yyyy-MM-dd"</span>));</span><br><span class="line"><span class="comment">// 修改时区</span></span><br><span class="line">DateTimeZone zoneEurope = DateTimeZone.forID(<span class="string">"Europe/London"</span>);</span><br><span class="line">DateTime dtLondon = <span class="keyword">new</span> DateTime().withZone(zoneEurope);</span><br><span class="line">System.out.println(<span class="string">"修改时区: "</span> + dtLondon);</span><br><span class="line">DateTimeZone currentZone = DateTimeZone.getDefault();</span><br><span class="line">DateTime dtCurrent = <span class="keyword">new</span> DateTime().withZone(currentZone);</span><br><span class="line">System.out.println(<span class="string">"当期时区: "</span> + dtCurrent);</span><br></pre></td></tr></table></figure>
-<h1 id="base64支持"><a href="#base64支持" class="headerlink" title="base64支持"></a>base64支持</h1><p>基本编解码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 使用基本编码</span></span><br><span class="line">        String base64encodedString = Base64.getEncoder().encodeToString(<span class="string">"这是待编码的字符串"</span>.getBytes(<span class="string">"utf-8"</span>));</span><br><span class="line">        System.out.println(<span class="string">"Base64编码后"</span> + base64encodedString);</span><br><span class="line">        <span class="comment">// 解码</span></span><br><span class="line">        <span class="keyword">byte</span>[] base64decodedBytes = Base64.getDecoder().decode(base64encodedString);</span><br><span class="line">        System.out.println(<span class="string">"原始字符串: "</span> + <span class="keyword">new</span> String(base64decodedBytes, <span class="string">"utf-8"</span>));</span><br><span class="line">        <span class="comment">//使用url编码</span></span><br><span class="line">        String base64encodedUrl = Base64.getUrlEncoder().encodeToString(<span class="string">"这是待编码的字符串"</span>.getBytes(<span class="string">"utf-8"</span>));</span><br><span class="line">        System.out.println(<span class="string">"Base64 URL编码:"</span> + base64encodedUrl);</span><br><span class="line">        <span class="comment">//生成随机uuid</span></span><br><span class="line">        StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1</span>; ++i) &#123;</span><br><span class="line">            stringBuilder.append(UUID.randomUUID().toString());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//使用mime编码</span></span><br><span class="line">        <span class="keyword">byte</span>[] mimeBytes = stringBuilder.toString().getBytes(<span class="string">"utf-8"</span>);</span><br><span class="line">        String mimeEncodedString = Base64.getMimeEncoder().encodeToString(mimeBytes);</span><br><span class="line">        System.out.println(<span class="string">"Base64 MIME编码:"</span> + mimeEncodedString);</span><br><span class="line">    &#125;<span class="keyword">catch</span>(UnsupportedEncodingException e)&#123;</span><br><span class="line">        System.out.println(<span class="string">"Error :"</span> + e.getMessage());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-    
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/02/Genymotion-issue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            
-            <a href="/2017/11/02/Genymotion-issue/" class="post-title-link" itemprop="url">genymotion 踩坑记录</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2017-11-02 22:14:57" itemprop="dateCreated datePublished" datetime="2017-11-02T22:14:57+08:00">2017-11-02</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2018-10-15 19:10:34" itemprop="dateModified" datetime="2018-10-15T19:10:34+08:00">2018-10-15</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Util/" itemprop="url" rel="index">
-                    <span itemprop="name">Util</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本人是比较喜欢用模拟器调试的，毕竟可以不用对真机进行频繁的插拔，避免USB接触不良的问题，提高开发效率，虽然模拟器测试时仍有很多限制，但是能用模拟器调试的时候还是会尽量选择模拟器。genymotion是一款优秀的android模拟器，依赖于virtual box，是android开发者的必备品。虽然android studio自带的模拟器已经比以前好多了，但是仍然不是很稳定，莫名重启的情况频频发生，所以genymotion依然是最好的选择。但是目前的genymotion版本都是基于x86架构的，你是否还在为它安装不上输入法和微信而烦恼？那是因为市面上的绝大多数手机都是基于arm架构的，大多数的so库也是仅支持ARM架构，要想让ARM架构的应用在genymotion上跑起来，需要刷ARM_Translation架构包来达到兼容的效果。</p>
-<p>genymotion有一个坑就是不同版本的android系统需要刷对应版本的ARM_Translation架构包，否则即使提示刷入成功，仍然是没有效果，应用依旧安装失败。下面是我收集的各个版本的ARM_Translation架构包，亲测可用：</p>
-<p><a href="https://pan.baidu.com/s/1eSyBfea" target="_blank" rel="noopener">https://pan.baidu.com/s/1eSyBfea</a></p>
-<p>里面有3个文件：</p>
-<p><code>Genymotion_ARM_Translation_Marshmallow.zip</code> 适配android6.0和7.0</p>
-<p><code>Genymotion_ARM_Translation_5.1_Lollipop</code> 适配android5.1</p>
-<p><code>Genymotion-ARM-Translation_v1.1.zip</code> 适配android5.0以下</p>
-<p>安装方法很简单，直接把zip包拖到模拟器即可。</p>
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-    
   </div>
 
   
@@ -1729,7 +1652,7 @@ ubuntu自带开机启动项设置工具 startupapplications点击add添加<br>na
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
