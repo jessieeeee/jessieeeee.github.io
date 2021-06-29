@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近入了一台pixel3当测试机和备用机，完美刷入最新的Android系统11，据说12这样刷入也是可以的，magisk刷root权限和电信模块，确实是最佳测试机，完整的google套件，原汁原味的Android系统，喜欢尝鲜，喜欢原生系统且有梯子的小伙伴可以考虑入手一台，它不会让你失望的。下面记录一下我的刷机流程，第一次刷pixel还是踩了不少的坑  Pixel3不支持中国电信，需要手机roo">
+<meta name="keywords" content="flash">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pixel3刷机+magisk+root+电信支持">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2021&#x2F;05&#x2F;28&#x2F;PixelFlash&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="最近入了一台pixel3当测试机和备用机，完美刷入最新的Android系统11，据说12这样刷入也是可以的，magisk刷root权限和电信模块，确实是最佳测试机，完整的google套件，原汁原味的Android系统，喜欢尝鲜，喜欢原生系统且有梯子的小伙伴可以考虑入手一台，它不会让你失望的。下面记录一下我的刷机流程，第一次刷pixel还是踩了不少的坑  Pixel3不支持中国电信，需要手机roo">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-05-28T16:28:50.216Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2021/05/28/PixelFlash/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Pixel3刷机+magisk+root+电信支持 | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/05/28/PixelFlash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            Pixel3刷机+magisk+root+电信支持
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2021-05-28 23:25:16" itemprop="dateCreated datePublished" datetime="2021-05-28T23:25:16+08:00">2021-05-28</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-05-29 00:28:50" itemprop="dateModified" datetime="2021-05-29T00:28:50+08:00">2021-05-29</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>最近入了一台pixel3当测试机和备用机，完美刷入最新的Android系统11，据说12这样刷入也是可以的，magisk刷root权限和电信模块，确实是最佳测试机，完整的google套件，原汁原味的Android系统，喜欢尝鲜，喜欢原生系统且有梯子的小伙伴可以考虑入手一台，它不会让你失望的。下面记录一下我的刷机流程，第一次刷pixel还是踩了不少的坑</p>
+<hr>
+<p>Pixel3不支持中国电信，需要手机root后刷入电信模块才可以使用电信卡（包括打电话和流量上网），Root方案选择了magisk，兼容性好</p>
+<h1 id="刷入完整的官方Rom包"><a href="#刷入完整的官方Rom包" class="headerlink" title="刷入完整的官方Rom包"></a>刷入完整的官方Rom包</h1><ol>
+<li>根据自己的手机型号和刷入的系统版本，下载对应的镜像文件，google官方Rom包地址：<a href="https://developers.google.com/android/images" target="_blank" rel="noopener">https://developers.google.com/android/images</a></li>
+<li>打开开发者模式，狂戳Setting -&gt; Build number，打开USB调试，Setting -&gt; System -&gt; Developer Options打开Usb debugging，勾选oem unlocking</li>
+<li>配置adb命令，如果不是Android开发者可下载android-platform-tools，这里就不赘述了</li>
+<li>解压下载的blueline-rq2a.210505.002-factory-687d8468.zip，有个flash-all.sh的脚本</li>
+<li>手机进入fastboot模式，adb reboot bootloader，再执行这个脚本./flash-all.sh</li>
+</ol>
+<h1 id="安装Magisk并Root"><a href="#安装Magisk并Root" class="headerlink" title="安装Magisk并Root"></a>安装Magisk并Root</h1><p>github下载最新Magisk并安装到手机，<a href="https://github.com/topjohnwu/Magisk/releases" target="_blank" rel="noopener">https://github.com/topjohnwu/Magisk/releases</a></p>
+<h2 id="提取boot-img"><a href="#提取boot-img" class="headerlink" title="提取boot.img"></a>提取boot.img</h2><p>刚下载的blueline-rq2a.210505.002-factory-687d8468.zip文件解压后内部仍有一个压缩文件image-blueline-rq2a.210505.002.zip，继续解压，解压后的文件夹中会得到一个boot.img，把它push到手机<br><code>adb push ./blueline-rq2a.210505.002/image-blueline-rq2a.210505.002/boot.img sdcard/Download</code></p>
+<h2 id="Magisk修改boot-img"><a href="#Magisk修改boot-img" class="headerlink" title="Magisk修改boot.img"></a>Magisk修改boot.img</h2><p>打开magisk选择第一个install，选择select and patch a file选择刚才push的文件boot.img，执行后会在该目录下生成一个magisk_patched.img，把这个文件pull到PC<br><code>adb pull /sdcard/Download/magisk_patched-23000_J2eHI.img</code></p>
+<h2 id="magisk-patched-img刷入手机"><a href="#magisk-patched-img刷入手机" class="headerlink" title="magisk_patched.img刷入手机"></a>magisk_patched.img刷入手机</h2><ol>
+<li>手机进入fastboot模式，<code>adb reboot bootloader</code></li>
+<li>fastboot解锁，<code>fastboot flashing unlock</code></li>
+<li>刷入magisk_patched.img，<code>fastboot flash boot magisk_patched.img</code></li>
+<li>重启手机，<code>fastboot reboot</code><h2 id="验证是否root"><a href="#验证是否root" class="headerlink" title="验证是否root"></a>验证是否root</h2>执行命令<code>adb shell</code><br>执行命令<code>su</code><br>查看pixel是否有确认root授权的提示</li>
+</ol>
+<h1 id="刷入电信模块"><a href="#刷入电信模块" class="headerlink" title="刷入电信模块"></a>刷入电信模块</h1><ol>
+<li>github下载china_telecom_supporter，<a href="https://github.com/apporc/china_telecom_supporter" target="_blank" rel="noopener">https://github.com/apporc/china_telecom_supporter</a></li>
+<li>把压缩包push到手机上<br><code>adb push ./china_telecom_supporter.zip /sdcard/Download</code></li>
+<li>adb命令解压<br><code>unzip -d /sdcard/Download/china_telecom_supporter /sdcard/Download/china_telecom_supporter.zip</code></li>
+<li>移动解压后的文件夹到系统目录/data/adb/modules/<br><code>mv /sdcard/Download/china_telecom_supporter-master/ /data/adb/modules/china_telecom_supporter/</code></li>
+<li>删除 fdr_check 文件<br><code>rm /data/vendor/modem_fdr/fdr_check</code></li>
+<li>重启，如果刷入成功此时进入系统可以看到电信的信号了，能正常打电话和流量上网～</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/flash/" rel="tag"># flash</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2021/05/23/PhotoView/" rel="next" title="手写PhotoView">
+                  <i class="fa fa-chevron-left"></i> 手写PhotoView
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2021/06/29/StudyC/" rel="prev" title="死磕C语言">
+                  死磕C语言 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#刷入完整的官方Rom包"><span class="nav-number">1.</span> <span class="nav-text">刷入完整的官方Rom包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装Magisk并Root"><span class="nav-number">2.</span> <span class="nav-text">安装Magisk并Root</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#提取boot-img"><span class="nav-number">2.1.</span> <span class="nav-text">提取boot.img</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Magisk修改boot-img"><span class="nav-number">2.2.</span> <span class="nav-text">Magisk修改boot.img</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#magisk-patched-img刷入手机"><span class="nav-number">2.3.</span> <span class="nav-text">magisk_patched.img刷入手机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证是否root"><span class="nav-number">2.4.</span> <span class="nav-text">验证是否root</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#刷入电信模块"><span class="nav-number">3.</span> <span class="nav-text">刷入电信模块</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: '8b7413c134821aa986187dcd4754cb21',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>
