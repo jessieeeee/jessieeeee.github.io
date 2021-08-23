@@ -63,7 +63,7 @@
 <meta property="og:site_name" content="JessieK&#39;s blog">
 <meta property="og:description" content="最近入了一台pixel3当测试机和备用机，完美刷入最新的Android系统11，据说12这样刷入也是可以的，magisk刷root权限和电信模块，确实是最佳测试机，完整的google套件，原汁原味的Android系统，喜欢尝鲜，喜欢原生系统且有梯子的小伙伴可以考虑入手一台，它不会让你失望的。下面记录一下我的刷机流程，第一次刷pixel还是踩了不少的坑  Pixel3不支持中国电信，需要手机roo">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-05-28T16:28:50.216Z">
+<meta property="og:updated_time" content="2021-08-23T12:13:02.625Z">
 <meta name="twitter:card" content="summary">
   <link rel="canonical" href="http://yoursite.com/2021/05/28/PixelFlash/">
 
@@ -279,7 +279,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-29 00:28:50" itemprop="dateModified" datetime="2021-05-29T00:28:50+08:00">2021-05-29</time>
+                <time title="Modified: 2021-08-23 20:13:02" itemprop="dateModified" datetime="2021-08-23T20:13:02+08:00">2021-08-23</time>
               </span>
             
           
@@ -332,7 +332,8 @@
 <li>手机进入fastboot模式，adb reboot bootloader，再执行这个脚本./flash-all.sh</li>
 </ol>
 <h1 id="安装Magisk并Root"><a href="#安装Magisk并Root" class="headerlink" title="安装Magisk并Root"></a>安装Magisk并Root</h1><p>github下载最新Magisk并安装到手机，<a href="https://github.com/topjohnwu/Magisk/releases" target="_blank" rel="noopener">https://github.com/topjohnwu/Magisk/releases</a></p>
-<h2 id="提取boot-img"><a href="#提取boot-img" class="headerlink" title="提取boot.img"></a>提取boot.img</h2><p>刚下载的blueline-rq2a.210505.002-factory-687d8468.zip文件解压后内部仍有一个压缩文件image-blueline-rq2a.210505.002.zip，继续解压，解压后的文件夹中会得到一个boot.img，把它push到手机<br><code>adb push ./blueline-rq2a.210505.002/image-blueline-rq2a.210505.002/boot.img sdcard/Download</code></p>
+<h2 id="提取boot-img"><a href="#提取boot-img" class="headerlink" title="提取boot.img"></a>提取boot.img</h2><p>刚下载的blueline-rq2a.210505.002-factory-687d8468.zip文件解压后内部仍有一个压缩文件image-blueline-rq2a.210505.002.zip，继续解压，解压后的文件夹中会得到一个boot.img，把它push到手机</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb push ./blueline-rq2a.210505.002/image-blueline-rq2a.210505.002/boot.img sdcard/Download</span><br></pre></td></tr></table></figure>
 <h2 id="Magisk修改boot-img"><a href="#Magisk修改boot-img" class="headerlink" title="Magisk修改boot.img"></a>Magisk修改boot.img</h2><p>打开magisk选择第一个install，选择select and patch a file选择刚才push的文件boot.img，执行后会在该目录下生成一个magisk_patched.img，把这个文件pull到PC<br><code>adb pull /sdcard/Download/magisk_patched-23000_J2eHI.img</code></p>
 <h2 id="magisk-patched-img刷入手机"><a href="#magisk-patched-img刷入手机" class="headerlink" title="magisk_patched.img刷入手机"></a>magisk_patched.img刷入手机</h2><ol>
 <li>手机进入fastboot模式，<code>adb reboot bootloader</code></li>
@@ -343,8 +344,8 @@
 <h1 id="刷入电信模块"><a href="#刷入电信模块" class="headerlink" title="刷入电信模块"></a>刷入电信模块</h1><ol>
 <li>github下载china_telecom_supporter，<a href="https://github.com/apporc/china_telecom_supporter" target="_blank" rel="noopener">https://github.com/apporc/china_telecom_supporter</a></li>
 <li>把压缩包push到手机上<br><code>adb push ./china_telecom_supporter.zip /sdcard/Download</code></li>
-<li>adb命令解压<br><code>unzip -d /sdcard/Download/china_telecom_supporter /sdcard/Download/china_telecom_supporter.zip</code></li>
-<li>移动解压后的文件夹到系统目录/data/adb/modules/<br><code>mv /sdcard/Download/china_telecom_supporter-master/ /data/adb/modules/china_telecom_supporter/</code></li>
+<li>adb命令解压<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip -d /sdcard/Download/china_telecom_supporter /sdcard/Download/china_telecom_supporter.zip</span><br></pre></td></tr></table></figure></li>
+<li>移动解压后的文件夹到系统目录/data/adb/modules/<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv /sdcard/Download/china_telecom_supporter-master/ /data/adb/modules/china_telecom_supporter/</span><br></pre></td></tr></table></figure></li>
 <li>删除 fdr_check 文件<br><code>rm /data/vendor/modem_fdr/fdr_check</code></li>
 <li>重启，如果刷入成功此时进入系统可以看到电信的信号了，能正常打电话和流量上网～</li>
 </ol>
