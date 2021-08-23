@@ -55,17 +55,17 @@
   };
 </script>
 
-  <meta name="description" content="又是很久没有写博客了，最近在搞漫画爬虫项目时发现某些网站把window.scrollTo方法都屏蔽了，由于大多数漫画网站都是在网页滚动时动态加载，所以如果无法实现网页滚动是没办法爬取到所有漫画的，幸好还好有google爸爸维护的puppeteer爬虫框架，这个强大的框架当然是无视这些方法屏蔽的，它可以实现鼠标按下，滑动，弹起等一系列自动化操作，那么利用这些方法我们就可以实现网页滑动了，在此，针对">
-<meta name="keywords" content="nodejs">
+  <meta name="description" content="基于PPTP协议的VPN账号无法访问国内的网站，上网需要来回切换的方式略显麻烦，有没有什么办法可以让VPN连接和ssr客户端和V2ray客户端那样实现国内外网站分流访问呢？解决这个问题以后又会发现一个新的问题就是VPN用的是google的dns，解析到的ip地址未必是适合的ip导致国内网站和App的访问速度很慢，如果一个账号能让任意设备共享梯子，省去折腾各个终端安装和配置的麻烦那就太好了，最近利">
+<meta name="keywords" content="raspberry">
 <meta property="og:type" content="article">
-<meta property="og:title" content="window.scrollTo失效了怎么办？使用puppeteer实现屏幕滑动效果">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;01&#x2F;27&#x2F;ScrollPage&#x2F;index.html">
+<meta property="og:title" content="树莓派+PPTP+dnsmasq分流+Clash局域网共享梯子">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2021&#x2F;08&#x2F;16&#x2F;Raspberry-VPN&#x2F;index.html">
 <meta property="og:site_name" content="JessieK&#39;s blog">
-<meta property="og:description" content="又是很久没有写博客了，最近在搞漫画爬虫项目时发现某些网站把window.scrollTo方法都屏蔽了，由于大多数漫画网站都是在网页滚动时动态加载，所以如果无法实现网页滚动是没办法爬取到所有漫画的，幸好还好有google爸爸维护的puppeteer爬虫框架，这个强大的框架当然是无视这些方法屏蔽的，它可以实现鼠标按下，滑动，弹起等一系列自动化操作，那么利用这些方法我们就可以实现网页滑动了，在此，针对">
+<meta property="og:description" content="基于PPTP协议的VPN账号无法访问国内的网站，上网需要来回切换的方式略显麻烦，有没有什么办法可以让VPN连接和ssr客户端和V2ray客户端那样实现国内外网站分流访问呢？解决这个问题以后又会发现一个新的问题就是VPN用的是google的dns，解析到的ip地址未必是适合的ip导致国内网站和App的访问速度很慢，如果一个账号能让任意设备共享梯子，省去折腾各个终端安装和配置的麻烦那就太好了，最近利">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-27T07:51:30.464Z">
+<meta property="og:updated_time" content="2021-08-23T09:20:26.652Z">
 <meta name="twitter:card" content="summary">
-  <link rel="canonical" href="http://yoursite.com/2019/01/27/ScrollPage/">
+  <link rel="canonical" href="http://yoursite.com/2021/08/16/Raspberry-VPN/">
 
 
 <script id="page-configurations">
@@ -79,7 +79,7 @@
   };
 </script>
 
-  <title>window.scrollTo失效了怎么办？使用puppeteer实现屏幕滑动效果 | JessieK's blog</title>
+  <title>树莓派+PPTP+dnsmasq分流+Clash局域网共享梯子 | JessieK's blog</title>
   
 
 
@@ -237,7 +237,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/27/ScrollPage/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/08/16/Raspberry-VPN/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jessie Kate">
@@ -251,7 +251,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            window.scrollTo失效了怎么办？使用puppeteer实现屏幕滑动效果
+            树莓派+PPTP+dnsmasq分流+Clash局域网共享梯子
             
 
           
@@ -268,11 +268,19 @@
                 
               
 
-              <time title="Created: 2019-01-27 14:56:38 / Modified: 15:51:30" itemprop="dateCreated datePublished" datetime="2019-01-27T14:56:38+08:00">2019-01-27</time>
+              <time title="Created: 2021-08-16 00:10:07" itemprop="dateCreated datePublished" datetime="2021-08-16T00:10:07+08:00">2021-08-16</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-08-23 17:20:26" itemprop="dateModified" datetime="2021-08-23T17:20:26+08:00">2021-08-23</time>
+              </span>
             
           
 
@@ -296,21 +304,55 @@
 
       
         <hr>
-<p>又是很久没有写博客了，最近在搞漫画爬虫项目时发现某些网站把window.scrollTo方法都屏蔽了，由于大多数漫画网站都是在网页滚动时动态加载，所以如果无法实现网页滚动是没办法爬取到所有漫画的，幸好还好有google爸爸维护的puppeteer爬虫框架，这个强大的框架当然是无视这些方法屏蔽的，它可以实现鼠标按下，滑动，弹起等一系列自动化操作，那么利用这些方法我们就可以实现网页滑动了，在此，针对原生滑动方法都被屏蔽的情况下，利用puppeteer实现网页滑动做一个记录。如果有更好的方法的小伙伴欢迎一起交流讨论。</p>
+<p>基于PPTP协议的VPN账号无法访问国内的网站，上网需要来回切换的方式略显麻烦，有没有什么办法可以让VPN连接和ssr客户端和V2ray客户端那样实现国内外网站分流访问呢？解决这个问题以后又会发现一个新的问题就是VPN用的是google的dns，解析到的ip地址未必是适合的ip导致国内网站和App的访问速度很慢，如果一个账号能让任意设备共享梯子，省去折腾各个终端安装和配置的麻烦那就太好了，最近利用家里的树莓派实现了这个需求，下面是我的折腾记录，有更好的方法欢迎留言交流～</p>
 <hr>
-<p>前几天我维护代码的时候，突然发现爬虫代码报错了😂</p>
-<p>打开该网站的控制台调试，输入<code>window.scrollTo(0, 800);</code></p>
-<p>控制台输出结果为：<code>Uncaught TypeError: window.scrollTo is not a function</code></p>
-<p>然后再打印一下window这个实例：<code>console.log(window)</code></p>
-<p>可以看到<code>scrollTo: null</code></p>
-<p>估计是网站为了反爬取而采用的措施，直接把window.scrollTo等原生方法赋值为空。</p>
-<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><h2 id="获取浏览器页面实例"><a href="#获取浏览器页面实例" class="headerlink" title="获取浏览器页面实例"></a>获取浏览器页面实例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> browser = <span class="keyword">await</span> puppeteer.launch(&#123; <span class="attr">headless</span>: <span class="literal">true</span> &#125;)</span><br><span class="line"><span class="keyword">let</span> page =<span class="keyword">await</span> browser.newPage()</span><br></pre></td></tr></table></figure>
+<h1 id="安装PPTP的linux客户端"><a href="#安装PPTP的linux客户端" class="headerlink" title="安装PPTP的linux客户端"></a>安装PPTP的linux客户端</h1><ol>
+<li>apt-get安装pptp-linux<br><code>sudo apt-get install pptp-linux</code></li>
+<li>修改pptp-linux的配置文件 <code>sudo vi /etc/ppp/peers/pptpconf</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">pty &quot;你的服务端地址 --nolaunchpppd&quot;</span><br><span class="line">name 账号</span><br><span class="line">password 密码</span><br><span class="line">remotename PPTP</span><br><span class="line">require-mppe-128</span><br><span class="line">require-mschap-v2</span><br><span class="line">refuse-eap</span><br><span class="line">refuse-pap</span><br><span class="line">refuse-chap</span><br><span class="line">refuse-mschap</span><br><span class="line">noauth</span><br><span class="line">persist</span><br><span class="line">maxfail 0</span><br><span class="line">defaultroute</span><br><span class="line">replacedefaultroute</span><br><span class="line">usepeerdns</span><br></pre></td></tr></table></figure></li>
+<li>启动/关闭PPTP<br><code>sudo pon pptpconf</code><br>开启后，如果连接正常，<code>ifconfig</code>可以看到VPN的连接ppp0</li>
+<li>设置开机启动服务 <code>sudo vi /lib/systemd/system/pptp.service</code>，注意这里需要在clash服务启动以后再启动<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=PPTP Service</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/usr/bin/pon pptpconf</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></li>
+<li>刷新并启动服务<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl enable pptp</span><br><span class="line">sudo systemctl start pptp</span><br></pre></td></tr></table></figure>
 
-<h2 id="模拟PC的尺寸和UA"><a href="#模拟PC的尺寸和UA" class="headerlink" title="模拟PC的尺寸和UA"></a>模拟PC的尺寸和UA</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 模拟pc设备mac</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">exports.viewPort = &#123;</span><br><span class="line">    width: <span class="number">1080</span>,</span><br><span class="line">    height: <span class="number">1920</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> userAgent = <span class="string">'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 设置屏幕尺寸和UA</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">await</span> page.setViewport(viewPort);</span><br><span class="line"><span class="keyword">await</span> page.setUserAgent(userAgent);</span><br></pre></td></tr></table></figure>
-
-<h1 id="实现网页滑动"><a href="#实现网页滑动" class="headerlink" title="实现网页滑动"></a>实现网页滑动</h1><h2 id="利用鼠标动作组合"><a href="#利用鼠标动作组合" class="headerlink" title="利用鼠标动作组合"></a>利用鼠标动作组合</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">exports.scrollPage = <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params">distance</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">await</span> page.mouse.move(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.9</span>, &#123;<span class="attr">steps</span>: <span class="number">10</span>&#125;)</span><br><span class="line">    <span class="keyword">await</span> page.mouse.down(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.9</span>)</span><br><span class="line">    <span class="keyword">if</span> (Spider.viewPort.height * <span class="number">0.9</span> - distance &gt; Spider.viewPort.height * <span class="number">0.05</span>)&#123;</span><br><span class="line">        <span class="keyword">await</span> page.mouse.move(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.9</span> - distance, &#123;<span class="attr">steps</span>: <span class="number">10</span>&#125;)</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">await</span> page.mouse.move(Spider.viewPort.width/<span class="number">2</span>, Spider.viewPort.height * <span class="number">0.05</span>, &#123;<span class="attr">steps</span>: <span class="number">10</span>&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">await</span> page.mouse.up()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>distance是y轴滑动的垂直距离，根据屏幕尺寸计算出鼠标滑动到的组合操作的起始位置x和y的坐标点，然后模拟鼠标按下操作。因为我们需要爬取的网页，屏幕高度的5%是顶部固定的导航栏，所以结束位置的y轴坐标应该大于屏幕高度的5%。由于我们的网页滑动操作普遍是鼠标由下往上滑动，所以我们需要判断一下动作当前的起始位置的y轴坐标减去滑动的垂直距离后的y轴坐标值是否大于屏幕高度的5%，如果是，结束位置的y轴坐标为鼠标按下操作的y轴坐标减去滑动的垂直距离，否则结束位置的y轴坐标即为屏幕高度的5%。将window.scrollTo方法替换为我们自定义的scrollPage方法，传入滑动的垂直距离即可。</p>
+</li>
+</ol>
+<h1 id="clash开启http-https-socks5代理"><a href="#clash开启http-https-socks5代理" class="headerlink" title="clash开启http/https/socks5代理"></a>clash开启http/https/socks5代理</h1><ol>
+<li>安装clash</li>
+</ol>
+<ul>
+<li>下载安装包<code>sudo wget https://github.com/Dreamacro/clash/releases/download/v1.6.5/clash-linux-armv7-v1.6.5.gz</code></li>
+<li>解压 <code>sudo gunzip clash-linux-armv7-v1.6.5.gz</code></li>
+<li>移动到系统目录 <code>sudo mv clash-linux-armv7-v1.6.5 /usr/local/bin/clash</code></li>
+<li>设置可执行权限 <code>sudo chmod +x /usr/local/bin/clash</code></li>
+</ul>
+<ol start="2">
+<li>设置配置文件 <code>sudo vi ~/.config/clash/config.yaml</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># port of HTTP</span><br><span class="line">port: 7890</span><br><span class="line"></span><br><span class="line">## port of SOCKS5</span><br><span class="line">socks-port: 7891</span><br><span class="line"></span><br><span class="line"># `allow-lan` must be true in your config.yml</span><br><span class="line">allow-lan: true</span><br><span class="line"></span><br><span class="line"># set log level to stdout (default is info)</span><br><span class="line"># info / warning / error / debug / silent</span><br><span class="line">log-level: info</span><br><span class="line"></span><br><span class="line"># A RESTful API for clash</span><br><span class="line">#使用0.0.0.0可以使用局域网设备访问</span><br><span class="line">external-controller: 0.0.0.0:8080</span><br><span class="line"></span><br><span class="line">mode: Rule</span><br></pre></td></tr></table></figure>
+<code>sudo clash</code>启动，这样我们就拥有http/https/socks5的代理服务器了，任意设备只要配置树莓派的ip地址和对应协议的端口号即可代理请求，如果有公网ip或内网穿透，有域名+ddns解析服务器那么在外网也可以代理</li>
+<li>设置开机启动服务 <code>sudo vi /etc/systemd/system/clash.service</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Clash Service</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Restart=on-abort</span><br><span class="line">LimitNOFILE=1048576</span><br><span class="line">ExecStart=/usr/local/bin/clash -d /home/pi/.config/clash</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></li>
+<li>转发所有请求 `sudo vi /etc/sysctl.conf</li>
+</ol>
+<ul>
+<li>ipv4的请求，修改 <code>net.ipv4.ip_forward=1</code></li>
+<li>ipv6的请求，修改<code>net.ipv6.conf.all.forwarding = 1</code><br>刷新设置 <code>sudo sysctl -p</code><br>流量强制转发到ppp0 <code>sudo iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE</code><h1 id="dnsmasq-dnsmasq-china-list-分流策略"><a href="#dnsmasq-dnsmasq-china-list-分流策略" class="headerlink" title="dnsmasq + dnsmasq-china-list 分流策略"></a>dnsmasq + dnsmasq-china-list 分流策略</h1></li>
+</ul>
+<ol>
+<li>apt-get安装dnsmasq <code>sudo apt install dnsmasq</code></li>
+<li>设置配置文件 <code>sudo vi /etc/dnsmasq.conf</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">no-resolv</span><br><span class="line">server=8.8.8.8</span><br><span class="line">server=8.8.4.4</span><br></pre></td></tr></table></figure></li>
+<li>用dnsmasq-china-list设置白名单，用国内dns去解析，其它的用google的dns解析，否则解析到的ip并不是访问速度快的最适合的ip，国内网站和App的访问速度太慢了，所以太干净的dns解析也不好</li>
+</ol>
+<ul>
+<li>这里最好用运营商分配的DNS地址，假设为223.5.5.5，切换到su用户，拉取不需要走VPN的地址用运营商分配的DNS地址去解析<br><code>curl -s https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf|sed &#39;s/114.114.114.114/223.5.5.5/g&#39; &gt;/etc/dnsmasq.d/accelerated-domains.china.223.5.5.5.conf</code></li>
+</ul>
+<ol start="4">
+<li>重启dnsmasq <code>service dnsmasq restart</code></li>
+<li>测试分流效果</li>
+</ol>
+<ul>
+<li>未使用本地dns解析<br><code>dig google.com @223.5.5.5</code></li>
+<li>使用本地dns解析<br><code>dig google.com @127.0.0.1</code></li>
+</ul>
+<ol start="6">
+<li>添加自定义域名到白名单<br><code>echo &#39;server=/你需要的域名/223.5.5.5&#39; &gt;&gt;/etc/dnsmasq.d/accelerated-domains.china.223.5.5.5.conf</code></li>
+</ol>
 
     </div>
 
@@ -326,7 +368,7 @@
           
           <div class="post-tags">
             
-              <a href="/tags/nodejs/" rel="tag"># nodejs</a>
+              <a href="/tags/raspberry/" rel="tag"># raspberry</a>
             
           </div>
         
@@ -336,8 +378,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/01/13/Jenkins-Build/" rel="next" title="搭建Jenkins自动化构建环境">
-                  <i class="fa fa-chevron-left"></i> 搭建Jenkins自动化构建环境
+                <a href="/2021/06/29/StudyC/" rel="next" title="死磕C语言">
+                  <i class="fa fa-chevron-left"></i> 死磕C语言
                 </a>
               
             </div>
@@ -345,10 +387,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/02/04/RaspberryStart/" rel="prev" title="树莓派折腾记录">
-                  树莓派折腾记录 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -397,7 +435,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化"><span class="nav-number">1.</span> <span class="nav-text">初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取浏览器页面实例"><span class="nav-number">1.1.</span> <span class="nav-text">获取浏览器页面实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟PC的尺寸和UA"><span class="nav-number">1.2.</span> <span class="nav-text">模拟PC的尺寸和UA</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现网页滑动"><span class="nav-number">2.</span> <span class="nav-text">实现网页滑动</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#利用鼠标动作组合"><span class="nav-number">2.1.</span> <span class="nav-text">利用鼠标动作组合</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装PPTP的linux客户端"><span class="nav-number">1.</span> <span class="nav-text">安装PPTP的linux客户端</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#clash开启http-https-socks5代理"><span class="nav-number">2.</span> <span class="nav-text">clash开启http/https/socks5代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dnsmasq-dnsmasq-china-list-分流策略"><span class="nav-number">3.</span> <span class="nav-text">dnsmasq + dnsmasq-china-list 分流策略</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
@@ -568,7 +606,7 @@
       repo: 'jessieeeee.github.io',
       owner: 'jessieeeee',
       admin: ['jessieeeee'],
-      id: '209c158dbe6d9021389bff727f581210',
+      id: '6ddcacf3100b648652a9b03c559bcc5d',
         language: window.navigator.language || window.navigator.userLanguage,
       
       distractionFreeMode: 'true'
