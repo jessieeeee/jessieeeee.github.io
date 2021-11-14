@@ -235,6 +235,264 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/19/RaspberryAria2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/05/19/RaspberryAria2/" class="post-title-link" itemprop="url">树莓派+PanDownload(aria2)实现远程下载</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-05-19 17:45:57" itemprop="dateCreated datePublished" datetime="2019-05-19T17:45:57+08:00">2019-05-19</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-08-12 19:16:33" itemprop="dateModified" datetime="2021-08-12T19:16:33+08:00">2021-08-12</time>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>又是很长一段时间没有更新博客了，最近工作特别忙，加班多都没有时间写博客了。在如今这个快节奏的时代，难免会有这样的需求，身处办公室希望能远程下发下载任务到家里的树莓派下载资源，之前开坑玩了一下树莓派，尝试了迅雷远程下载的方案，在树莓派上搭建一个迅雷的远程下载服务器，不过目前这种方案已经失效了，迅雷关闭了远程下载的服务。不过最近我发现了一个不错的远程下载方案，aria2是一个在linux上支持远程下载的工具，无奈它的下载速度实在是太慢了，百度云的第三方下载工具PanDownload是基于aria2的，下载速度非常可观，且支持远程下载。我们可以在树莓派上搭建aria2的下载服务器，然后利用PanDownload远程下发下载任务到树莓派上的aria2服务器，即可实现远程下载。</p>
+<hr>
+<h1 id="树莓派搭建aria2服务器"><a href="#树莓派搭建aria2服务器" class="headerlink" title="树莓派搭建aria2服务器"></a>树莓派搭建aria2服务器</h1><p>关于树莓派的准备工作和系统安装这里就不讲了，希望了解的朋友可以查看<a href="https://jessiekate.gitee.io/2019/02/04/RaspberryStart/" target="_blank" rel="noopener">上一篇</a>，这里主要是说一下关于aria2服务器的搭建流程。</p>
+<h2 id="安装aria2"><a href="#安装aria2" class="headerlink" title="安装aria2"></a>安装aria2</h2><p><code>sudo apt install -y aria2</code></p>
+<h2 id="编写配置文件"><a href="#编写配置文件" class="headerlink" title="编写配置文件"></a>编写配置文件</h2><ul>
+<li>创建配置文件的文件夹<br><code>mkdir -p ~/.config/aria2/</code></li>
+<li>vim编写配置文件<br><code>sudo vi ~/.config/aria2/aria2.config</code><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">后台运行</span></span><br><span class="line">daemon=true</span><br><span class="line"><span class="meta">#</span><span class="bash">设置加密密钥</span></span><br><span class="line">rpc-secret=secret</span><br><span class="line"><span class="meta">#</span><span class="bash">允许rpc</span></span><br><span class="line">enable-rpc=true</span><br><span class="line"><span class="meta">#</span><span class="bash">允许所有来源, web界面跨域权限需要</span></span><br><span class="line">rpc-allow-origin-all=true</span><br><span class="line"><span class="meta">#</span><span class="bash">允许外部访问，<span class="literal">false</span>的话只监听本地端口</span></span><br><span class="line">rpc-listen-all=true</span><br><span class="line"><span class="meta">#</span><span class="bash">RPC端口, 仅当默认端口被占用时修改</span></span><br><span class="line">rpc-listen-port=6800</span><br><span class="line"><span class="meta">#</span><span class="bash">最大同时下载数(任务数), 路由建议值: 3</span></span><br><span class="line">max-concurrent-downloads=5</span><br><span class="line"><span class="meta">#</span><span class="bash">断点续传</span></span><br><span class="line">continue=true</span><br><span class="line"><span class="meta">#</span><span class="bash">同服务器连接数</span></span><br><span class="line">max-connection-per-server=5</span><br><span class="line"><span class="meta">#</span><span class="bash">最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要</span></span><br><span class="line">min-split-size=10M</span><br><span class="line"><span class="meta">#</span><span class="bash">单文件最大线程数, 路由建议值: 5</span></span><br><span class="line">split=10</span><br><span class="line"><span class="meta">#</span><span class="bash">下载速度限制</span></span><br><span class="line">max-overall-download-limit=0</span><br><span class="line"><span class="meta">#</span><span class="bash">单文件速度限制</span></span><br><span class="line">max-download-limit=0</span><br><span class="line"><span class="meta">#</span><span class="bash">上传速度限制</span></span><br><span class="line">max-overall-upload-limit=0</span><br><span class="line"><span class="meta">#</span><span class="bash">单文件速度限制</span></span><br><span class="line">max-upload-limit=0</span><br><span class="line"><span class="meta">#</span><span class="bash">文件保存路径</span></span><br><span class="line">dir=/home/pi/Downloads</span><br><span class="line"><span class="meta">#</span><span class="bash">所需时间</span></span><br><span class="line">file-allocation=prealloc</span><br><span class="line"><span class="meta">#</span><span class="bash">不进行证书校验</span></span><br><span class="line">check-certificate=false</span><br><span class="line"><span class="meta">#</span><span class="bash">保存下载会话</span></span><br><span class="line">save-session=/home/pi/.config/aria2/aria2.session</span><br><span class="line">input-file=/home/pi/.config/aria2/aria2.session</span><br><span class="line"><span class="meta">#</span><span class="bash">断电续传</span></span><br><span class="line">save-session-interval=60</span><br></pre></td></tr></table></figure></li>
+<li>创建该会话空白文件<br><code>touch /home/pi/.config/aria2/aria2.session</code></li>
+<li>测试下aria2是否启动成功<br><code>aria2c --conf-path=/home/pi/.config/aria2/aria2.config</code></li>
+<li>是否有进程启动<br><code>用 ps aux|grep aria2</code></li>
+<li>结束进程<br><code>kill -9 xxxx</code></li>
+</ul>
+<h1 id="设置aria2服务并开机启动"><a href="#设置aria2服务并开机启动" class="headerlink" title="设置aria2服务并开机启动"></a>设置aria2服务并开机启动</h1><h2 id="编写服务文件"><a href="#编写服务文件" class="headerlink" title="编写服务文件"></a>编写服务文件</h2><p><code>sudo vim /lib/systemd/system/aria.service</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Aria2 Service</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User=pi</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/usr/bin/aria2c --conf-path=/home/pi/.config/aria2/aria2.config</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<h2 id="设置开机启动"><a href="#设置开机启动" class="headerlink" title="设置开机启动"></a>设置开机启动</h2><p><code>sudo systemctl daemon-reload</code><br><code>sudo systemctl enable aria</code></p>
+<h2 id="查看aria服务状态"><a href="#查看aria服务状态" class="headerlink" title="查看aria服务状态"></a>查看aria服务状态</h2><p><code>sudo systemctl status aria</code> </p>
+<h2 id="启动aria2服务"><a href="#启动aria2服务" class="headerlink" title="启动aria2服务"></a>启动aria2服务</h2><p><code>sudo systemctl start aria</code></p>
+<h2 id="停止aria2服务"><a href="#停止aria2服务" class="headerlink" title="停止aria2服务"></a>停止aria2服务</h2><p><code>sudo systemctl stop aria</code></p>
+<h2 id="重启aria2服务"><a href="#重启aria2服务" class="headerlink" title="重启aria2服务"></a>重启aria2服务</h2><p><code>sudo systemctl restart aria</code></p>
+<h1 id="PanDownload配置"><a href="#PanDownload配置" class="headerlink" title="PanDownload配置"></a>PanDownload配置</h1><p>目前PanDownload只有windows版本，mac 需开启虚拟机使用<br>设置 -&gt; 远程 -&gt; 添加 -&gt; 添加远程主机<br><img src="/images/RaspberryAria2_1.png" alt="效果图"></p>
+<ol>
+<li>勾选开启远程下载模式<br><img src="/images/RaspberryAria2_2.png" alt="效果图"></li>
+<li>填写树莓派下载服务器的ip，填写端口号对应配置文件中的rpc-listen-port和token对应配置文件中的rpc-secret<br><img src="/images/RaspberryAria2_3.png" alt="效果图"></li>
+<li>检测连接，提示连接成功<br><img src="/images/RaspberryAria2_4.png" alt="效果图"></li>
+<li>取消默认下载路径的配置，这样才可以在选择下载文件后弹出远程下载的选择弹窗</li>
+<li>如果提示“下载失败：无法创建文件，给下载文件夹授权，<code>chmod 777 /mnt/download</code></li>
+</ol>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+    
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/16/IjkplayerSo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/02/16/IjkplayerSo/" class="post-title-link" itemprop="url">ijkplayer编译so文件支持更多格式</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-02-16 21:50:54 / Modified: 23:14:00" itemprop="dateCreated datePublished" datetime="2019-02-16T21:50:54+08:00">2019-02-16</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>bilibili大名鼎鼎的ijkplayer开源播放器，有支持ffmpeg拓展，可拓展性高，体积小的优点，成为很多公司的首选播放器，但官方给的demo只支持mp4格式，想要支持横多的视频格式需要自己修改配置文件并重新编译出so文件才能实现，之前折腾了很久，一直是循环编译，最后编译失败。周末闲来下了，继续折腾终于编译成功，下面对ijkplayer的配置修改和编译做一个详细记录，方便以后查阅。</p>
+<p>编译前提：在linux或者mac开发环境下，配置好JDK,SDK,NDK的环境变量</p>
+<p>编译步骤：</p>
+<ol>
+<li>git clone ijkplayer的源码</li>
+<li>通过init-android.sh脚本把ijkplayer的jni源码和ffmepg的源码拉下来</li>
+<li>如果要支持https，通过init-android-openssl.sh把openssl的代码拉下来</li>
+<li>用脚本compile-openssl.sh编译openssl</li>
+<li>选择编译配置文件，修改配置</li>
+<li>用脚本compile-ffmpeg.sh编译ffmpeg</li>
+<li>用脚本compile-ijk.sh编译ijkplayer的jni源码</li>
+</ol>
+<p>下面是具体的操作过程：</p>
+<ol>
+<li><p>拉ijkplayer的源码</p>
+<p><code>git clone https://github.com/bilibili/ijkplayer</code></p>
+</li>
+<li><p>切换目录，把ijkplayer的jni源码和ffmepg的源码拉下来</p>
+<p><code>cd ijkplayer</code></p>
+<p><code>./init-android.sh</code></p>
+</li>
+<li><p>把openssl的代码拉下来</p>
+<p><code>./init-android-openssl.sh</code></p>
+</li>
+<li><p>切换目录，编译openssl</p>
+<p><code>cd android/contrib</code></p>
+<p><code>./compile-openssl.sh clean</code></p>
+<p><code>./compile-openssl.sh all</code></p>
+</li>
+<li><p>切换目录，修改配置文件，删除之前的配置文件软链接，并重新设置一个配置文件的软链接</p>
+<p><code>cd ../../</code></p>
+<p><code>cd config</code></p>
+<p><code>rm module.sh</code></p>
+<p><code>ln -s module-default.sh module.sh</code></p>
+<p>注意module-lite.sh是精简了支持格式的配置文件，module-default.sh这个是支持格式较多的配置文件</p>
+<p>这一步，遇到了一个错误<code>linux/perf_event.h: No such file</code>，当执行ffmpeg的编译操作，<code>./compile-ffmpeg.sh all</code>才会提示。</p>
+<p>解决方案：</p>
+<p>先删除之前的软链接文件<code>rm module.sh</code></p>
+<p>改一下module-default.sh配置文件，在末尾添加2行代码：</p>
+   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-linux-perf"</span><br><span class="line">export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-bzlib"</span><br></pre></td></tr></table></figure>
+<p>再创建软链接<code>ln -s module-default.sh module.sh</code></p>
+</li>
+<li><p>切换目录，编译ffmpeg</p>
+<p><code>cd ..</code></p>
+<p><code>cd android/contrib</code></p>
+<p><code>./compile-ffmpeg.sh clean</code></p>
+<p><code>./compile-ffmpeg.sh all</code></p>
+<p>这一步，遇到了一个错误<code>nasm/yasm not found or too old. Use --disable-x86asm for a crippled build</code></p>
+<p> 提示汇编工具没有安装。</p>
+<p>解决方案：</p>
+<p>可以安装yasm，或者按照提示执行./configure –disable-x86asm，由于yasm暂时用不上，那么就执行./configure –disable-x86asm来解决，但是这里我们编译ffmpeg是通过shell脚本，所以只能去改脚本。</p>
+<p>我们打开compile-ffmpeg.sh这个脚本发现它其实是在执行tools/do-compile-ffmpeg.sh这个脚本，再打开do-compile-ffmpeg.sh，搜索是否有<code>./configure</code>这个命令，果然在305行，我们找到了相关代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./configure $FF_CFG_FLAGS \</span><br><span class="line">       --extra-cflags="$FF_CFLAGS $FF_EXTRA_CFLAGS" \</span><br><span class="line">       --extra-ldflags="$FF_DEP_LIBS $FF_EXTRA_LDFLAGS"</span><br></pre></td></tr></table></figure>
+
+<p>这里关注一下FF_CFG_FLAGS这个变量，我们可以在它后面追加<code>--disable-x86asm</code>这个参数命令</p>
+<p>修改FF_CFG_FLAGS变量应该在调用<code>./configure</code>命令之前，所以我们添加一句代码在294行：</p>
+<p><code>FF_CFG_FLAGS=&quot;$FF_CFG_FLAGS --disable-x86asm&quot;</code>，先清除之前编译的文件<code>./compile-ffmpeg.sh clean</code>，再编译一次<code>./compile-ffmpeg.sh all</code>这个错误就解决了。</p>
+</li>
+<li><p>切换目录，编译ijkplayer的jni源码</p>
+<p><code>cd ..</code></p>
+<p><code>./compile-ijk.sh all</code></p>
+<p>编译完成，so文件一般保留arm-v7a的就可以了，路径是<code>/ijkplayer/android/ijkplayer/ijkplayer-armv7a/src/main/libs/armeabi-v7a</code>比较module-default.sh和module-lite.sh编译出来的so文件，前面一个明显大一些。</p>
+</li>
+</ol>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+    
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/04/RaspberryStart/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1222,280 +1480,6 @@ headless 设置为true，则不展示Chromium的访问界面，在开发过程�
   
 
     
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/08/Ubuntu-start/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            
-            <a href="/2018/07/08/Ubuntu-start/" class="post-title-link" itemprop="url">搭建Ubuntu下的开发环境</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2018-07-08 13:54:00" itemprop="dateCreated datePublished" datetime="2018-07-08T13:54:00+08:00">2018-07-08</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-04-15 00:38:41" itemprop="dateModified" datetime="2019-04-15T00:38:41+08:00">2019-04-15</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Util/" itemprop="url" rel="index">
-                    <span itemprop="name">Util</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<p>最近有点闲暇时间，厌倦了windows开发环境，想尝试一下ubuntu下的开发环境。本人Android开发者，也写一点前端，以前家里是mac开发环境，公司是windows开发环境，现在打算把公司的开发环境改为ubuntu，之前也看过ubuntu下搭建Android开发环境的文章，即使这样，也踩了不少的坑，折腾了几天，总算把环境搭建起来了，基本稳定。总的来说ubuntu下的开发环境不像windows和mac那么好搭建，坑点略多，但是搭建成功后运行速度是非常可观的，比起windows快了不少，也不枉费花了这么多时间。接下来总结一下ubuntu下开发的常用软件，插件，以及可能遇到的坑点。</p>
-<hr>
-<h1 id="安装系统遇到的问题"><a href="#安装系统遇到的问题" class="headerlink" title="安装系统遇到的问题"></a>安装系统遇到的问题</h1><p>安装系统流程比较普通，分区方案网上有很多，不过要注意两点</p>
-<h2 id="安装英文版的系统"><a href="#安装英文版的系统" class="headerlink" title="安装英文版的系统"></a>安装英文版的系统</h2><p>即使不习惯英文系统也应该在安装系统时选择英文，安装完了再改回中文，因为如果是安装中文版的系统，文件夹的名称会变成下载，文档，音乐，图片．．．由于ubuntu很多时候用命令行，导致命令行输入经常切换中文不方便，我第一次安装的时候手快选了中文版，以为后面可以改，然而这个目录名是安装系统的时候就建好了的，第二次果断安装英文版</p>
-<h2 id="分区的坑"><a href="#分区的坑" class="headerlink" title="分区的坑"></a>分区的坑</h2><p>ubuntu虽然可以挂载ntfs分区，但是ide在读取工程目录的时候是只读取/下面的，所以根目录的分区一定不能小</p>
-<h1 id="卸载系统自带的软件"><a href="#卸载系统自带的软件" class="headerlink" title="卸载系统自带的软件"></a>卸载系统自带的软件</h1><p>有些软件系统自带，但是并不好用或者不会用到的可以卸载掉<br>以下是卸载清单<br>libreoffice-common libreoffice（可以换 WPS）<br>unity-webapps-common Amazon 链接<br>totem 自带的播放器<br>rhythmbox 自带的音乐播放器<br>empathy 自带的即时聊天应用<br>brasero 自带的光盘刻录器<br>simple-scan 扫描仪<br>gnome-mahjongg 对对碰游戏<br>aisleriot 纸牌游戏<br>gnome-mines 扫雷游戏<br>cheese webcam 应用<br>gnome-sudoku 数独游戏<br>transmission-common BT 客户端<br>gnome-orca 屏幕阅读<br>webbrowser-app 自带的浏览器（这个太难用了，有chrome 和 Firefox）<br>landscape-client-ui-install landscape 远程控制软件<br>deja-dup 备份<br>onboard 屏幕键盘</p>
-<p>下面是可以批量卸载的命令<br><code>sudo apt-get remove unity-webapps-common;sudo apt-get remove totem;sudo apt-get remove rhythmbox;sudo apt-get remove empathy;sudo apt-get remove brasero;sudo apt-get remove simple-scan;sudo apt-get remove gnome-mahjongg;sudo apt-get remove aisleriot;sudo apt-get remove gnome-mines;sudo apt-get remove cheese;sudo apt-get remove transmission-common;sudo apt-get remove gnome-orca;sudo apt-get remove webbrowser-app;sudo apt-get remove gnome-sudoku;sudo apt-get remove landscape-client-ui-install;sudo apt-get remove onboard;sudo apt-get remove deja-dup;sudo apt-get remove libreoffice-common</code></p>
-<p>apt-get remove –purge xxx # 移除应用及配置<br>apt-get autoremove # 移除没用的包</p>
-<h1 id="apt替换阿里源"><a href="#apt替换阿里源" class="headerlink" title="apt替换阿里源"></a>apt替换阿里源</h1><h2 id="图形界面配置"><a href="#图形界面配置" class="headerlink" title="图形界面配置"></a>图形界面配置</h2><p>新手推荐使用图形界面配置： 系统设置 -&gt; 软件和更新 选择下载服务器 -&gt; “mirrors.aliyun.com”</p>
-<h2 id="手动更改"><a href="#手动更改" class="headerlink" title="手动更改"></a>手动更改</h2><p>用你熟悉的编辑器打开：<br>/etc/apt/sources.list<br>替换默认的<br><a href="http://archive.ubuntu.com/为mirrors.aliyun.com" target="_blank" rel="noopener">http://archive.ubuntu.com/为mirrors.aliyun.com</a><br>以Ubuntu 14.04.5 LTS为例，最后的效果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">deb https://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse</span><br><span class="line">deb-src https://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse</span><br><span class="line">deb https://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse</span><br><span class="line">deb-src https://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb https://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse</span><br><span class="line">deb-src https://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb https://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse</span><br><span class="line">deb-src https://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse</span><br><span class="line">## Not recommended</span><br><span class="line"># deb https://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse</span><br><span class="line"># deb-src https://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse</span><br></pre></td></tr></table></figure>
-<p>ubuntu 16.04 配置如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial main</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial main</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial universe</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial universe</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates universe</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security main</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe</span><br></pre></td></tr></table></figure>
-<p>ubuntu 18.04(bionic) 配置如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse</span><br></pre></td></tr></table></figure>
-<h1 id="设置中文输入法"><a href="#设置中文输入法" class="headerlink" title="设置中文输入法"></a>设置中文输入法</h1><p>sudo add-apt-repository ppa:fcitx-team/nightly<br>sudo apt-get update<br>安装fcitx<br>sudo apt-get install fcitx<br>安装fcitx的配置工具<br>sudo apt-get install fcitx-config-gtk<br>安装fcitx的table-all软件包<br>sudo apt-get install fcitx-table-al l<br>安装输入法切换工具<br>sudo apt-get install im-switch<br>设置语言选项：将键盘输入法系统由默认的iBus设置为fcitx<br>安装了搜狗输入法后频繁崩溃，索性就用fcitx自带的，并没觉得有什么不同</p>
-<h1 id="命令行相关"><a href="#命令行相关" class="headerlink" title="命令行相关"></a>命令行相关</h1><p>bash对应配置文件为.bashrc<br>zsh对应配置文件为.zshrc<br>oh-my-zsh是基于zsh的功能做了一个扩展，方便的插件管理、主题自定义，以及漂亮的自动完成效果。比默认的bash好用</p>
-<h2 id="安装zsh"><a href="#安装zsh" class="headerlink" title="安装zsh"></a>安装zsh</h2><p>sudo apt-get install zsh</p>
-<h2 id="安装ohmyzsh"><a href="#安装ohmyzsh" class="headerlink" title="安装ohmyzsh"></a>安装ohmyzsh</h2><h3 id="git源码"><a href="#git源码" class="headerlink" title="git源码"></a>git源码</h3><p>git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh<br>cd oh-my-zsh/tools<br>./install.sh</p>
-<h3 id="curl"><a href="#curl" class="headerlink" title="curl"></a>curl</h3><p>sh -c “$(curl -fsSL <a href="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;" target="_blank" rel="noopener">https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;</a></p>
-<h3 id="wget"><a href="#wget" class="headerlink" title="wget"></a>wget</h3><p>sh -c “$(wget <a href="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh" target="_blank" rel="noopener">https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh</a> -O -)”</p>
-<h2 id="修改默认shell"><a href="#修改默认shell" class="headerlink" title="修改默认shell"></a>修改默认shell</h2><p>ubuntu下默认的shell是bash，修改它为zsh&amp;ohmyzsh<br>chsh -s /bin/zsh</p>
-<h2 id="配置主题"><a href="#配置主题" class="headerlink" title="配置主题"></a>配置主题</h2><p>修改~/.zshrc中的ZSH_THEME</p>
-<h2 id="配置插件"><a href="#配置插件" class="headerlink" title="配置插件"></a>配置插件</h2><p>修改~/.zshrc中的plugins=(git bundler osx rake ruby)<br>常用插件<br>wd 快速进入<br>zsh-syntax-highlighting 语法高亮<br>zsh-autosuggestions 历史记录提示<br>svn<br>adb<br>yarn</p>
-<h2 id="图形化svn与git管理工具"><a href="#图形化svn与git管理工具" class="headerlink" title="图形化svn与git管理工具"></a>图形化svn与git管理工具</h2><p>rabbitvcs</p>
-<ol>
-<li>添加PPA源<br>sudo add-apt-repository ppa:rabbitvcs/ppa<br>如果导入密钥失败，则在 /etc/apt/sources.list 文件中加入:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deb http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu **DISTRIBUTION** main</span><br></pre></td></tr></table></figure></li>
-<li>更新源<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure></li>
-<li>安装依赖<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python-nautilus python-configobj python-gtk2 python-glade2 python-svn python-dbus python-dulwich subversion meld</span><br></pre></td></tr></table></figure></li>
-<li>安装RabbitVCS<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install rabbitvcs-cli  rabbitvcs-core rabbitvcs-gedit rabbitvcs-nautilus</span><br></pre></td></tr></table></figure></li>
-<li>重启文件浏览器<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nautilus -q </span><br><span class="line">nautilus</span><br></pre></td></tr></table></figure>
-<h1 id="shadowsocks相关"><a href="#shadowsocks相关" class="headerlink" title="shadowsocks相关"></a>shadowsocks相关</h1>作为开发者ss是必不可少的，特别是习惯了google的，完全无法忍受没有梯子的日子，ubuntu下配置shadowsocks稍微有些麻烦。<br>首先我们要下载shadowsocks的无图形界面版本，我用过图形界面版qt5，太不稳定了。<br>sudo apt update<br>sudo apt install python-gevent python-pip<br>pip install shadowsocks<br>编辑配置文件<br>vim /etc/ss.json<br>server 服务器地址<br>server_port 端口<br>local_port 本地端口<br>password 密码<br>method 加密方式 跟服务器保持一致<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">&quot;server&quot;:&quot;server_ip&quot;,</span><br><span class="line">&quot;server_port&quot;:30696,</span><br><span class="line">&quot;local_port&quot;:1080,</span><br><span class="line">&quot;password&quot;:&quot;password&quot;,</span><br><span class="line">&quot;timeout&quot;:600,</span><br><span class="line">&quot;method&quot;:&quot;rc4-md5&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-ubuntu自带开机启动项设置工具 startupapplications点击add添加<br>name和comment随意填写，command填写为sudo sslocal -c /etc/ss.json -d start<br>配置好了以后，我们需要修改本机代理，windows、mac都是不需要的<br>这里有一个坑点ubuntu18上启动shadowsocks，openssl.py会报错，将此文件中的52行和111行中的cleanup替换为reset，否则可能执行启动命令报错<h2 id="全部请求用代理"><a href="#全部请求用代理" class="headerlink" title="全部请求用代理"></a>全部请求用代理</h2>SystemSetting-&gt;Network-&gt;-&gt;NetworkProxy<br>Method设置为Ｍanual<br>sockshost 127.0.0.1 1080，然后Apply System Wide<h2 id="添加规则，部分代理"><a href="#添加规则，部分代理" class="headerlink" title="添加规则，部分代理"></a>添加规则，部分代理</h2>安装genpac<br>sudo apt-get install python-pip<br>sudo pip install genpac<br>使用genpac生成autoproxy.pac规则文件<br>genpac -p “SOCKS5 127.0.0.1:1080” –output=”autoproxy.pac”<br>让系统应用规则<br>SystemSetting-&gt;Network-&gt;NetworkProxy<br>Method设置为Automatic<br>Configuration Url填”file:///home/xxx/autoproxy.pac”，然后Apply System Wide<br>chrome和firefox都要安装Proxy SwitchyOmega插件<br>方便我们设置自动切换规则<h2 id="http代理"><a href="#http代理" class="headerlink" title="http代理"></a>http代理</h2>如果是命令行，很多只支持http协议的软件或者工具，我们再配置一次http代理<h3 id="安装privoxy"><a href="#安装privoxy" class="headerlink" title="安装privoxy"></a>安装privoxy</h3>sudo apt-get install privoxy<h3 id="配置privoxy"><a href="#配置privoxy" class="headerlink" title="配置privoxy"></a>配置privoxy</h3>打开/etc/privoxy/config<br>取消listen-address localhost:8118的代码注释<br>找到5.2节<br>加入一句<br>forward-socks5 / 127.0.0.1:1080 .<br>重启privoxy服务<br>sudo /etc/init.d/privoxy restart<br>开机自启privoxy服务<br>sudo /etc/init.d/privoxy start加入到/etc/rc.local文件中的exit 0这句之前<br>在profile中写入http代理<br>export http_proxy=”127.0.0.1:8118”<br>export https_proxy=”127.0.0.1:8118”</li>
-</ol>
-<h1 id="Ubuntu软件集合"><a href="#Ubuntu软件集合" class="headerlink" title="Ubuntu软件集合"></a>Ubuntu软件集合</h1><p>chrome 开发者必备浏览器，自带有firefox<br>Typora markdown编辑器<br>Deepin Screenshot深度截图(Ubuntu Software中安装)<br>electronic wechat 微信<br>快速启动ULauncher<br>Redshift 自动调节屏幕色温<br>Android studio android开发者都懂<br>Webstorm 前端开发利器<br>vscode 微软出的开发神器，轻量级<br>mpv 播放器<br>angrySearch文件搜索<br>ubuntu-tweak 集清理，主题管理，字体管理，热区自定义于一体的软件，可替代ubuntu-tweak-tool，这个软件会默认安装系统自带的浏览器<br>(2018-5-31 新版的ubuntu18移除了unity桌面,这个没啥用了,可换成gnome-tweak-tool)</p>
-<h2 id="ubuntu18-gnome主题定制"><a href="#ubuntu18-gnome主题定制" class="headerlink" title="ubuntu18 gnome主题定制"></a>ubuntu18 gnome主题定制</h2><p><a href="https://www.gnome-look.org/" target="_blank" rel="noopener">定制资源下载</a><br>光标: 下载解压后放到/usr/share/icons/目录<br>GTK主题: 下载解压后放到/usr/share/themes/目录<br>图标: 下载解压放到/usr/share/icons/目录<br>shell主题: 下载解压放到/usr/share/themes/目录 (需要安装gnome shell extension)<br>(使用gnome tweak tool-&gt;apperance前面按钮安装zip,会放到~/.local/share/themes下)<br>重启gnome tweak tool,才可在gnome tweak tool中找到</p>
-<h1 id="wps-金山wps有linux版"><a href="#wps-金山wps有linux版" class="headerlink" title="wps 金山wps有linux版"></a>wps 金山wps有linux版</h1><p>安装后进入，报字体缺失<br>下载字体包<br>百度云<a href="http://pan.baidu.com/s/1nuS5U5b" target="_blank" rel="noopener">http://pan.baidu.com/s/1nuS5U5b</a> 密码：p4vz</p>
-<ol>
-<li>解压</li>
-<li>把wps_symbol_fonts目录拷贝到 /usr/share/fonts/ 目录下</li>
-<li>权限添加<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">cd</span> /usr/share/fonts/</span></span><br><span class="line"><span class="meta">#</span><span class="bash">chmod 755 wps_symbol_fonts</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">cd</span> /usr/share/fonts/wps_symbol_fonts</span></span><br><span class="line"><span class="meta">#</span><span class="bash">chmod 644 *</span></span><br></pre></td></tr></table></figure></li>
-<li>生成缓存配置信息<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">cd</span> /usr/share/fonts/wps_symbol_fonts</span></span><br><span class="line"><span class="meta">#</span><span class="bash">mkfontdir</span></span><br><span class="line"><span class="meta">#</span><span class="bash">mkfontscale</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">fc</span>-cache</span></span><br></pre></td></tr></table></figure>
-<h1 id="小程序开发工具"><a href="#小程序开发工具" class="headerlink" title="小程序开发工具"></a>小程序开发工具</h1>微信开发者工具(微信小程序)linux完美支持<br><a href="https://github.com/cytle/wechat_web_devtools" target="_blank" rel="noopener">https://github.com/cytle/wechat_web_devtools</a></li>
-</ol>
-<h1 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h1><p>wireshark<br><a href="https://blog.csdn.net/xukai871105/article/details/31008635" target="_blank" rel="noopener">https://blog.csdn.net/xukai871105/article/details/31008635</a><br>charles也有linux版</p>
-<h1 id="qq-解决方案"><a href="#qq-解决方案" class="headerlink" title="qq 解决方案"></a>qq 解决方案</h1><p>优麒麟qq，表情显示不出来且发送错误，版本很老<br>Wine-QQ-TIM，使用几天后出现电脑无故卡死，输入法切换不了，无法启动等问题<br>Wine真的不好用，还不如虚拟机<br>一番折腾后，还是卸载了qq，珍爱生命，远离qq</p>
-<h1 id="微信-解决方案-（2019-4-15更新）"><a href="#微信-解决方案-（2019-4-15更新）" class="headerlink" title="微信 解决方案 （2019.4.15更新）"></a>微信 解决方案 （2019.4.15更新）</h1><ul>
-<li>目前发现electronic-wechat就是最好的解决方案没有之一，基于web微信用Electron封装并开源<br><a href="https://github.com/geeeeeeeeek/electronic-wechat" target="_blank" rel="noopener">传送门</a><h1 id="钉钉-解决方案-（2019-4-15更新）"><a href="#钉钉-解决方案-（2019-4-15更新）" class="headerlink" title="钉钉 解决方案 （2019.4.15更新）"></a>钉钉 解决方案 （2019.4.15更新）</h1></li>
-<li>目前发现dingtalk就是最好的解决方案没有之一，基于web钉钉用Electron封装并开源<br><a href="https://github.com/nashaofu/dingtalk" target="_blank" rel="noopener">传送门</a><h1 id="virtualbox-amp-genymotion"><a href="#virtualbox-amp-genymotion" class="headerlink" title="virtualbox&amp;genymotion"></a>virtualbox&amp;genymotion</h1>虚拟机和Android模拟器<br>在virtualbox下安装win7，解决ubuntu下无法解决的问题<br>安装virtualbox时注意安装ubuntu最新版本，如果开了intel虚拟技术，还是卡开机界面，可能是当前显卡驱动问题，不要选择opensource版本的显卡驱动<br>genymotion尽量选择最新的版本，这里有个坑，如果卡死，内存分配尽量大一点</li>
-</ul>
-<h1 id="拾色器"><a href="#拾色器" class="headerlink" title="拾色器"></a>拾色器</h1><p>前端开发，app开发必不可少的工具<br>Deepin picker 深度取色器(Ubuntu Software中安装)<br>添加快捷键：<br>Settings -&gt; Devices -&gt; Keyboard commond为:/usr/bin/deepin-picker<br>同理，添加截图的快捷键<br>Settings -&gt; Devices -&gt; Keyboard commond为:/usr/bin/deepin-screenshot</p>
-<h1 id="系统备份"><a href="#系统备份" class="headerlink" title="系统备份"></a>系统备份</h1><p>辛苦折腾的系统最好做个备份 ,remastersys这个系统备份工具是不错，但是备份文件大于4g就会备份失败，官方文档也说了这个问题是iso9660的限制，目前无解。<br>后来发现一个更好用的工具，Timeshift类似mac上的TimeMachine，按备份时间点创建快照，对快照可进行管理，有备份计划等功能，可以实现增强备份和完整备份。</p>
-<p>目前就总结到这里，后面如果发现更好用的软件，插件，坑点会持续更新～</p>
-<ul>
-<li>2018.11.11爬坑<br>Android studio真机调试会报一个错，发现设备无法被识别<br><code>error insufficient permissions for device user in plugdev group are your udev rules wrong</code><br>解决方案：</li>
-</ul>
-<ol>
-<li>lsusb命令查出所有通过usb连接pc的设备，找出那个正在调试的读不出型号的设备<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Bus 001 Device 004: ID 0424:2514 Standard Microsystems Corp. USB 2.0 Hub</span><br><span class="line">Bus 001 Device 003: ID 1bcf:2984 Sunplus Innovation Technology Inc.</span><br><span class="line">Bus 001 Device 006: ID 2717:9039</span><br><span class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</span><br><span class="line">Bus 003 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub</span><br><span class="line">Bus 002 Device 002: ID 046d:c077 Logitech, Inc.</span><br></pre></td></tr></table></figure>
-注意ID后XXXX:XXXX的参数，前一个是idVendor，后一个是idProduct</li>
-<li>创建adb_usb.ini文件，写入idVendor到~/.android/adb_usb.ini，内容格式为<code>0xidVendor</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 0x2717&gt; ~/.android/adb_usb.ini</span><br></pre></td></tr></table></figure>
-这一步官网上没有提到，导致后面<code>android.rules</code>文件一直报<code>SUBSYSTEM==&quot;usb&quot;</code>有错</li>
-</ol>
-<ul>
-<li>以下步骤可以解决Android studio无法识别设备XXXX[null]的问题</li>
-</ul>
-<ol start="3">
-<li>添加Usb设备配置文件，创建文件并写入以下内容<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/udev/rules.d/70-android.rules</span><br><span class="line">SUBSYSTEM==&quot;usb&quot;, ATTRS&#123;idVendor&#125;==&quot;2717&quot;, ATTRS&#123;idProduct&#125;==&quot;9039&quot;,MODE=&quot;0666&quot;</span><br></pre></td></tr></table></figure></li>
-<li>给配置文件添加权限<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod a+rx /etc/udev/rules.d/70-android.rules</span><br></pre></td></tr></table></figure></li>
-<li>重新加载usb配置规则文件，重启adb服务并查看<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo udevadm control --reload-rules &amp;&amp; sudo service udev restart &amp;&amp; sudo udevadm trigger</span><br><span class="line">adb kill-server &amp;&amp; adb start-server</span><br><span class="line">adb devices</span><br></pre></td></tr></table></figure>
-此时设备已经可以识别了</li>
-</ol>
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-    
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/20/KotlinStudy5-For-Collection/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            
-            <a href="/2018/06/20/KotlinStudy5-For-Collection/" class="post-title-link" itemprop="url">kotlin学习日志5 - 集合</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2018-06-20 10:30:43" itemprop="dateCreated datePublished" datetime="2018-06-20T10:30:43+08:00">2018-06-20</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2018-07-08 13:54:00" itemprop="dateModified" datetime="2018-07-08T13:54:00+08:00">2018-07-08</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="kotlin集合操作"><a href="#kotlin集合操作" class="headerlink" title="kotlin集合操作"></a>kotlin集合操作</h1><h2 id="kotlin集合的不同"><a href="#kotlin集合的不同" class="headerlink" title="kotlin集合的不同"></a>kotlin集合的不同</h2><p>kotlin在集合这方面与大多数语言不同,分只读集合和读写集合,这种良好的设计有利于在使用的过程中避免bug的出现</p>
-<h2 id="集合的创建"><a href="#集合的创建" class="headerlink" title="集合的创建"></a>集合的创建</h2><p>读写集合是只读集合的子类,可以将一个读写集合赋值给只读集合引用</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// list</span></span><br><span class="line"><span class="keyword">val</span> list1 = listOf&lt;<span class="built_in">Int</span>&gt;() <span class="comment">// 创建kotlin只读集合</span></span><br><span class="line"><span class="keyword">val</span> list2 = mutableListOf&lt;<span class="built_in">Int</span>&gt;() <span class="comment">// 创建kotlin读写集合</span></span><br><span class="line"><span class="keyword">val</span> list3 = arrayListOf&lt;<span class="built_in">Int</span>&gt;() <span class="comment">// 创建java arraylist集合,这是读写集合</span></span><br><span class="line"><span class="keyword">val</span> list4 = ArrayList&lt;<span class="built_in">Int</span>&gt;() <span class="comment">// 通过构造函数创建也可以</span></span><br><span class="line"><span class="comment">// 下面同理</span></span><br><span class="line"><span class="comment">// set</span></span><br><span class="line"><span class="keyword">val</span> set1 = setOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"><span class="keyword">val</span> set2 = mutableSetOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"><span class="keyword">val</span> set3 = hashSetOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"><span class="comment">// map</span></span><br><span class="line"><span class="keyword">val</span> map1 = mapOf&lt;String,<span class="built_in">Int</span>&gt;()</span><br><span class="line"><span class="keyword">val</span> map2 = mutableMapOf&lt;String,<span class="built_in">Int</span>&gt;()</span><br><span class="line"><span class="keyword">val</span> map3 = hashMapOf&lt;String,<span class="built_in">Int</span>&gt;()</span><br></pre></td></tr></table></figure>
-<h2 id="集合的操作符"><a href="#集合的操作符" class="headerlink" title="集合的操作符"></a>集合的操作符</h2><h3 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> list = listOf(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>)</span><br><span class="line"><span class="comment">// 任何一个满足,返回true</span></span><br><span class="line">list.any &#123;</span><br><span class="line">    it &gt;= <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 全部满足,返回true</span></span><br><span class="line">list.all &#123;</span><br><span class="line">    it &gt;= <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 没有一个满足,返回true</span></span><br><span class="line">list.none&#123;</span><br><span class="line">    it &lt; <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 满足条件的个数</span></span><br><span class="line">list.count&#123;</span><br><span class="line">    it &gt;= <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="集合运算"><a href="#集合运算" class="headerlink" title="集合运算"></a>集合运算</h3><h4 id="求和"><a href="#求和" class="headerlink" title="求和"></a>求和</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 所有元素求和</span></span><br><span class="line">list.sum()</span><br><span class="line"><span class="comment">// 对每个元素的lambda表达式求和</span></span><br><span class="line">list.sumBy &#123;</span><br><span class="line">    it % <span class="number">2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="遍历每个元素-求经过lambda表达式运算后的值"><a href="#遍历每个元素-求经过lambda表达式运算后的值" class="headerlink" title="遍历每个元素,求经过lambda表达式运算后的值"></a>遍历每个元素,求经过lambda表达式运算后的值</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数initValue是初始值</span></span><br><span class="line"><span class="comment">// element当前遍历的元素,从第一个开始</span></span><br><span class="line"><span class="comment">// currentValue当前计算后的值</span></span><br><span class="line">list.fold(initValue) &#123;currentValue,element -&gt; </span><br><span class="line">    currentValue + element / <span class="number">2</span>&#125;</span><br><span class="line"><span class="comment">// 反方向遍历</span></span><br><span class="line">list.foldRight(initValue) &#123;currentValue,element -&gt;</span><br><span class="line">    currentValue + element / <span class="number">2</span>&#125;</span><br><span class="line"><span class="comment">// 不带初始值,currentValue是第一个元素,element从第二个开始</span></span><br><span class="line">list.reduce&#123;currentValue,element -&gt;</span><br><span class="line">    currentValue + element / <span class="number">2</span>&#125;</span><br><span class="line"><span class="comment">// 反方向遍历,currentValue是最后一个元素,element从倒数第二个开始</span></span><br><span class="line">list.reduceRight&#123;currentValue,element -&gt;</span><br><span class="line">    currentValue + element / <span class="number">2</span>&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 无索引强循环</span></span><br><span class="line">list.forEach&#123;</span><br><span class="line">    print(it)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 带索引循环</span></span><br><span class="line">list.forEachIndexed&#123;index, value -&gt; </span><br><span class="line">    print(<span class="string">"position <span class="variable">$index</span> is <span class="variable">$value</span>"</span>)&#125;</span><br><span class="line"><span class="comment">// 包括11，但不包括66</span></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">11</span> until <span class="number">66</span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 每次递增4</span></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">23</span>..<span class="number">89</span> step <span class="number">4</span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// downTo递减</span></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">50</span> downTo <span class="number">7</span>) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="最大最小值"><a href="#最大最小值" class="headerlink" title="最大最小值"></a>最大最小值</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回最大值</span></span><br><span class="line">list.max()</span><br><span class="line"><span class="comment">// 返回lambda运算后的最大值</span></span><br><span class="line">list.maxBy&#123;it&#125;</span><br><span class="line"><span class="comment">// 返回最小值</span></span><br><span class="line">list.min()</span><br><span class="line"><span class="comment">// 返回lambda运算后的最小值</span></span><br><span class="line">list.minBy&#123;it&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="过滤操作"><a href="#过滤操作" class="headerlink" title="过滤操作"></a>过滤操作</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 删除前n个元素返回</span></span><br><span class="line">list.drop(n)</span><br><span class="line"><span class="comment">// 删除后n个元素返回</span></span><br><span class="line">list.dropLast(n)</span><br><span class="line"><span class="comment">// 删除满足条件的第一个元素返回</span></span><br><span class="line">list.dropWhile &#123;</span><br><span class="line">    it &gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 删除满足条件的最后一个元素返回</span></span><br><span class="line">list.dropLastWhile &#123;</span><br><span class="line">    it &gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 过滤所有满足条件的元素返回</span></span><br><span class="line">list.filter &#123;</span><br><span class="line">    it &gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 过滤所有不满足条件的元素返回</span></span><br><span class="line">list.filterNot &#123;</span><br><span class="line">    it &gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 过滤所有非空元素返回</span></span><br><span class="line">list.filterNotNull()</span><br><span class="line"><span class="comment">// 过滤指定索引集合对应的元素</span></span><br><span class="line">list.slice(listof(<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
-<h4 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 遍历每个元素,依次经过lambda运算,最终返回新的list</span></span><br><span class="line">list.map&#123;</span><br><span class="line">    it * <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 同上,带下标的遍历</span></span><br><span class="line">list.mapIndexed &#123;index, it -&gt; index * it&#125;</span><br><span class="line"><span class="comment">// 同上,过滤非空值</span></span><br><span class="line">list.mapNotNull &#123; it * <span class="number">2</span> &#125;</span><br><span class="line"><span class="comment">// 遍历每个元素,将返回的每个list合并,最终返回合并后的list</span></span><br><span class="line">list.flatMap &#123;</span><br><span class="line">    listOf(it, it + <span class="number">1</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 根据key分组,返回一个map</span></span><br><span class="line">list.groupBy &#123;</span><br><span class="line">    <span class="keyword">if</span> (it % <span class="number">2</span> == <span class="number">0</span>) <span class="string">"even"</span> <span class="keyword">else</span> <span class="string">"odd"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 将返回的结果list放入一个指定的list</span></span><br><span class="line"><span class="keyword">val</span> resultList = mutableListOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line">list.mapTo (resultList) &#123;</span><br><span class="line">    it * <span class="number">2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="集合取值"><a href="#集合取值" class="headerlink" title="集合取值"></a>集合取值</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 取前面的n个元素返回</span></span><br><span class="line">list.take(n)</span><br><span class="line"><span class="comment">// 取后面的n个元素返回</span></span><br><span class="line">list.takeLast(n)</span><br><span class="line"><span class="comment">// 取满足条件的第一个元素返回</span></span><br><span class="line">list.takeWhile &#123;</span><br><span class="line">    it &gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 取满足条件的最后一个元素返回</span></span><br><span class="line">list.takeLastWhile &#123;</span><br><span class="line">    it &gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 返回下标为n的元素</span></span><br><span class="line">list.elementAt(n)</span><br><span class="line"><span class="comment">// 返回下标为n的元素,越界返回null</span></span><br><span class="line">list.elementAtOrNull(n)</span><br><span class="line"><span class="comment">// 返回下标为n的元素,越界返回经过lambda运算后的值</span></span><br><span class="line">list.elementAtOrElse(n) &#123; index -&gt; index * <span class="number">2</span>&#125;</span><br><span class="line"><span class="comment">// 返回第一个元素</span></span><br><span class="line">list.first()</span><br><span class="line"><span class="comment">// 返回满足条件的第一个元素</span></span><br><span class="line">list.first &#123; it &gt; <span class="number">1</span>&#125;</span><br><span class="line"><span class="comment">// 返回第一个元素,如果集合为空返回null</span></span><br><span class="line">list.firstOrNull()</span><br><span class="line"><span class="comment">// 返回满足条件的第一个元素,没有满足的返回null</span></span><br><span class="line">list.firstOrNull &#123; it &gt; <span class="number">1</span> &#125;</span><br><span class="line"><span class="comment">// 返回最后一个元素</span></span><br><span class="line">list.last()</span><br><span class="line"><span class="comment">// 返回满足条件的最后一个元素</span></span><br><span class="line">list.last &#123; it &gt; <span class="number">1</span>&#125;</span><br><span class="line"><span class="comment">// 返回最后一个元素,如果集合为空返回null</span></span><br><span class="line">list.lastOrNull()</span><br><span class="line"><span class="comment">// 返回最后一个元素,没有满足的返回null</span></span><br><span class="line">list.lastOrNull &#123; it &gt; <span class="number">1</span> &#125;</span><br><span class="line"><span class="comment">// 返回第一个出现的元素2的索引</span></span><br><span class="line">list.indexOf(<span class="number">2</span>)</span><br><span class="line"><span class="comment">// 返回最后一个出现的元素2的索引</span></span><br><span class="line">list.lastIndexOf(<span class="number">2</span>)</span><br><span class="line"><span class="comment">// 返回满足条件的第一个元素索引</span></span><br><span class="line">list.indexOfFirst &#123;</span><br><span class="line">    it &gt; <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 返回满足条件的最后一个元素索引</span></span><br><span class="line">list.indexOfLast &#123;</span><br><span class="line">    it &gt; <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 返回满足条件的唯一元素,如果有多个,或不存在满足条件的则抛异常</span></span><br><span class="line">list.single &#123;</span><br><span class="line">    it == <span class="number">5</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 返回满足条件的唯一元素,如果有多个,或不存在满足条件的则返回null</span></span><br><span class="line">list.singleOrNull &#123;</span><br><span class="line">    it == <span class="number">5</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="拼接和切割"><a href="#拼接和切割" class="headerlink" title="拼接和切割"></a>拼接和切割</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> list1 = listOf(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span><br><span class="line"><span class="keyword">val</span> list2 = listOf(<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>)</span><br><span class="line"><span class="comment">//拼接</span></span><br><span class="line">list1 + list2 = list1.plus(list2)</span><br><span class="line"><span class="comment">//按条件切割成两个list</span></span><br><span class="line"><span class="keyword">val</span>(list3, list4) = list1.partition &#123;</span><br><span class="line">    it % <span class="number">2</span> == <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 合并,返回一个由pair组成的list,每一个pair是取两个list下标相同的两个元素</span></span><br><span class="line"><span class="keyword">val</span> pairList: List&lt;Pair&lt;<span class="built_in">Int</span>,<span class="built_in">Int</span>&gt;&gt; = list1.zip(list2)</span><br><span class="line"><span class="comment">// 将一个由pair组成的list切割成两个list,再返回</span></span><br><span class="line"><span class="keyword">val</span> (list5, list6) = pairList.unzip()</span><br></pre></td></tr></table></figure>
-<h4 id="排序和逆序"><a href="#排序和逆序" class="headerlink" title="排序和逆序"></a>排序和逆序</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> list = listOf(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>)</span><br><span class="line"><span class="comment">// 逆序</span></span><br><span class="line">list.reversed()</span><br><span class="line"><span class="comment">// 升序</span></span><br><span class="line">list.sorted()</span><br><span class="line"><span class="comment">// 根据lambda表达式返回值来升序排序</span></span><br><span class="line">list.sortedBy &#123;</span><br><span class="line">    it * <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 降序</span></span><br><span class="line">list.sortedDescending()</span><br><span class="line"><span class="comment">// 根据lambda表达式返回值来降序排序</span></span><br><span class="line">list.sortedByDescending &#123;</span><br><span class="line">    it * <span class="number">2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-    
   </div>
 
   
@@ -1545,7 +1529,7 @@ ubuntu自带开机启动项设置工具 startupapplications点击add添加<br>na
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1571,7 +1555,7 @@ ubuntu自带开机启动项设置工具 startupapplications点击add添加<br>na
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
