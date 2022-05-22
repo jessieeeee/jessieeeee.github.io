@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="裁剪是Android开发中一个常见的需求，虽然Android的ImageView的scaleType属性提供了多种图片的展示方式，其中包括一些裁剪方式，以及Glide自带的Transformation也提供了常见的圆角，圆形，居中裁剪，但有的时候仍然不能满足我们的需求，比如说为了版本迭代老版本apk能兼容新版本的图片资源，UI迭代的情况下产品会提出裁剪图片保留图片底部区域的规则，这时候Image">
+<meta name="keywords" content="Glide">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Glide自定义CropTransformation">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2022&#x2F;01&#x2F;12&#x2F;CropTransformation&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="裁剪是Android开发中一个常见的需求，虽然Android的ImageView的scaleType属性提供了多种图片的展示方式，其中包括一些裁剪方式，以及Glide自带的Transformation也提供了常见的圆角，圆形，居中裁剪，但有的时候仍然不能满足我们的需求，比如说为了版本迭代老版本apk能兼容新版本的图片资源，UI迭代的情况下产品会提出裁剪图片保留图片底部区域的规则，这时候Image">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-01-12T16:03:18.700Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2022/01/12/CropTransformation/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Glide自定义CropTransformation | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/01/12/CropTransformation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            Glide自定义CropTransformation
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2022-01-12 21:06:24" itemprop="dateCreated datePublished" datetime="2022-01-12T21:06:24+08:00">2022-01-12</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-01-13 00:03:18" itemprop="dateModified" datetime="2022-01-13T00:03:18+08:00">2022-01-13</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>裁剪是Android开发中一个常见的需求，虽然Android的ImageView的scaleType属性提供了多种图片的展示方式，其中包括一些裁剪方式，以及Glide自带的Transformation也提供了常见的圆角，圆形，居中裁剪，但有的时候仍然不能满足我们的需求，比如说为了版本迭代老版本apk能兼容新版本的图片资源，UI迭代的情况下产品会提出裁剪图片保留图片底部区域的规则，这时候ImageView和Glide自带的裁剪就不能满足需求了，需要我们自定义Transformation实现新的裁剪规则</p>
+<hr>
+<h1 id="裁剪类型"><a href="#裁剪类型" class="headerlink" title="裁剪类型"></a>裁剪类型</h1><p>定义枚举：顶部裁剪，居中裁剪，底部裁剪</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="class"><span class="keyword">class</span> <span class="title">CropType</span> </span>&#123;</span><br><span class="line">     TOP, CENTER, BOTTOM</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="实线BitmapTransformation接口"><a href="#实线BitmapTransformation接口" class="headerlink" title="实线BitmapTransformation接口"></a>实线BitmapTransformation接口</h1><p>默认居中裁剪，支持传入自定义的裁剪像素宽高，重写必要的方法，updateDiskCacheKey，transform，equals，hashCode</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> TAG: String = CropTransformation::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>.<span class="title">name</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CropTransformation</span></span>(<span class="keyword">var</span> width: <span class="built_in">Int</span> = <span class="number">0</span>, <span class="keyword">var</span> height: <span class="built_in">Int</span> = <span class="number">0</span>, <span class="keyword">var</span> cropType: CropType = CropType.CENTER) : BitmapTransformation() &#123;</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">updateDiskCacheKey</span><span class="params">(messageDigest: <span class="type">MessageDigest</span>)</span></span> &#123;</span><br><span class="line">        messageDigest.update(TAG.toByteArray(CHARSET))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">transform</span><span class="params">(pool: <span class="type">BitmapPool</span>, toTransform: <span class="type">Bitmap</span>, outWidth: <span class="type">Int</span>, outHeight: <span class="type">Int</span>)</span></span>: Bitmap &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">equals</span><span class="params">(other: <span class="type">Any</span>?)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> other <span class="keyword">is</span> CropTransformation &amp;&amp; other.width == width &amp;&amp; other.height == height &amp;&amp; other.cropType == cropType</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">hashCode</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> TAG.hashCode()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="实现核心方法transform"><a href="#实现核心方法transform" class="headerlink" title="实现核心方法transform"></a>实现核心方法transform</h1><ul>
+<li><p>transform的入参为，图片复用线程池pool，下载后要处理的图片toTransform，目标View的宽高</p>
+</li>
+<li><p>当宽或高为0时默认使用图片的宽或高</p>
+</li>
+<li><p>图片格式默认采用要处理图片的格式，否则使用ARGB_8888</p>
+</li>
+<li><p>从当前图片缓存池中取得一张复用的图片进行处理，打开alpha通道</p>
+</li>
+<li><p>计算裁剪的宽和图片的宽之比，以及高之比，取大的那个</p>
+</li>
+<li><p>计算缩放后的宽和高</p>
+</li>
+<li><p>计算绘制的开始位置，x和y坐标，x坐标为（当前裁剪的宽度 - 缩放后的宽度）/ 2，从水平居中区域开始绘制，y坐标根据当前的裁剪类型而定，TOP从0开始，CENTER为（当前裁剪的高度 - 缩放后的高度）/ 2，从垂直居中区域开始，BOTTOM直接裁剪底部区域，结束位置的x坐标为开始位置的x坐标 + 缩放后的宽度，y坐标为开始位置的y坐标 + 缩放后的高度，最后计算出绘制的矩形区域，设置从当前图片缓存池中取得的图片密度为要处理的图片toTransform的密度，利用复用的图片创建canvas，drawBitmap把要处理的图片toTransform绘制到canvas的目标矩形区域</p>
+</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">transform</span><span class="params">(pool: <span class="type">BitmapPool</span>, toTransform: <span class="type">Bitmap</span>, outWidth: <span class="type">Int</span>, outHeight: <span class="type">Int</span>)</span></span>: Bitmap &#123;</span><br><span class="line">        width = <span class="keyword">if</span> (width == <span class="number">0</span>) toTransform.width <span class="keyword">else</span> width</span><br><span class="line">        height = <span class="keyword">if</span> (height == <span class="number">0</span>) toTransform.height <span class="keyword">else</span> height</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> config = <span class="keyword">if</span> (toTransform.config != <span class="literal">null</span>) toTransform.config <span class="keyword">else</span> Bitmap.Config.ARGB_8888</span><br><span class="line">        <span class="keyword">val</span> bitmap = pool[width, height, config]</span><br><span class="line"></span><br><span class="line">        bitmap.setHasAlpha(<span class="literal">true</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> scaleX = width.toFloat() / toTransform.width</span><br><span class="line">        <span class="keyword">val</span> scaleY = height.toFloat() / toTransform.height</span><br><span class="line">        <span class="keyword">val</span> scale = max(scaleX, scaleY)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> scaledWidth = scale * toTransform.width</span><br><span class="line">        <span class="keyword">val</span> scaledHeight = scale * toTransform.height</span><br><span class="line">        <span class="keyword">val</span> left = (width - scaledWidth) / <span class="number">2</span></span><br><span class="line">        <span class="keyword">val</span> top: <span class="built_in">Float</span> = getTop(scaledHeight)</span><br><span class="line">        <span class="keyword">val</span> targetRect = RectF(left, top, left + scaledWidth, top + scaledHeight)</span><br><span class="line"></span><br><span class="line">        bitmap.density = toTransform.density</span><br><span class="line">        <span class="keyword">val</span> canvas = Canvas(bitmap)</span><br><span class="line">        canvas.drawBitmap(toTransform, <span class="literal">null</span>, targetRect, <span class="literal">null</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> bitmap</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">getTop</span><span class="params">(scaledHeight: <span class="type">Float</span>)</span></span>: <span class="built_in">Float</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">when</span> (cropType) &#123;</span><br><span class="line">    CropType.TOP -&gt; <span class="number">0f</span></span><br><span class="line">    CropType.CENTER -&gt; (height - scaledHeight) / <span class="number">2</span></span><br><span class="line">    CropType.BOTTOM -&gt; height - scaledHeight</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完整代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kubi.kucoin.utils</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.graphics.Bitmap</span><br><span class="line"><span class="keyword">import</span> android.graphics.Canvas</span><br><span class="line"><span class="keyword">import</span> android.graphics.RectF</span><br><span class="line"><span class="keyword">import</span> com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool</span><br><span class="line"><span class="keyword">import</span> com.bumptech.glide.load.resource.bitmap.BitmapTransformation</span><br><span class="line"><span class="keyword">import</span> java.security.MessageDigest</span><br><span class="line"><span class="keyword">import</span> kotlin.math.max</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>: 图片裁剪</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: Jessie.Li</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@email</span>: jessie.li<span class="doctag">@corp</span>.kucoin.com</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span>: 2022-01-05 17:47</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> TAG: String = CropTransformation::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>.<span class="title">name</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CropTransformation</span></span>(<span class="keyword">var</span> width: <span class="built_in">Int</span> = <span class="number">0</span>, <span class="keyword">var</span> height: <span class="built_in">Int</span> = <span class="number">0</span>, <span class="keyword">var</span> cropType: CropType = CropType.CENTER) : BitmapTransformation() &#123;</span><br><span class="line">    <span class="keyword">enum</span> <span class="class"><span class="keyword">class</span> <span class="title">CropType</span> </span>&#123;</span><br><span class="line">        TOP, CENTER, BOTTOM</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">updateDiskCacheKey</span><span class="params">(messageDigest: <span class="type">MessageDigest</span>)</span></span> &#123;</span><br><span class="line">        messageDigest.update(TAG.toByteArray(CHARSET))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">transform</span><span class="params">(pool: <span class="type">BitmapPool</span>, toTransform: <span class="type">Bitmap</span>, outWidth: <span class="type">Int</span>, outHeight: <span class="type">Int</span>)</span></span>: Bitmap &#123;</span><br><span class="line">        width = <span class="keyword">if</span> (width == <span class="number">0</span>) toTransform.width <span class="keyword">else</span> width</span><br><span class="line">        height = <span class="keyword">if</span> (height == <span class="number">0</span>) toTransform.height <span class="keyword">else</span> height</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> config = <span class="keyword">if</span> (toTransform.config != <span class="literal">null</span>) toTransform.config <span class="keyword">else</span> Bitmap.Config.ARGB_8888</span><br><span class="line">        <span class="keyword">val</span> bitmap = pool[width, height, config]</span><br><span class="line"></span><br><span class="line">        bitmap.setHasAlpha(<span class="literal">true</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> scaleX = width.toFloat() / toTransform.width</span><br><span class="line">        <span class="keyword">val</span> scaleY = height.toFloat() / toTransform.height</span><br><span class="line">        <span class="keyword">val</span> scale = max(scaleX, scaleY)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> scaledWidth = scale * toTransform.width</span><br><span class="line">        <span class="keyword">val</span> scaledHeight = scale * toTransform.height</span><br><span class="line">        <span class="keyword">val</span> left = (width - scaledWidth) / <span class="number">2</span></span><br><span class="line">        <span class="keyword">val</span> top: <span class="built_in">Float</span> = getTop(scaledHeight)</span><br><span class="line">        <span class="keyword">val</span> targetRect = RectF(left, top, left + scaledWidth, top + scaledHeight)</span><br><span class="line"></span><br><span class="line">        bitmap.density = toTransform.density</span><br><span class="line">        <span class="keyword">val</span> canvas = Canvas(bitmap)</span><br><span class="line">        canvas.drawBitmap(toTransform, <span class="literal">null</span>, targetRect, <span class="literal">null</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> bitmap</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">getTop</span><span class="params">(scaledHeight: <span class="type">Float</span>)</span></span>: <span class="built_in">Float</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">when</span> (cropType) &#123;</span><br><span class="line">            CropType.TOP -&gt; <span class="number">0f</span></span><br><span class="line">            CropType.CENTER -&gt; (height - scaledHeight) / <span class="number">2</span></span><br><span class="line">            CropType.BOTTOM -&gt; height - scaledHeight</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">equals</span><span class="params">(other: <span class="type">Any</span>?)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> other <span class="keyword">is</span> CropTransformation &amp;&amp; other.width == width &amp;&amp; other.height == height &amp;&amp; other.cropType == cropType</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">hashCode</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> TAG.hashCode()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Glide/" rel="tag"># Glide</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2021/10/27/RingPullAnimation/" rel="next" title="拉环下拉弹动动画效果">
+                  <i class="fa fa-chevron-left"></i> 拉环下拉弹动动画效果
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2022/04/30/CompareIndicator/" rel="prev" title="Android自定义对比指示条">
+                  Android自定义对比指示条 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#裁剪类型"><span class="nav-number">1.</span> <span class="nav-text">裁剪类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实线BitmapTransformation接口"><span class="nav-number">2.</span> <span class="nav-text">实线BitmapTransformation接口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现核心方法transform"><span class="nav-number">3.</span> <span class="nav-text">实现核心方法transform</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: '179726c066596206c68c04f299514cbc',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>
