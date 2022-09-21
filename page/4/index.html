@@ -235,182 +235,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/13/Jenkins-Build/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            
-            <a href="/2019/01/13/Jenkins-Build/" class="post-title-link" itemprop="url">搭建Jenkins自动化构建环境</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-01-13 22:20:20" itemprop="dateCreated datePublished" datetime="2019-01-13T22:20:20+08:00">2019-01-13</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-05-17 23:39:00" itemprop="dateModified" datetime="2019-05-17T23:39:00+08:00">2019-05-17</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Util/" itemprop="url" rel="index">
-                    <span itemprop="name">Util</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<p>最近公司想搭建自动化构建平台，由于以前自己在空闲时间折腾过jenkins搭建相关的东西，领导就把这个任务交给了我，虽然以前在自己的电脑上搭建过，由于时间过去太久了，当时又没做记录，搭建的时候还是踩了不少坑，不过在google爸爸的帮助下，翻阅各种资料，最后都爬坑解决，所以这里对再此搭建做一个记录，避免以后遗忘。</p>
-<hr>
-<h1 id="连接远程服务器"><a href="#连接远程服务器" class="headerlink" title="连接远程服务器"></a>连接远程服务器</h1><ol>
-<li>ssh -p 端口号 服务器用户名@ip</li>
-<li>输入密码<h1 id="安装jenkins相关依赖包"><a href="#安装jenkins相关依赖包" class="headerlink" title="安装jenkins相关依赖包"></a>安装jenkins相关依赖包</h1><h2 id="安装java"><a href="#安装java" class="headerlink" title="安装java"></a>安装java</h2></li>
-</ol>
-<ul>
-<li><code>java -version</code></li>
-<li>如果没有显示版本号则需要安装，安装命令<code>sudo yum install java</code><h2 id="安装jenkins"><a href="#安装jenkins" class="headerlink" title="安装jenkins"></a>安装jenkins</h2></li>
-<li>添加安装源<br><code>sudo wget -O /etc/yum.repos.d/jenkins.repo http://jenkins-ci.org/redhat/jenkins.repo</code><br><code>sudo rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key</code></li>
-<li>安装<br><code>yum install jenkins</code><h3 id="jenkins安装目录"><a href="#jenkins安装目录" class="headerlink" title="jenkins安装目录"></a>jenkins安装目录</h3><code>/var/lib/jenkins/</code><h3 id="jenkins配置文件目录"><a href="#jenkins配置文件目录" class="headerlink" title="jenkins配置文件目录"></a>jenkins配置文件目录</h3><code>/etc/sysconfig/jenkins</code></li>
-<li>主要参数：</li>
-<li>JENKINS_HOME:Jenkins的主目录，Jenkins工作目录,储存文件的地址,Jenkins的插件,生成的文件都在这个目录下</li>
-<li>JENKINS_USER:Jenkins的用户，拥有$JENKINS_HOME和/var/log/jenkins的权限</li>
-<li>JENKINS_PORT:Jenkins的端口，默认端口是8080<h2 id="启动jenkins服务"><a href="#启动jenkins服务" class="headerlink" title="启动jenkins服务"></a>启动jenkins服务</h2><code>sudo service jenkins start</code></li>
-<li>此时在浏览器中输入：http://&lt;服务器ip&gt;:8080/ 就可以进入Jenkins界面，8080是默认端口号<h2 id="停止jenkins服务"><a href="#停止jenkins服务" class="headerlink" title="停止jenkins服务"></a>停止jenkins服务</h2><code>sudo service jenkins stop</code><h1 id="创建项目并配置"><a href="#创建项目并配置" class="headerlink" title="创建项目并配置"></a>创建项目并配置</h1><img src="/images/jenkins_1.jpg" alt=""></li>
-</ul>
-<ol>
-<li>选择New任务，新建一个项目<br><img src="/images/jenkins_2.jpg" alt=""></li>
-<li>输入一个项目名称</li>
-<li>选择构建一个自由风格的软件项目，点击左下角的ok<br><img src="/images/jenkins_3.jpg" alt=""></li>
-<li>输入项目的文字描述<br><img src="/images/jenkins_4.jpg" alt=""></li>
-<li>勾选丢弃旧的构建，设置保留的构建天数和保留的最大构建数<br><img src="/images/jenkins_5.jpg" alt=""></li>
-<li>勾选参数化构建过程，添加不同类型的参数<br><img src="/images/jenkins_6_1.jpg" alt=""></li>
-</ol>
-<ul>
-<li>布尔值参数<br><img src="/images/jenkins_6_2.jpg" alt=""></li>
-<li>文本参数<br><img src="/images/jenkins_6_3.jpg" alt=""><br><img src="/images/jenkins_6_4.jpg" alt=""></li>
-<li>选项参数<br><img src="/images/jenkins_6_5.jpg" alt=""></li>
-<li>git Parameter<br><img src="/images/jenkins_6_6.jpg" alt=""></li>
-<li>dynamic Parameter<br>打包前，要配置这些参数，配置界面展示效果如下：<br><img src="/images/jenkins_6_7.jpg" alt=""><br><img src="/images/jenkins_6_8.jpg" alt=""><br><img src="/images/jenkins_6_9.jpg" alt=""></li>
-</ul>
-<ol start="7">
-<li>Source Code Management配置git远程代码仓库</li>
-</ol>
-<ul>
-<li>复制项目地址并填入Repository URL</li>
-<li>Credentials，点击add，选择jenkins账户（jenkins统一用这个），该账户需加入项目，拥有代码拉取权限</li>
-<li>配置成功后不会有红字错误提示</li>
-<li>有的项目克隆比较慢，可能会有克隆超时导致构建失败的问题，可以把这个超时时间改大一点，需要添加一个配置<br><img src="/images/jenkins_7_1.jpg" alt=""></li>
-<li>Additional Behaviours点击Add<br><img src="/images/jenkins_7_2.jpg" alt=""></li>
-<li>选择Advanced clone behaviours<br><img src="/images/jenkins_7_3.jpg" alt=""></li>
-<li>修改Timeout (in minutes) for clone and fetch operations的值，改大一点60</li>
-</ul>
-<ol start="8">
-<li>Build Triggers配置轮询构建和定时构建<br><img src="/images/jenkins_8_1.jpg" alt=""><br>定时构建： 无论git中有无提交，均执行定时化的构建任务<br><img src="/images/jenkins_8_2.jpg" alt=""><br>轮询构建： 查看git中是否有提交，如果有，则执行构建任务<br>每隔5分钟构建一次<br><code>H/5 * * * *</code><br>每两小时构建一次<br><code>H H/2 * * *</code><br>每天中午下班前定时构建一次<br><code>0 12 * * *</code><br>每天下午下班前定时构建一次<br><code>0 18 * * *</code></li>
-<li>Build Environment设置构建名称<br><img src="/images/jenkins_9_1.jpg" alt=""></li>
-</ol>
-<ul>
-<li>勾选Set Build Name，这里填写的参数对应上面设置的参数，保持名称一致<br>打包后展示的效果如下：<br><img src="/images/jenkins_9_2.jpg" alt=""></li>
-</ul>
-<ol start="10">
-<li>Build构建方式（Android以gradle为例）<br><img src="/images/jenkins_10_1.jpg" alt=""></li>
-</ol>
-<ul>
-<li>点击add build step，选择Invoke Gradle script<br>勾选Invoke Gradle，选择Gradle Version为gradle4.6<br><img src="/images/jenkins_10_2.jpg" alt=""></li>
-<li>填写task，配置gradle打包命令<code>clean assemble${BUILD_TYPE} --stacktrace</code>，这里的BUILD_TYPE引用前面配置的</li>
-<li>点击Advanced选项，勾选Pass all job parameters as Project properties，将上面的配置参数全部传入gradle.properties配置文件中，实现参数化打包<br><img src="/images/jenkins_10_3.jpg" alt=""></li>
-</ul>
-<ol start="11">
-<li>Post-build Actions</li>
-</ol>
-<ul>
-<li>点击add Post-build Actions，选择归档成品，提取打包后的apk文件<br><img src="/images/jenkins_11_1.jpg" alt=""></li>
-<li>Files to archive填入过滤规则<br><img src="/images/jenkins_11_2.jpg" alt=""></li>
-<li>在所有文件中过滤apk文件</li>
-<li>点击add Post-build Actions，配置打包后的邮箱通知<br><img src="/images/jenkins_11_3.jpg" alt=""><br>一般情况下使用默认配置就可以，直接引用全局配置中已经配置过的参数。<br><img src="/images/jenkins_11_4.jpg" alt=""><br>如果要修改接收人邮箱，编辑Project Recipient List，多个邮箱地址，空格隔开<br>如果要修改发送邮件的内容，可编辑以下几项</li>
-<li>Content Type 文本类型，可配置html、纯文本、纯文本和html</li>
-<li>Default Subject 邮件标题</li>
-<li>Default Content 邮件内容<br>打包日志压缩并添加附件，Attach Build Log选择Compress and Attach Build Log<br><img src="/images/jenkins_11_5.jpg" alt=""><br>邮件发送触发器配置，点击Advanced选项，编辑Triggers选项，点击Add Trigger，可以选择触发器类型，不管构建成功失败总是触发（默认），成功时触发，失败时触发</li>
-<li>此时项目配置完毕<h1 id="打包流程"><a href="#打包流程" class="headerlink" title="打包流程"></a>打包流程</h1><img src="/images/jenkins_12_1.jpg" alt=""></li>
-</ul>
-<ol>
-<li>选择要打包的项目<br><img src="/images/jenkins_12_2.jpg" alt=""></li>
-<li>点击Build with Parameters，进入打包前的参数配置流程<br><img src="/images/jenkins_12_3.jpg" alt=""></li>
-<li>配置好打包的参数，点击build开始打包<br><img src="/images/jenkins_12_4.jpg" alt=""></li>
-<li>点击打包进程可查看相关信息<br><img src="/images/jenkins_12_5.jpg" alt=""></li>
-<li>点击Console Output可查看打包日志<br><img src="/images/jenkins_12_6.jpg" alt=""></li>
-<li>如果配置了邮件通知，打包完成后邮箱会收到一封邮件</li>
-</ol>
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-    
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/18/SocketioRn/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1531,6 +1355,240 @@ ubuntu自带开机启动项设置工具 startupapplications点击add添加<br>na
   
 
     
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/03/SimpleOne/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2018/01/03/SimpleOne/" class="post-title-link" itemprop="url">SimpleOne-one一个高仿开源项目</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2018-01-03 20:03:19" itemprop="dateCreated datePublished" datetime="2018-01-03T20:03:19+08:00">2018-01-03</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-11-02 23:36:56" itemprop="dateModified" datetime="2018-11-02T23:36:56+08:00">2018-11-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ReactNative/" itemprop="url" rel="index">
+                    <span itemprop="name">ReactNative</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>随着混合开发越来越火，逐渐成为行业发展趋势，ReactNative也一直保持着快速更新的节奏，”learn once,write anywhere”这个宣传语一直吸引着我，公司最近也不忙了，一直想入坑的我终于找到了一个合适的时间点，很长一段时间没有更新博客了，因为在学习ReactNative这个框架，由于喜欢one一个的ui界面，做了这个开源项目，这是一个高仿韩寒one一个的开源项目，在此声明，本项目完全以学习为目的，不侵犯one一个的利益，遵守开源协议，所有接口全部来源于one一个android版4.3.4抓包获得，项目中使用的素材也是解压apk文件获得，不打算支持登录后的评论,  分享,  点赞操作,  原版是使用android原生实现的，本项目用ReactNative框架实现，还使用了ReactNative的第三方库，sdk接入是调用了原生android sdk模块，此项目目前只对android进行了适配，ios目前尚未适配，项目结构并非标准的ReactNative项目结构，而是android原生项目结构引入ReactNative框架的混合开发结构。我学习ReactNative不久，以前是做android原生开发的，如果有写的不好的地方，或者是你有更好的实现方式，希望一起学习讨论。</p>
+<hr>
+<p>先上目前的效果图：</p>
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone1.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone2.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone3.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone4.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone5.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone6.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone7.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone8.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone9.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone10.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone12.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone13.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone14.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone15.png" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone16.png" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone17.png" width="120" height="180" ></div>
+<div style="clear:both;"></div>
+
+<h1 id="如何运行"><a href="#如何运行" class="headerlink" title="如何运行"></a>如何运行</h1><p>确保你的编译设备和运行设备在同一网络下,并且配置开发设置中的主机ip和端口号(Dev settings -&gt; Debug server host &amp; port for device)</p>
+<ol>
+<li>在命令行输入, react-native start</li>
+<li>选择你的运行设备, run app</li>
+</ol>
+<h1 id="api接口清单"><a href="#api接口清单" class="headerlink" title="api接口清单"></a>api接口清单</h1><p>这里对提取出的api接口做个记录，本人以学习为目的，希望读者也不要用于任何商业项目中，目前列出的接口是基于4.3.4的android版：</p>
+<ol>
+<li><p>one首页（第一页，date=0，更多页date=yyyy-MM-dd）</p>
+<p><code>http://v3.wufazhuce.com:8000/api/channel/one/{date}/0</code></p>
+</li>
+<li><p>专题列表（第一页，last_id=0，更多页last_id=上次请求结束的id）</p>
+<p><code>http://v3.wufazhuce.com:8000/api/banner/list/4?last_id={last_id}</code></p>
+</li>
+<li><p>横着的列表（所有人问所有人）</p>
+<p><code>http://v3.wufazhuce.com:8000/api/banner/list/5</code></p>
+</li>
+<li><p>近期热门作者</p>
+<p><code>http://v3.wufazhuce.com:8000/api/author/hot</code></p>
+</li>
+<li><p>one首页菜单跳转</p>
+<ul>
+<li><p>问答<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/question/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/question/htmlcontent/{content_id}</code></p>
+</li>
+<li><p>连载<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/serial/{content_id}/0</code><br><code>http://v3.wufazhuce.com:8000/api/serialcontent/htmlcontent/{content_id}</code></p>
+</li>
+<li><p>音乐<br><code>http://v3.wufazhuce.com:8000/api/music/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/music/{content_id}/0</code></p>
+</li>
+<li><p>电影<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/movie/{content_id}/0</code><br><code>http://v3.wufazhuce.com:8000/api/movie/htmlcontent/{content_id}</code></p>
+</li>
+<li><p>文章内容和作者<br><code>http://v3.wufazhuce.com:8000/api/essay/htmlcontent/{content_id}</code><br>文章评论<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/essay/{content_id}/0</code></p>
+</li>
+</ul>
+</li>
+<li><p>搜索模块分类跳转（category_id，0图文 3问答 1阅读 2连载 5影视 4音乐 8电台）</p>
+<p><code>http://v3.wufazhuce.com:8000/api/all/list/{category_id}</code></p>
+</li>
+<li><p>one首页和专题列表的item点击阅读跳转详情和获取评论</p>
+<ul>
+<li><p>问答<br><code>http://v3.wufazhuce.com:8000/api/question/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/question/{content_id}</code></p>
+</li>
+<li><p>连载<br><code>http://v3.wufazhuce.com:8000/api/serialcontent/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/serial/{content_id}/0</code></p>
+</li>
+<li><p>音乐<br><code>http://v3.wufazhuce.com:8000/api/music/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/music/{content_id}/0</code></p>
+</li>
+<li><p>电影<br><code>http://v3.wufazhuce.com:8000/api/movie/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/movie/{content_id}/0</code></p>
+</li>
+<li><p>文章内容和作者<br><code>http://v3.wufazhuce.com:8000/api/essay/htmlcontent/{content_id}</code></p>
+</li>
+<li><p>文章评论<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/essay/{content_id}/0</code></p>
+</li>
+<li><p>电台<br><code>http://v3.wufazhuce.com:8000/api/radio/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/radio/{content_id}/0</code></p>
+</li>
+<li><p>专题<br><code>http://v3.wufazhuce.com:8000/api/topic/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/topic/{content_id}/0</code></p>
+</li>
+</ul>
+</li>
+<li><p>作者页<br><code>http://v3.wufazhuce.com:8000/api/author/works?page_num={page_num}&amp;author_id={author_id}&amp;version=4.3.4</code></p>
+</li>
+</ol>
+<h1 id="功能模块："><a href="#功能模块：" class="headerlink" title="功能模块："></a>功能模块：</h1><p>根据android 4.3.4整理：</p>
+<p>一级界面：</p>
+<p>欢迎界面，按星期几展示不同的欢迎界面</p>
+<p>one分页，也是首页，展示今日列表（插图，one-story, 问答，文章，影视，音乐，电台），折叠菜单，可翻页查看以前的列表，每翻一页，查看前一天的内容，列表头部可以下拉刷新。</p>
+<p>all分页，长列表展示，顶部banner，分类导航，专题列表（下拉到底部以后，可加载更多），列表头部可以下拉刷新。</p>
+<p>me分页，个人资料页，未登录时，为登录界面入口和设置入口</p>
+<p>二级界面：</p>
+<p>设置界面</p>
+<p>阅读界面</p>
+<p>登录界面</p>
+<p>分享界面</p>
+<p>搜索界面</p>
+<p>第三方平台分享，登录sdk对接</p>
+<h2 id="当前未完成部分："><a href="#当前未完成部分：" class="headerlink" title="当前未完成部分："></a>当前未完成部分：</h2><p>阅读界面js回调（包含音乐播放）夜间模式</p>
+<p>设置模块缓存</p>
+<p>阅读界面交互动画</p>
+<h1 id="目前用到的技术："><a href="#目前用到的技术：" class="headerlink" title="目前用到的技术："></a>目前用到的技术：</h1><p>由于我最初学习的时候资料是用ES5进行编写的，这是我自学ReactNative后的第一个项目，所以本项目ES5和ES6混用，我知道这样不是很好，有时间了会全部使用ES6</p>
+<p>react-native对原生组件进行了封装。</p>
+<ol>
+<li>基本控件的使用 View，Text，Image，ScrollView，ListView，WebView，Clipboard，Platform，TouchableOpacity，ActivityIndicator，StatusBar，SliderBar。</li>
+<li>动画的调用，Animated，Easing</li>
+<li>计时器的使用，<del>react-timer-mixin</del> 改为ES6语法，该模块移除</li>
+<li>react-native调用原生模块（原生toast，调android第三方分享sdk）</li>
+<li>底部导航栏TabNavigator，页面导航Navigator</li>
+<li>子组件的封装，调用以及回调</li>
+<li>父组件和子组件之间的参数传递</li>
+<li>页面导航跳转时的参数传递，以及回调</li>
+<li>下拉刷新，第三方react-native控件的引入( react-native-pull )，并进行部分修改</li>
+<li>自定义折叠控件（one分页中的菜单）实现折叠动画</li>
+<li>自定义banner控件，实现all分页中的广告栏展示</li>
+<li>自定义加载更多控件，监听ScrollView的滑动，实现加载更多</li>
+<li>自定义阅读界面loading时的帧动画展示</li>
+<li>半透明界面，悬浮窗实现，自定义单选对话框实现</li>
+<li>相册，拍照实现，react-native第三方库接入</li>
+<li>调用基于Android原生封装的ui控件</li>
+<li>在Android原生项目的基础上引入react-native框架进行混合开发</li>
+<li>音乐专辑封面旋转动画（解决动画循环播放中的暂停与播放事件），通过直接修改属性setNativeProps实现帧动画提高性能</li>
+<li>加入mobx实现多界面同时刷新（2018.5.2更新）</li>
+<li>利用高阶组件封装base组件，实现组件的公共逻辑（2018.5.2更新）</li>
+<li>实现one分页标题(日期数字)切换动画 (2018.6.28更新)</li>
+</ol>
+<p>这个项目让初学者的我受益良多，现在的react-native第三方框架还不是很多，很多时候要自定义，而且在Android上的坑还是有很多，不过react-native的更新速度也是相当快的。后面有时间会陆续追加一些此项目中自定义部分的详细技术文章。<br>最近由于公司的项目需求，入坑了微信小程序，年前忙项目进度，估计短期内没有时间更新这个项目了，有时间会上传目前的动画效果图。</p>
+<p>此项目的github地址<a href="https://github.com/jessieeeee/SimpleOne" target="_blank" rel="noopener">传送门</a>，欢迎一起交流和学习。</p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+    
   </div>
 
   
@@ -1580,7 +1638,7 @@ ubuntu自带开机启动项设置工具 startupapplications点击add添加<br>na
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">59</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

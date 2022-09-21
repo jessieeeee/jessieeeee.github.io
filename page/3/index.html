@@ -235,157 +235,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/29/ReflectStudy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            
-            <a href="/2020/06/29/ReflectStudy/" class="post-title-link" itemprop="url">注解反射-学习笔记</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2020-06-29 17:34:43" itemprop="dateCreated datePublished" datetime="2020-06-29T17:34:43+08:00">2020-06-29</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-02-16 17:27:10" itemprop="dateModified" datetime="2021-02-16T17:27:10+08:00">2021-02-16</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<p>注解和反射是Android开发的基础，也是项目框架搭建中用到的必不可少的技术，减少重复代码编写，提高开发效率，并且广泛用于知名的开源框架中，有利于我们阅读源码，同时提升自己的架构能力和封装基础库的能力。下面对注解和反射的学习做一个记录。</p>
-<hr>
-<h1 id="原注解"><a href="#原注解" class="headerlink" title="原注解"></a>原注解</h1><p>元注解是定义注解的注解</p>
-<p>@Retention：该注解保留阶段，保留的时长， 源码（RetentionPolicy.SOURCE） &lt; 字节码（RetentionPolicy.CLASS） &lt; 运行时（RetentionPolicy.RUNTIME）</p>
-<ul>
-<li>源码级别的注解：应用于APT编译期处理注解生成JAVA代码，生成额外的辅助类，如Dagger2, ButterKnife, EventBus3</li>
-<li>字节码级别的注解：应用于字节码插桩，可用于埋点，如ASM，AspectJ</li>
-<li>运行时级别的注解：反射获取被注解标记的变量/方法/类的信息</li>
-</ul>
-<p>@Target：该注解被使用的位置，字段枚举常量级（ElementType.FIELD），局部变量级（ElementType.LOCAL_VARIABLE），方法级（ElementType.METHOD），方法级（ElementType.PARAMETER），类级接口级（ElementType.TYPE），包级（ElementType.PACKAGE），构造方法（ElementType.CONSTRUCTOR），注解级（ElementType.ANNOTATION_TYPE）</p>
-<h1 id="替代枚举"><a href="#替代枚举" class="headerlink" title="替代枚举"></a>替代枚举</h1><p>自定义注解并使用@IntDef注解指定一个数组，使用该注解去标记参数或返回值时，这个参数只能接收在@IntDef中所指定的几个参数，比如Android中设置view可见性的源码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@IntDef</span>(&#123;VISIBLE, INVISIBLE, GONE&#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.SOURCE)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Visibility &#123;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setVisibility</span><span class="params">(@Visibility <span class="keyword">int</span> visibility)</span> </span>&#123;</span><br><span class="line">      setFlags(visibility, VISIBILITY_MASK);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在setVisibility中传入这三个以外的其它值时，编译器就会提示错误</p>
-<h1 id="注入布局文件"><a href="#注入布局文件" class="headerlink" title="注入布局文件"></a>注入布局文件</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义注解InjectLayout</span></span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> InjectLayout &#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> -1</span>; <span class="comment">// Activity布局文件</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 在BaseActivity的onCreate中调用</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">injectLayout</span><span class="params">(Activity activity)</span> </span>&#123;</span><br><span class="line">        Class&lt;?&gt; activityClass = activity.getClass();</span><br><span class="line">        <span class="keyword">if</span> (activityClass.isAnnotationPresent(InjectLayout.class)) &#123;</span><br><span class="line">            InjectLayout injectLayout = activityClass.getAnnotation(InjectLayout.class);</span><br><span class="line">            activity.setContentView(injectLayout.value());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="meta">@InjectLayout</span>(R.layout.activity_main)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">BaseActivity</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="查找控件id"><a href="#查找控件id" class="headerlink" title="查找控件id"></a>查找控件id</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义注解BindView</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.SOURCE)</span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.FIELD&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindView &#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> -1</span>; <span class="comment">// View的id</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在BaseActivity的onCreate中调用</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">bindView</span><span class="params">(Activity activity)</span> </span>&#123;</span><br><span class="line">       Class&lt;?&gt; activityClass = activity.getClass();</span><br><span class="line">       Field[] declaredFields = activityClass.getDeclaredFields();</span><br><span class="line">       <span class="keyword">for</span> (Field field : declaredFields) &#123;</span><br><span class="line">           <span class="keyword">if</span> (field.isAnnotationPresent(BindView.class)) &#123;</span><br><span class="line">               BindView bindView = field.getAnnotation(BindView.class);</span><br><span class="line">               <span class="keyword">try</span> &#123;</span><br><span class="line">                   View view = activity.findViewById(bindView.value());</span><br><span class="line">                   field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">                   field.set(activity, view);</span><br><span class="line">               &#125; <span class="keyword">catch</span> (IllegalAccessException e ) &#123;</span><br><span class="line">                   e.printStackTrace();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line"><span class="meta">@BindView</span>(R.id.tv_test)</span><br><span class="line">Button mButton;</span><br></pre></td></tr></table></figure>
-<h1 id="注解-反射实现Intent参数传递"><a href="#注解-反射实现Intent参数传递" class="headerlink" title="注解+反射实现Intent参数传递"></a>注解+反射实现Intent参数传递</h1><h2 id="定义注解"><a href="#定义注解" class="headerlink" title="定义注解"></a>定义注解</h2><p>用反射获取该变量的信息需保留到运行时阶段且注解应用于类的字段变量之上</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(ElementType.FIELD)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> AutoInject &#123;</span><br><span class="line">    <span class="function">String <span class="title">key</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="注入逻辑"><a href="#注入逻辑" class="headerlink" title="注入逻辑"></a>注入逻辑</h2><ol>
-<li>获取到该Activity的class对象，获取到该Activity的Intent数据</li>
-<li>没有任何传值时直接返回</li>
-<li>如果有参数传递，获取到该Activity的所有字段变量</li>
-<li>确定每个字段变量的传值key，遍历所有的字段变量，判断该字段变量是否被注解，如果被注解则获取到注解对象，判断注解上的参数传值是否为空，如果为空直接使用被注解的变量名称为key，不为空则使用注解上的参数传值为key</li>
-<li>判断传递的参数中是否有该key的值，如果有获取传入的值，如果字段变量不为数组，这里传入的值为最终结果</li>
-<li>获取被注解的变量类型，如果该变量是数组并且是序列化的类，强转对象数组，并复制一份新的对象数组为最终结果，修改Activity中该变量的访问权限，将结果赋值给该变量<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">injectBundle</span><span class="params">(Activity activity)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 获取class对象</span></span><br><span class="line">    Class&lt;? extends Activity&gt; cls = activity.getClass();</span><br><span class="line">    Intent intent = activity.getIntent();</span><br><span class="line">    Bundle bundle = intent.getExtras();</span><br><span class="line">    <span class="comment">// 如果没有传值返回</span></span><br><span class="line">    <span class="keyword">if</span> (bundle == <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 获取所有的变量</span></span><br><span class="line">    Field[] fields = cls.getDeclaredFields();</span><br><span class="line">    <span class="comment">// 遍历activity的变量</span></span><br><span class="line">    <span class="keyword">for</span>(Field field: fields)&#123;</span><br><span class="line">        <span class="comment">// 判断是否被注解</span></span><br><span class="line">        <span class="keyword">if</span> (field.isAnnotationPresent(AutoInject.class))&#123;</span><br><span class="line">            <span class="comment">// 获取到注解对象</span></span><br><span class="line">            AutoInject autoInject = field.getAnnotation(AutoInject.class);</span><br><span class="line">            <span class="comment">// 判断注解传值是否为空，如果为空使用当前被注解的变量名称</span></span><br><span class="line">            String key = TextUtils.isEmpty(autoInject.key()) ? field.getName() : autoInject.key();</span><br><span class="line">            <span class="comment">// 如果有该key的传值</span></span><br><span class="line">            <span class="keyword">if</span> (bundle.containsKey(key))&#123;</span><br><span class="line">                <span class="comment">// 获取传入的值</span></span><br><span class="line">                Object object = bundle.get(key);</span><br><span class="line">                <span class="comment">// 获取被注解的变量类型</span></span><br><span class="line">                Class&lt;?&gt; componentType = field.getType().getComponentType();</span><br><span class="line">                <span class="comment">// 如果当前变量是数组并且是序列化的class</span></span><br><span class="line">                <span class="keyword">if</span> (field.getType().isArray() &amp;&amp; Parcelable.class.isAssignableFrom(componentType))&#123;</span><br><span class="line">                    <span class="comment">// 强转对象数组</span></span><br><span class="line">                    Object[] objs = (Object[])object;</span><br><span class="line">                    <span class="comment">// 复制到新的对象数组</span></span><br><span class="line">                    Object[] objects = Arrays.copyOf(objs, objs.length, (Class&lt;?  extends Object[]&gt;) field.getType());</span><br><span class="line">                    object = objects;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 修改该变量的访问权限</span></span><br><span class="line">                field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 设置当前activity该变量的值为传值对象</span></span><br><span class="line">                    field.set(activity,object);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2></li>
-</ol>
-<ul>
-<li>第一个Activity传递参数<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//User是序列化对象</span></span><br><span class="line">User user1 = <span class="keyword">new</span> User(<span class="string">"小明"</span>,<span class="number">12</span>); </span><br><span class="line">User user2 = <span class="keyword">new</span> User(<span class="string">"小王"</span>,<span class="number">13</span>);</span><br><span class="line">User[] users = <span class="keyword">new</span> User[<span class="number">2</span>];</span><br><span class="line">users[<span class="number">0</span>] = user1;</span><br><span class="line">users[<span class="number">1</span>] = user2;</span><br><span class="line">ArrayList&lt;User&gt; userList = <span class="keyword">new</span> ArrayList&lt;User&gt;();</span><br><span class="line">userList.add(user1);</span><br><span class="line">userList.add(user2);</span><br><span class="line"><span class="comment">// 传对象</span></span><br><span class="line">intent.putExtra(<span class="string">"test1"</span>,user1);</span><br><span class="line"><span class="comment">// 传对象数组</span></span><br><span class="line">intent.putExtra(<span class="string">"test2"</span>,users);</span><br><span class="line"><span class="comment">// 传对象列表</span></span><br><span class="line">intent.putParcelableArrayListExtra(<span class="string">"test3"</span>,userList);</span><br></pre></td></tr></table></figure></li>
-<li>第二个Activity声明接收变量添加注解<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 接收对象</span></span><br><span class="line"><span class="meta">@AutoInject</span>(key = <span class="string">"test1"</span>)</span><br><span class="line"><span class="keyword">private</span> User value1;</span><br><span class="line"><span class="comment">// 接收对象数组</span></span><br><span class="line"><span class="meta">@AutoInject</span>(key = <span class="string">"test2"</span>)</span><br><span class="line"><span class="keyword">private</span> User[] value4;</span><br><span class="line"><span class="comment">// 接收对象列表</span></span><br><span class="line"><span class="meta">@AutoInject</span>(key = <span class="string">"test3"</span>)</span><br><span class="line"><span class="keyword">private</span> ArrayList&lt;User&gt; value5;</span><br><span class="line"><span class="comment">// Activity创建时调注入逻辑</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    InjectUtils.injectBundle(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h1 id="注解-代理器实现View-OnClick注入逻辑"><a href="#注解-代理器实现View-OnClick注入逻辑" class="headerlink" title="注解+代理器实现View.OnClick注入逻辑"></a>注解+代理器实现View.OnClick注入逻辑</h1><h2 id="定义注解-1"><a href="#定义注解-1" class="headerlink" title="定义注解"></a>定义注解</h2><h3 id="定义注解的注解"><a href="#定义注解的注解" class="headerlink" title="定义注解的注解"></a>定义注解的注解</h3><p>声明监听器类型，注入的方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.ANNOTATION_TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EventType &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function">Class <span class="title">listenerType</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">listenerSetter</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="定义方法注解"><a href="#定义方法注解" class="headerlink" title="定义方法注解"></a>定义方法注解</h3><p>用反射获取该变量的信息需保留到运行时阶段且注解应用于方法之上</p>
-<p>普通点击监听的类型为View.OnClickListener.class，作用的方法为setOnClickListener</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@EventType</span>(listenerType = View.OnClickListener.class, listenerSetter = <span class="string">"setOnClickListener"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> OnClick &#123;</span><br><span class="line">    <span class="keyword">int</span>[] value();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>长按监听的类型为View.OnLongClickListener.class，作用的方法为setOnLongClickListener</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@EventType</span>(listenerType = View.OnLongClickListener.class, listenerSetter = <span class="string">"setOnLongClickListener"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> OnLongClick &#123;</span><br><span class="line">    <span class="keyword">int</span>[] value();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="注入逻辑-1"><a href="#注入逻辑-1" class="headerlink" title="注入逻辑"></a>注入逻辑</h2><ol>
-<li>获取到该Activity的class对象，获取到当前Activity的所有方法</li>
-<li>遍历所有方法，获取到方法的所有注解</li>
-<li>遍历所有注解，获取到当前注解类型</li>
-<li>如果是EventType目标注解，获取到注解对象，获取到注解上定义的传值，监听的Class类型，注解作用的方法</li>
-<li>获取到方法上注解传入的id</li>
-<li>修改方法的访问权限</li>
-<li>利用Java的代理器生成代理对象，动态代理OnClickListener/OnLongClickListener接口</li>
-<li>自定义InvocationHandler添加在对应的点击事件上注入的逻辑</li>
-<li>获取到View对象，在对应的点击方法上注入代理对象<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InjectClick</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">injectEvent</span><span class="params">(Activity activity)</span></span>&#123;</span><br><span class="line">        <span class="comment">// 获取到当前的activity的class对象</span></span><br><span class="line">        Class&lt;? extends Activity&gt; activityClass = activity.getClass();</span><br><span class="line">        <span class="comment">// 获取到当前activity的所有方法</span></span><br><span class="line">        Method[] methods = activityClass.getDeclaredMethods();</span><br><span class="line">        <span class="comment">// 遍历所有方法</span></span><br><span class="line">        <span class="keyword">for</span> (Method method: methods)&#123;</span><br><span class="line">            <span class="comment">// 获取到方法的所有注解</span></span><br><span class="line">            Annotation[] annotations = method.getAnnotations();</span><br><span class="line">            <span class="comment">// 遍历所有注解</span></span><br><span class="line">            <span class="keyword">for</span> (Annotation annotation: annotations)&#123;</span><br><span class="line">                <span class="comment">// 获取到注解的类型</span></span><br><span class="line">                Class&lt;? extends Annotation&gt; annotationType = annotation.annotationType();</span><br><span class="line">                <span class="comment">// 如果是EventType的注解</span></span><br><span class="line">                <span class="keyword">if</span> (annotationType.isAnnotationPresent(EventType.class))&#123;</span><br><span class="line">                    <span class="comment">// 获取到注解对象</span></span><br><span class="line">                    EventType eventType = annotationType.getAnnotation(EventType.class);</span><br><span class="line">                    <span class="comment">// 获取到注解上定义的传值</span></span><br><span class="line">                    Class listenerType = eventType.listenerType();</span><br><span class="line">                    String listenerSetter = eventType.listenerSetter();</span><br><span class="line">                    <span class="keyword">try</span>&#123;</span><br><span class="line">                        <span class="comment">// 获取到注解传入的id值</span></span><br><span class="line">                        Method valueMethod = annotationType.getDeclaredMethod(<span class="string">"value"</span>);</span><br><span class="line">                        <span class="keyword">int</span>[] viewIds = (<span class="keyword">int</span>[]) valueMethod.invoke(annotation);</span><br><span class="line">                        method.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">                        <span class="comment">// 自定义InvocationHandler实现注入逻辑</span></span><br><span class="line">                        ListenerInvocationHandler&lt;Activity&gt; handler = <span class="keyword">new</span> ListenerInvocationHandler(activity, method);</span><br><span class="line">                        <span class="comment">// OnClickListener/OnLongClickListener的代理对象</span></span><br><span class="line">                        Object listenerProxy = Proxy.newProxyInstance(listenerType.getClassLoader(),</span><br><span class="line">                                <span class="keyword">new</span> Class[]&#123;listenerType&#125;, handler);</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 遍历传入的id</span></span><br><span class="line">                        <span class="keyword">for</span> (<span class="keyword">int</span> viewId : viewIds) &#123;</span><br><span class="line">                            <span class="comment">// 获得view</span></span><br><span class="line">                            View view = activity.findViewById(viewId);</span><br><span class="line">                            <span class="comment">// 获得OnClickListener/OnLongClickListener的setOnClickLisnter/setOnLongClickLisnter方法</span></span><br><span class="line">                            Method setter = view.getClass().getMethod(listenerSetter, listenerType);</span><br><span class="line">                            <span class="comment">// 在View的点击方法上注入代理对象</span></span><br><span class="line">                            setter.invoke(view, listenerProxy);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 兼容自定义view注入，所以是泛型： T = Activity/View</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> &lt;T&gt;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ListenerInvocationHandler</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> Method method;</span><br><span class="line">        <span class="keyword">private</span> T target;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ListenerInvocationHandler</span><span class="params">(T target, Method method)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.target = target;</span><br><span class="line">            <span class="keyword">this</span>.method = method;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">            Log.v(<span class="string">"injectClick"</span>,<span class="string">"注入点击事件逻辑"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.method.invoke(target, args);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<h1 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h1><p>声明对应的点击回调，并添加注解，传入被注入点击事件View的Id</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@OnClick</span>(&#123;R.id.text, R.id.button&#125;)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">click</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (view.getId()) &#123;</span><br><span class="line">        <span class="keyword">case</span> R.id.text:</span><br><span class="line">            Log.i(<span class="string">"click"</span>, <span class="string">"click: 按钮1"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> R.id.button:</span><br><span class="line">            Log.i(<span class="string">"click"</span>, <span class="string">"click: 按钮2"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@OnLongClick</span>(&#123;R.id.text, R.id.button&#125;)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">longClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (view.getId()) &#123;</span><br><span class="line">        <span class="keyword">case</span> R.id.text:</span><br><span class="line">            Log.i(<span class="string">"click"</span>, <span class="string">"longClick: 按钮1"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> R.id.button:</span><br><span class="line">            Log.i(<span class="string">"click"</span>, <span class="string">"longClick: 按钮2"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    InjectClick.injectEvent(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-    
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/24/ProxyStudy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1415,6 +1264,182 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
   
 
     
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/13/Jenkins-Build/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2019/01/13/Jenkins-Build/" class="post-title-link" itemprop="url">搭建Jenkins自动化构建环境</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-01-13 22:20:20" itemprop="dateCreated datePublished" datetime="2019-01-13T22:20:20+08:00">2019-01-13</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-05-17 23:39:00" itemprop="dateModified" datetime="2019-05-17T23:39:00+08:00">2019-05-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Util/" itemprop="url" rel="index">
+                    <span itemprop="name">Util</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>最近公司想搭建自动化构建平台，由于以前自己在空闲时间折腾过jenkins搭建相关的东西，领导就把这个任务交给了我，虽然以前在自己的电脑上搭建过，由于时间过去太久了，当时又没做记录，搭建的时候还是踩了不少坑，不过在google爸爸的帮助下，翻阅各种资料，最后都爬坑解决，所以这里对再此搭建做一个记录，避免以后遗忘。</p>
+<hr>
+<h1 id="连接远程服务器"><a href="#连接远程服务器" class="headerlink" title="连接远程服务器"></a>连接远程服务器</h1><ol>
+<li>ssh -p 端口号 服务器用户名@ip</li>
+<li>输入密码<h1 id="安装jenkins相关依赖包"><a href="#安装jenkins相关依赖包" class="headerlink" title="安装jenkins相关依赖包"></a>安装jenkins相关依赖包</h1><h2 id="安装java"><a href="#安装java" class="headerlink" title="安装java"></a>安装java</h2></li>
+</ol>
+<ul>
+<li><code>java -version</code></li>
+<li>如果没有显示版本号则需要安装，安装命令<code>sudo yum install java</code><h2 id="安装jenkins"><a href="#安装jenkins" class="headerlink" title="安装jenkins"></a>安装jenkins</h2></li>
+<li>添加安装源<br><code>sudo wget -O /etc/yum.repos.d/jenkins.repo http://jenkins-ci.org/redhat/jenkins.repo</code><br><code>sudo rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key</code></li>
+<li>安装<br><code>yum install jenkins</code><h3 id="jenkins安装目录"><a href="#jenkins安装目录" class="headerlink" title="jenkins安装目录"></a>jenkins安装目录</h3><code>/var/lib/jenkins/</code><h3 id="jenkins配置文件目录"><a href="#jenkins配置文件目录" class="headerlink" title="jenkins配置文件目录"></a>jenkins配置文件目录</h3><code>/etc/sysconfig/jenkins</code></li>
+<li>主要参数：</li>
+<li>JENKINS_HOME:Jenkins的主目录，Jenkins工作目录,储存文件的地址,Jenkins的插件,生成的文件都在这个目录下</li>
+<li>JENKINS_USER:Jenkins的用户，拥有$JENKINS_HOME和/var/log/jenkins的权限</li>
+<li>JENKINS_PORT:Jenkins的端口，默认端口是8080<h2 id="启动jenkins服务"><a href="#启动jenkins服务" class="headerlink" title="启动jenkins服务"></a>启动jenkins服务</h2><code>sudo service jenkins start</code></li>
+<li>此时在浏览器中输入：http://&lt;服务器ip&gt;:8080/ 就可以进入Jenkins界面，8080是默认端口号<h2 id="停止jenkins服务"><a href="#停止jenkins服务" class="headerlink" title="停止jenkins服务"></a>停止jenkins服务</h2><code>sudo service jenkins stop</code><h1 id="创建项目并配置"><a href="#创建项目并配置" class="headerlink" title="创建项目并配置"></a>创建项目并配置</h1><img src="/images/jenkins_1.jpg" alt=""></li>
+</ul>
+<ol>
+<li>选择New任务，新建一个项目<br><img src="/images/jenkins_2.jpg" alt=""></li>
+<li>输入一个项目名称</li>
+<li>选择构建一个自由风格的软件项目，点击左下角的ok<br><img src="/images/jenkins_3.jpg" alt=""></li>
+<li>输入项目的文字描述<br><img src="/images/jenkins_4.jpg" alt=""></li>
+<li>勾选丢弃旧的构建，设置保留的构建天数和保留的最大构建数<br><img src="/images/jenkins_5.jpg" alt=""></li>
+<li>勾选参数化构建过程，添加不同类型的参数<br><img src="/images/jenkins_6_1.jpg" alt=""></li>
+</ol>
+<ul>
+<li>布尔值参数<br><img src="/images/jenkins_6_2.jpg" alt=""></li>
+<li>文本参数<br><img src="/images/jenkins_6_3.jpg" alt=""><br><img src="/images/jenkins_6_4.jpg" alt=""></li>
+<li>选项参数<br><img src="/images/jenkins_6_5.jpg" alt=""></li>
+<li>git Parameter<br><img src="/images/jenkins_6_6.jpg" alt=""></li>
+<li>dynamic Parameter<br>打包前，要配置这些参数，配置界面展示效果如下：<br><img src="/images/jenkins_6_7.jpg" alt=""><br><img src="/images/jenkins_6_8.jpg" alt=""><br><img src="/images/jenkins_6_9.jpg" alt=""></li>
+</ul>
+<ol start="7">
+<li>Source Code Management配置git远程代码仓库</li>
+</ol>
+<ul>
+<li>复制项目地址并填入Repository URL</li>
+<li>Credentials，点击add，选择jenkins账户（jenkins统一用这个），该账户需加入项目，拥有代码拉取权限</li>
+<li>配置成功后不会有红字错误提示</li>
+<li>有的项目克隆比较慢，可能会有克隆超时导致构建失败的问题，可以把这个超时时间改大一点，需要添加一个配置<br><img src="/images/jenkins_7_1.jpg" alt=""></li>
+<li>Additional Behaviours点击Add<br><img src="/images/jenkins_7_2.jpg" alt=""></li>
+<li>选择Advanced clone behaviours<br><img src="/images/jenkins_7_3.jpg" alt=""></li>
+<li>修改Timeout (in minutes) for clone and fetch operations的值，改大一点60</li>
+</ul>
+<ol start="8">
+<li>Build Triggers配置轮询构建和定时构建<br><img src="/images/jenkins_8_1.jpg" alt=""><br>定时构建： 无论git中有无提交，均执行定时化的构建任务<br><img src="/images/jenkins_8_2.jpg" alt=""><br>轮询构建： 查看git中是否有提交，如果有，则执行构建任务<br>每隔5分钟构建一次<br><code>H/5 * * * *</code><br>每两小时构建一次<br><code>H H/2 * * *</code><br>每天中午下班前定时构建一次<br><code>0 12 * * *</code><br>每天下午下班前定时构建一次<br><code>0 18 * * *</code></li>
+<li>Build Environment设置构建名称<br><img src="/images/jenkins_9_1.jpg" alt=""></li>
+</ol>
+<ul>
+<li>勾选Set Build Name，这里填写的参数对应上面设置的参数，保持名称一致<br>打包后展示的效果如下：<br><img src="/images/jenkins_9_2.jpg" alt=""></li>
+</ul>
+<ol start="10">
+<li>Build构建方式（Android以gradle为例）<br><img src="/images/jenkins_10_1.jpg" alt=""></li>
+</ol>
+<ul>
+<li>点击add build step，选择Invoke Gradle script<br>勾选Invoke Gradle，选择Gradle Version为gradle4.6<br><img src="/images/jenkins_10_2.jpg" alt=""></li>
+<li>填写task，配置gradle打包命令<code>clean assemble${BUILD_TYPE} --stacktrace</code>，这里的BUILD_TYPE引用前面配置的</li>
+<li>点击Advanced选项，勾选Pass all job parameters as Project properties，将上面的配置参数全部传入gradle.properties配置文件中，实现参数化打包<br><img src="/images/jenkins_10_3.jpg" alt=""></li>
+</ul>
+<ol start="11">
+<li>Post-build Actions</li>
+</ol>
+<ul>
+<li>点击add Post-build Actions，选择归档成品，提取打包后的apk文件<br><img src="/images/jenkins_11_1.jpg" alt=""></li>
+<li>Files to archive填入过滤规则<br><img src="/images/jenkins_11_2.jpg" alt=""></li>
+<li>在所有文件中过滤apk文件</li>
+<li>点击add Post-build Actions，配置打包后的邮箱通知<br><img src="/images/jenkins_11_3.jpg" alt=""><br>一般情况下使用默认配置就可以，直接引用全局配置中已经配置过的参数。<br><img src="/images/jenkins_11_4.jpg" alt=""><br>如果要修改接收人邮箱，编辑Project Recipient List，多个邮箱地址，空格隔开<br>如果要修改发送邮件的内容，可编辑以下几项</li>
+<li>Content Type 文本类型，可配置html、纯文本、纯文本和html</li>
+<li>Default Subject 邮件标题</li>
+<li>Default Content 邮件内容<br>打包日志压缩并添加附件，Attach Build Log选择Compress and Attach Build Log<br><img src="/images/jenkins_11_5.jpg" alt=""><br>邮件发送触发器配置，点击Advanced选项，编辑Triggers选项，点击Add Trigger，可以选择触发器类型，不管构建成功失败总是触发（默认），成功时触发，失败时触发</li>
+<li>此时项目配置完毕<h1 id="打包流程"><a href="#打包流程" class="headerlink" title="打包流程"></a>打包流程</h1><img src="/images/jenkins_12_1.jpg" alt=""></li>
+</ul>
+<ol>
+<li>选择要打包的项目<br><img src="/images/jenkins_12_2.jpg" alt=""></li>
+<li>点击Build with Parameters，进入打包前的参数配置流程<br><img src="/images/jenkins_12_3.jpg" alt=""></li>
+<li>配置好打包的参数，点击build开始打包<br><img src="/images/jenkins_12_4.jpg" alt=""></li>
+<li>点击打包进程可查看相关信息<br><img src="/images/jenkins_12_5.jpg" alt=""></li>
+<li>点击Console Output可查看打包日志<br><img src="/images/jenkins_12_6.jpg" alt=""></li>
+<li>如果配置了邮件通知，打包完成后邮箱会收到一封邮件</li>
+</ol>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+    
   </div>
 
   
@@ -1464,7 +1489,7 @@ mjpg-stream支持JPEG和YUV两种格式，默认采用JPEG，这里是因为树�
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">59</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
