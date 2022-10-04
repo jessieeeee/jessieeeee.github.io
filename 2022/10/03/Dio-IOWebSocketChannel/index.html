@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一转眼来到国庆假期，核酸未停疫情还在，假期是个好好充电的日子，休息之余总结之前的工作度过一个充实的假期，但愿疫情快点过去，大家能回归到正常生活吧上一篇写到了flutter的开发框架封装，其中用到了DioManager这个类，这个类主要是利用flutter框架提供的dio对网络层http请求做一个封装，另外由于业务需要，也封装了WebSocket请求，这里整理了一下具体的封装流程，欢迎一起交流讨论">
+<meta name="keywords" content="Architecture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="flutter封装网络层（http和WebSocket请求）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2022&#x2F;10&#x2F;03&#x2F;Dio-IOWebSocketChannel&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="一转眼来到国庆假期，核酸未停疫情还在，假期是个好好充电的日子，休息之余总结之前的工作度过一个充实的假期，但愿疫情快点过去，大家能回归到正常生活吧上一篇写到了flutter的开发框架封装，其中用到了DioManager这个类，这个类主要是利用flutter框架提供的dio对网络层http请求做一个封装，另外由于业务需要，也封装了WebSocket请求，这里整理了一下具体的封装流程，欢迎一起交流讨论">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-10-04T07:33:31.597Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2022/10/03/Dio-IOWebSocketChannel/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>flutter封装网络层（http和WebSocket请求） | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/10/03/Dio-IOWebSocketChannel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            flutter封装网络层（http和WebSocket请求）
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2022-10-03 20:46:59" itemprop="dateCreated datePublished" datetime="2022-10-03T20:46:59+08:00">2022-10-03</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-04 15:33:31" itemprop="dateModified" datetime="2022-10-04T15:33:31+08:00">2022-10-04</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flutter/" itemprop="url" rel="index">
+                    <span itemprop="name">Flutter</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>一转眼来到国庆假期，核酸未停疫情还在，假期是个好好充电的日子，休息之余总结之前的工作度过一个充实的假期，但愿疫情快点过去，大家能回归到正常生活吧<br>上一篇写到了flutter的开发框架封装，其中用到了DioManager这个类，这个类主要是利用flutter框架提供的dio对网络层http请求做一个封装，另外由于业务需要，也封装了WebSocket请求，这里整理了一下具体的封装流程，欢迎一起交流讨论～</p>
+<hr>
+<h1 id="http请求封装"><a href="#http请求封装" class="headerlink" title="http请求封装"></a>http请求封装</h1><h2 id="封装数据传输Bean基础类"><a href="#封装数据传输Bean基础类" class="headerlink" title="封装数据传输Bean基础类"></a>封装数据传输Bean基础类</h2><p>这里以WanAndroid的Api为例</p>
+<ul>
+<li>data是泛型T，返回的数据内容</li>
+<li>errorCode是后端返回的int类型的业务状态码</li>
+<li>errorMsg是错误信息<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BaseResult</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">  BaseResult(&#123;</span><br><span class="line">    <span class="keyword">this</span>.data,</span><br><span class="line">    <span class="keyword">this</span>.errorCode,</span><br><span class="line">    <span class="keyword">this</span>.errorMsg,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">factory</span> BaseResult.fromJson(<span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt; json) &#123;</span><br><span class="line">    <span class="keyword">return</span> BaseResult(</span><br><span class="line">        data: json[<span class="string">'data'</span>],</span><br><span class="line">        errorCode: json[<span class="string">'errorCode'</span>],</span><br><span class="line">        errorMsg: json[<span class="string">'errorMsg'</span>]);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/**</span></span></span><br><span class="line"><span class="comment"><span class="markdown"><span class="bullet">   * </span>不显示错误toast</span></span></span><br><span class="line"><span class="comment"><span class="markdown">   */</span></span></span><br><span class="line">  <span class="built_in">bool</span> isSuccess() &#123;</span><br><span class="line">    <span class="keyword">return</span> errorCode == <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  T? data;</span><br><span class="line">  <span class="built_in">int</span>? errorCode;</span><br><span class="line">  <span class="built_in">String</span>? errorMsg;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt; toJson() &#123;</span><br><span class="line">    <span class="keyword">final</span> map = &lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt;&#123;&#125;;</span><br><span class="line">    <span class="keyword">if</span> (data != <span class="keyword">null</span>) &#123;</span><br><span class="line">      map[<span class="string">'data'</span>] = data;</span><br><span class="line">    &#125;</span><br><span class="line">    map[<span class="string">'errorCode'</span>] = errorCode;</span><br><span class="line">    map[<span class="string">'errorMsg'</span>] = errorMsg;</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2>构造函数私有化，懒汉式构造单例<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> DioManager? instance;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> DioManager? getInstance() &#123;</span><br><span class="line">  instance ??= DioManager._internal();</span><br><span class="line">  <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">DioManager._internal();</span><br></pre></td></tr></table></figure>
+<h2 id="声明baseUrl和全局Header"><a href="#声明baseUrl和全局Header" class="headerlink" title="声明baseUrl和全局Header"></a>声明baseUrl和全局Header</h2><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="built_in">String</span> getAppUrl() &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"https://www.wanandroid.com"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt; baseHeaders = &#123;</span><br><span class="line">    <span class="string">"X-SYSTEM"</span>: <span class="string">"Android"</span>,</span><br><span class="line">    <span class="string">"LANG"</span>: <span class="string">"zh_CN"</span>,</span><br><span class="line">    <span class="string">"x-app-token"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="string">"X-VERSION"</span>: <span class="string">""</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="初始化DioManager"><a href="#初始化DioManager" class="headerlink" title="初始化DioManager"></a>初始化DioManager</h2>dio对象全局唯一，DioManager的构造函数中需要对options进行相关配置，全局header和baseUrl以及连接超时，接收超时，发送超时，添加日志拦截器，设置数据的返回格式为Json<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Dio dio = Dio();</span><br><span class="line"></span><br><span class="line">DioManager() &#123;</span><br><span class="line">  dio.options.headers = baseHeaders;</span><br><span class="line">  dio.options.baseUrl = getAppUrl();</span><br><span class="line">  dio.options.connectTimeout = <span class="number">15000</span>;</span><br><span class="line">  dio.options.receiveTimeout = <span class="number">15000</span>;</span><br><span class="line">  dio.options.sendTimeout = <span class="number">30000</span>;</span><br><span class="line">  <span class="comment">// 是否开启请求日志</span></span><br><span class="line">  <span class="keyword">if</span> (Global.isDebug) &#123;</span><br><span class="line">    dio.interceptors.addAll([LogInterceptor()]);</span><br><span class="line">  &#125;</span><br><span class="line">  dio.options.responseType = ResponseType.json;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="封装get和post请求"><a href="#封装get和post请求" class="headerlink" title="封装get和post请求"></a>封装get和post请求</h2></li>
+<li>post请求有表单和body两种方式，isForm为true时为表单请求默认为false</li>
+<li>_request方法中统一处理，调用dio的request方法传path，data，queryParameters和options发起请求，根据post和get请求配置options的method，根据post表单和body两种请求方式配置contentType，如果是get请求携带的参数传queryParameters，post请求携带的参数传data</li>
+<li>dio的request需要try-catch捕获异常，如果捕获到异常且needToast为true时通过toast展示异常code</li>
+<li>获取到data数据后，如果是string则直接反序列化，否则调用Bean基础类BaseResult的fromJson反序列化，反序列化操作需要try-catch捕获异常，如果成功直接返回结果，否则返回序列化失败，如果当前是错误状态码且needToast为true时通过toast展示toast<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">Future&lt;BaseResult&gt; getRequest(<span class="built_in">String</span> url, &#123;<span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt;? params&#125;) &#123;</span><br><span class="line">    <span class="keyword">return</span> _request(</span><br><span class="line">    url,</span><br><span class="line">    queryParameters: params,</span><br><span class="line">    options: Options(method: <span class="string">"GET"</span>),</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Future&lt;BaseResult&gt; postRequest(<span class="built_in">String</span> url,</span><br><span class="line">    &#123;<span class="keyword">dynamic</span> params, <span class="built_in">bool</span> isForm = <span class="keyword">false</span>&#125;) &#123;</span><br><span class="line">    <span class="keyword">final</span> contentType =</span><br><span class="line">        isForm ? Headers.formUrlEncodedContentType : Headers.jsonContentType;</span><br><span class="line">    <span class="keyword">final</span> options = Options(</span><br><span class="line">        method: <span class="string">"POST"</span>,</span><br><span class="line">        extra: &#123;<span class="string">"dio_content_type"</span>: contentType&#125;,</span><br><span class="line">        contentType: contentType);</span><br><span class="line">    <span class="keyword">return</span> _request(url, data: params, options: options);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Future&lt;BaseResult&gt; _request(<span class="built_in">String</span> path,</span><br><span class="line">    &#123;data,</span><br><span class="line">    <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt;? queryParameters,</span><br><span class="line">    Options? options,</span><br><span class="line">    <span class="built_in">bool</span> needToast = <span class="keyword">true</span>&#125;) <span class="keyword">async</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> Response response;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">    response = <span class="keyword">await</span> dio.request(path,</span><br><span class="line">        data: data, queryParameters: queryParameters, options: options);</span><br><span class="line">    &#125; on DioError <span class="keyword">catch</span> (error, stackTrace) &#123;</span><br><span class="line">    <span class="keyword">var</span> checkedError = _checkError(error);</span><br><span class="line">    <span class="keyword">final</span> statusCode =</span><br><span class="line">        checkedError.response?.statusCode ?? ResultCode.NO_NETWORK;</span><br><span class="line">    <span class="keyword">if</span> (needToast) &#123;</span><br><span class="line">        showToast(<span class="string">"network_error(<span class="subst">$&#123;statusCode.toString()&#125;</span>)"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (Global.isDebug) Future.error(checkedError, stackTrace);</span><br><span class="line">    <span class="keyword">return</span> BaseResult(errorCode: statusCode, errorMsg: error.message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">//防止解析失败</span></span><br><span class="line">    <span class="keyword">var</span> data = response.data;</span><br><span class="line">    <span class="keyword">if</span> (data <span class="keyword">is</span> <span class="built_in">String</span>) &#123;</span><br><span class="line">        data = json.decode(data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> baseResult = BaseResult.fromJson(data);</span><br><span class="line">    <span class="keyword">if</span> (!baseResult.isSuccess() &amp;&amp; needToast) &#123;</span><br><span class="line">        showToast(baseResult.errorMsg ?? <span class="string">""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> baseResult;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ex, stackTrace) &#123;</span><br><span class="line">    <span class="keyword">if</span> (Global.isDebug) Future.error(ex, stackTrace);</span><br><span class="line">    <span class="keyword">return</span> BaseResult(</span><br><span class="line">        errorCode: ResultCode.JSON_ERROR, errorMsg: ex.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="错误码统一处理"><a href="#错误码统一处理" class="headerlink" title="错误码统一处理"></a>错误码统一处理</h2>如果返回的DioError的response为空或statusCode为空统一处理为没有网络，其余的错误类型转换为自定义的错误码便于混合开发时统计<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">DioError _checkError(DioError error) &#123;</span><br><span class="line">    <span class="comment">// 如果response为空构造没有网络的response</span></span><br><span class="line">    <span class="comment">// 如果statusCode为空直接赋值为没有网络</span></span><br><span class="line">    <span class="comment"><span class="markdown">/// 统一认为是没有网络</span></span></span><br><span class="line">    Response errorResponse = error.response ??</span><br><span class="line">        Response(</span><br><span class="line">            statusCode: ResultCode.NO_NETWORK,</span><br><span class="line">            requestOptions: error.requestOptions);</span><br><span class="line"></span><br><span class="line">    errorResponse.statusCode ??= ResultCode.NO_NETWORK;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="markdown">/// 自定义请求超时错误码</span></span></span><br><span class="line">    <span class="keyword">if</span> (error.type == DioErrorType.connectTimeout) &#123;</span><br><span class="line">    errorResponse.statusCode = ResultCode.CONNECT_TIMEOUT;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error.type == DioErrorType.receiveTimeout) &#123;</span><br><span class="line">    errorResponse.statusCode = ResultCode.RECEIVE_TIMEOUT;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error.type == DioErrorType.sendTimeout) &#123;</span><br><span class="line">    errorResponse.statusCode = ResultCode.SEND_TIMEOUT;</span><br><span class="line">    &#125;</span><br><span class="line">    error.response = errorResponse;</span><br><span class="line">    <span class="keyword">return</span> error;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ResultCode</span> </span>&#123;</span><br><span class="line">    <span class="comment"><span class="markdown">/// 业务错误</span></span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> BIZ_ERROR = <span class="number">-111</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="markdown">/// json解析异常</span></span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> JSON_ERROR = <span class="number">-100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="markdown">/// 没有网络</span></span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> NO_NETWORK = <span class="number">-101</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="markdown">///连接超时</span></span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> CONNECT_TIMEOUT = <span class="number">-102</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="markdown">///It occurs when receiving timeout.</span></span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> RECEIVE_TIMEOUT = <span class="number">-103</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="markdown">///写数据超时</span></span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> SEND_TIMEOUT = <span class="number">-104</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+最后附上DioManager完整的源码：<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DioManager</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> DioManager? instance;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">factory</span> DioManager() &#123;</span><br><span class="line">    instance ??= DioManager();</span><br><span class="line">    <span class="keyword">return</span> instance!;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">String</span> getAppUrl() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"https://www.wanandroid.com"</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt; baseHeaders = &#123;</span><br><span class="line">    <span class="string">"X-SYSTEM"</span>: <span class="string">"Android"</span>,</span><br><span class="line">    <span class="string">"LANG"</span>: <span class="string">"zh_CN"</span>,</span><br><span class="line">    <span class="string">"x-app-token"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="string">"X-VERSION"</span>: <span class="string">""</span></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  Dio dio = Dio();</span><br><span class="line"></span><br><span class="line">  DioManager._internal() &#123;</span><br><span class="line">    dio.options.headers = baseHeaders;</span><br><span class="line">    dio.options.baseUrl = getAppUrl();</span><br><span class="line">    dio.options.connectTimeout = <span class="number">15000</span>;</span><br><span class="line">    dio.options.receiveTimeout = <span class="number">15000</span>;</span><br><span class="line">    dio.options.sendTimeout = <span class="number">30000</span>;</span><br><span class="line">    <span class="comment">// 是否开启请求日志</span></span><br><span class="line">    <span class="keyword">if</span> (Global.isDebug) &#123;</span><br><span class="line">      dio.interceptors.addAll([LogInterceptor()]);</span><br><span class="line">    &#125;</span><br><span class="line">    dio.options.responseType = ResponseType.json;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Future&lt;BaseResult&gt; getRequest(<span class="built_in">String</span> url, &#123;<span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt;? params&#125;) &#123;</span><br><span class="line">    <span class="keyword">return</span> _request(</span><br><span class="line">      url,</span><br><span class="line">      queryParameters: params,</span><br><span class="line">      options: Options(method: <span class="string">"GET"</span>),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Future&lt;BaseResult&gt; postRequest(<span class="built_in">String</span> url,</span><br><span class="line">      &#123;<span class="keyword">dynamic</span> params, <span class="built_in">bool</span> isForm = <span class="keyword">false</span>&#125;) &#123;</span><br><span class="line">    <span class="keyword">final</span> contentType =</span><br><span class="line">        isForm ? Headers.formUrlEncodedContentType : Headers.jsonContentType;</span><br><span class="line">    <span class="keyword">final</span> options = Options(</span><br><span class="line">        method: <span class="string">"POST"</span>,</span><br><span class="line">        extra: &#123;<span class="string">"dio_content_type"</span>: contentType&#125;,</span><br><span class="line">        contentType: contentType);</span><br><span class="line">    <span class="keyword">return</span> _request(url, data: params, options: options);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Future&lt;BaseResult&gt; _request(<span class="built_in">String</span> path,</span><br><span class="line">      &#123;data,</span><br><span class="line">      <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt;? queryParameters,</span><br><span class="line">      Options? options,</span><br><span class="line">      <span class="built_in">bool</span> needToast = <span class="keyword">true</span>&#125;) <span class="keyword">async</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> Response response;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      response = <span class="keyword">await</span> dio.request(path,</span><br><span class="line">          data: data, queryParameters: queryParameters, options: options);</span><br><span class="line">    &#125; on DioError <span class="keyword">catch</span> (error, stackTrace) &#123;</span><br><span class="line">      <span class="keyword">var</span> checkedError = _checkError(error);</span><br><span class="line">      <span class="keyword">final</span> statusCode =</span><br><span class="line">          checkedError.response?.statusCode ?? ResultCode.NO_NETWORK;</span><br><span class="line">      <span class="keyword">if</span> (needToast) &#123;</span><br><span class="line">        showToast(<span class="string">"network_error(<span class="subst">$&#123;statusCode.toString()&#125;</span>)"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (Global.isDebug) Future.error(checkedError, stackTrace);</span><br><span class="line">      <span class="keyword">return</span> BaseResult(errorCode: statusCode, errorMsg: error.message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">//防止解析失败</span></span><br><span class="line">      <span class="keyword">var</span> data = response.data;</span><br><span class="line">      <span class="keyword">if</span> (data <span class="keyword">is</span> <span class="built_in">String</span>) &#123;</span><br><span class="line">        data = json.decode(data);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">var</span> baseResult = BaseResult.fromJson(data);</span><br><span class="line">      <span class="keyword">if</span> (!baseResult.isNotShowNetErrorToast() &amp;&amp; needToast) &#123;</span><br><span class="line">        showToast(baseResult.errorMsg ?? <span class="string">""</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> baseResult;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ex, stackTrace) &#123;</span><br><span class="line">      <span class="keyword">if</span> (Global.isDebug) Future.error(ex, stackTrace);</span><br><span class="line">      <span class="keyword">return</span> BaseResult(</span><br><span class="line">          errorCode: ResultCode.JSON_ERROR, errorMsg: ex.toString());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  DioError _checkError(DioError error) &#123;</span><br><span class="line">    <span class="comment"><span class="markdown">/// 统一认为是没有网络</span></span></span><br><span class="line">    <span class="comment">// 如果response为空构造没有网络的response</span></span><br><span class="line">    <span class="comment">// 如果statusCode为空直接赋值为没有网络</span></span><br><span class="line">    Response errorResponse = error.response ??</span><br><span class="line">        Response(</span><br><span class="line">            statusCode: ResultCode.NO_NETWORK,</span><br><span class="line">            requestOptions: error.requestOptions);</span><br><span class="line"></span><br><span class="line">    errorResponse.statusCode ??= ResultCode.NO_NETWORK;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="markdown">/// 自定义请求超时错误码</span></span></span><br><span class="line">    <span class="keyword">if</span> (error.type == DioErrorType.connectTimeout) &#123;</span><br><span class="line">      errorResponse.statusCode = ResultCode.CONNECT_TIMEOUT;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error.type == DioErrorType.receiveTimeout) &#123;</span><br><span class="line">      errorResponse.statusCode = ResultCode.RECEIVE_TIMEOUT;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error.type == DioErrorType.sendTimeout) &#123;</span><br><span class="line">      errorResponse.statusCode = ResultCode.SEND_TIMEOUT;</span><br><span class="line">    &#125;</span><br><span class="line">    error.response = errorResponse;</span><br><span class="line">    <span class="keyword">return</span> error;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="markdown">/// 跟宿主定义的http网络错误码保持一致</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ResultCode</span> </span>&#123;</span><br><span class="line">  <span class="comment"><span class="markdown">/// 业务错误</span></span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> BIZ_ERROR = <span class="number">-111</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// json解析异常</span></span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> JSON_ERROR = <span class="number">-100</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 没有网络</span></span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> NO_NETWORK = <span class="number">-101</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">///连接超时</span></span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> CONNECT_TIMEOUT = <span class="number">-102</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">///It occurs when receiving timeout.</span></span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> RECEIVE_TIMEOUT = <span class="number">-103</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">///写数据超时</span></span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> SEND_TIMEOUT = <span class="number">-104</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="WebSocket请求封装"><a href="#WebSocket请求封装" class="headerlink" title="WebSocket请求封装"></a>WebSocket请求封装</h1><h2 id="封装数据传输Bean基础类-1"><a href="#封装数据传输Bean基础类-1" class="headerlink" title="封装数据传输Bean基础类"></a>封装数据传输Bean基础类</h2><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WsBaseBean</span> </span>&#123;</span><br><span class="line">  Decimal? changeRate;</span><br><span class="line">  Decimal? lastTradedPrice;</span><br><span class="line">  <span class="built_in">String</span>? symbolCode;</span><br><span class="line">  Decimal? volValue;</span><br><span class="line"></span><br><span class="line">  WsBaseBean(</span><br><span class="line">      &#123;<span class="keyword">this</span>.changeRate, <span class="keyword">this</span>.lastTradedPrice, <span class="keyword">this</span>.symbolCode, <span class="keyword">this</span>.volValue&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">factory</span> WsBaseBean.fromJson(<span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="keyword">dynamic</span>&gt; json) &#123;</span><br><span class="line">    <span class="keyword">return</span> WsBaseBean(</span><br><span class="line">        changeRate: Decimal.tryParse(<span class="string">"<span class="subst">$&#123;json[<span class="string">"changeRate"</span>] ?? <span class="number">0.0</span>&#125;</span>"</span>),</span><br><span class="line">        lastTradedPrice: Decimal.tryParse(<span class="string">"<span class="subst">$&#123;json[<span class="string">"lastTradedPrice"</span>] ?? <span class="number">0.0</span>&#125;</span>"</span>),</span><br><span class="line">        symbolCode: json[<span class="string">"symbolCode"</span>],</span><br><span class="line">        volValue: Decimal.tryParse(<span class="string">"<span class="subst">$&#123;json[<span class="string">"volValue"</span>] ?? <span class="number">0.0</span>&#125;</span>"</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="单例模式-1"><a href="#单例模式-1" class="headerlink" title="单例模式"></a>单例模式</h2><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="markdown">/// 单例对象</span></span></span><br><span class="line"><span class="keyword">static</span> WebSocketUtility? _socket;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="markdown">/// 内部构造方法，可避免外部暴露构造函数，进行实例化</span></span></span><br><span class="line">WebSocketUtility._internal();</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="markdown">/// 获取单例内部方法</span></span></span><br><span class="line"><span class="keyword">factory</span> WebSocketUtility() &#123;</span><br><span class="line">  <span class="comment">// 只能有一个实例</span></span><br><span class="line">  _socket ??= WebSocketUtility._internal();</span><br><span class="line">  <span class="keyword">return</span> _socket!;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="声明Websocket地址和连接状态"><a href="#声明Websocket地址和连接状态" class="headerlink" title="声明Websocket地址和连接状态"></a>声明Websocket地址和连接状态</h2><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="built_in">String</span> _SOCKET_URL = <span class="string">'ws://192.168.3.123:8181/test'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> SocketStatus &#123;</span><br><span class="line">  socketStatusConnected, <span class="comment">// 已连接</span></span><br><span class="line">  socketStatusFailed, <span class="comment">// 失败</span></span><br><span class="line">  socketStatusClosed, <span class="comment">// 连接关闭</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="声明变量"><a href="#声明变量" class="headerlink" title="声明变量"></a>声明变量</h2></li>
+<li>定义回调，接连错误，接收消息，开始连接</li>
+<li>定义IOWebSocketChannel实现WebSocket通信</li>
+<li>定义心跳定时器和心跳间隔，每隔固定时长发送心跳</li>
+<li>定义重连定时器和当前重连次数和最大重连次数，未达到最大重连次数时每隔固定时长重新连接</li>
+<li>定义当前socket的连接状态<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">IOWebSocketChannel? _webSocket; <span class="comment">// WebSocket</span></span><br><span class="line">SocketStatus? _socketStatus; <span class="comment">// socket状态</span></span><br><span class="line">Timer? _heartBeat; <span class="comment">// 心跳定时器</span></span><br><span class="line"><span class="keyword">final</span> <span class="built_in">int</span> _heartTimes = <span class="number">3000</span>; <span class="comment">// 心跳间隔(毫秒)</span></span><br><span class="line"><span class="keyword">final</span> <span class="built_in">int</span> _reconnectMaxCount = <span class="number">60</span>; <span class="comment">// 重连次数，默认60次</span></span><br><span class="line"><span class="built_in">int</span> _reconnectTimes = <span class="number">0</span>; <span class="comment">// 重连计数器</span></span><br><span class="line">Timer? _reconnectTimer; <span class="comment">// 重连定时器</span></span><br><span class="line">late <span class="built_in">Function</span> onError; <span class="comment">// 连接错误回调</span></span><br><span class="line">late <span class="built_in">Function</span> onOpen; <span class="comment">// 开始连接回调</span></span><br><span class="line">late <span class="built_in">Function</span> onMessage; <span class="comment">// 接收消息回调</span></span><br></pre></td></tr></table></figure>
+<h2 id="开始连接"><a href="#开始连接" class="headerlink" title="开始连接"></a>开始连接</h2></li>
+<li>初始化IOWebSocketChannel开始连接</li>
+<li>设置_socketStatus连接状态</li>
+<li>重置重连计数和定时器</li>
+<li>调用onOpen回调</li>
+<li>接收消息回调处理，收到消息调onMessage回调，连接错误调onError回调，连接推出时尝试重连<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="markdown">/// 开启WebSocket连接</span></span></span><br><span class="line"><span class="keyword">void</span> openSocket() &#123;</span><br><span class="line">  closeSocket();</span><br><span class="line">  _webSocket = IOWebSocketChannel.connect(_SOCKET_URL);</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">'WebSocket连接成功: <span class="subst">$_SOCKET_URL</span>'</span>);</span><br><span class="line">  <span class="comment">// 连接成功，返回WebSocket实例</span></span><br><span class="line">  _socketStatus = SocketStatus.socketStatusConnected;</span><br><span class="line">  <span class="comment">// 连接成功，重置重连计数器</span></span><br><span class="line">  _reconnectTimes = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> (_reconnectTimer != <span class="keyword">null</span>) &#123;</span><br><span class="line">    _reconnectTimer?.cancel();</span><br><span class="line">    _reconnectTimer = <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  onOpen();</span><br><span class="line">  <span class="comment">// 接收消息</span></span><br><span class="line">  _webSocket?.stream.listen((data) =&gt; onMessage(data), onError: (e) &#123;</span><br><span class="line">    WebSocketChannelException ex = e;</span><br><span class="line">    _socketStatus = SocketStatus.socketStatusFailed;</span><br><span class="line">    onError(ex.message);</span><br><span class="line">    closeSocket();</span><br><span class="line">  &#125;, onDone: () &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">'closed'</span>);</span><br><span class="line">    reconnect();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="销毁心跳"><a href="#销毁心跳" class="headerlink" title="销毁心跳"></a>销毁心跳</h2>取消心跳定时器<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> destroyHeartBeat() &#123;</span><br><span class="line">  <span class="keyword">if</span> (_heartBeat != <span class="keyword">null</span>) &#123;</span><br><span class="line">    _heartBeat?.cancel();</span><br><span class="line">    _heartBeat = <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="初始化并开启心跳"><a href="#初始化并开启心跳" class="headerlink" title="初始化并开启心跳"></a>初始化并开启心跳</h2>如果心跳定时器已经初始化则销毁，重新初始化并开启心跳发送任务<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> initHeartBeat() &#123;</span><br><span class="line">  destroyHeartBeat();</span><br><span class="line">  _heartBeat = Timer.periodic(<span class="built_in">Duration</span>(milliseconds: _heartTimes), (timer) &#123;</span><br><span class="line">    sendMessage(<span class="string">'&#123;"module": "HEART_CHECK", "message": "请求心跳"&#125;'</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="发送WebSocket消息"><a href="#发送WebSocket消息" class="headerlink" title="发送WebSocket消息"></a>发送WebSocket消息</h2>如果当前的连接状态是已连接则发送消息，否则打印当前状态<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="markdown">/// 发送WebSocket消息</span></span></span><br><span class="line"> <span class="keyword">void</span> sendMessage(message) &#123;</span><br><span class="line">   <span class="keyword">if</span> (_webSocket != <span class="keyword">null</span>) &#123;</span><br><span class="line">     <span class="keyword">switch</span> (_socketStatus) &#123;</span><br><span class="line">       <span class="keyword">case</span> SocketStatus.socketStatusConnected:</span><br><span class="line">         <span class="built_in">print</span>(<span class="string">'发送中：'</span> + message);</span><br><span class="line">         _webSocket?.sink.add(message);</span><br><span class="line">         <span class="keyword">break</span>;</span><br><span class="line">       <span class="keyword">case</span> SocketStatus.socketStatusClosed:</span><br><span class="line">         <span class="built_in">print</span>(<span class="string">'连接已关闭'</span>);</span><br><span class="line">         <span class="keyword">break</span>;</span><br><span class="line">       <span class="keyword">case</span> SocketStatus.socketStatusFailed:</span><br><span class="line">         <span class="built_in">print</span>(<span class="string">'发送失败'</span>);</span><br><span class="line">         <span class="keyword">break</span>;</span><br><span class="line">       <span class="keyword">default</span>:</span><br><span class="line">         <span class="keyword">break</span>;</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="重连机制"><a href="#重连机制" class="headerlink" title="重连机制"></a>重连机制</h2>如果当前未达到最大连接次数则重连次数+1，开启重连定时器，执行WebSocket连接，否则如果重连定时器不为空则销毁<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="markdown">/// 重连机制</span></span></span><br><span class="line">  <span class="keyword">void</span> reconnect() &#123;</span><br><span class="line">    <span class="keyword">if</span> (_reconnectTimes &lt; _reconnectMaxCount) &#123;</span><br><span class="line">      _reconnectTimes++;</span><br><span class="line">      _reconnectTimer =</span><br><span class="line">          Timer.periodic(<span class="built_in">Duration</span>(milliseconds: _heartTimes), (timer) &#123;</span><br><span class="line">        openSocket();</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (_reconnectTimer != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">'重连次数超过最大次数'</span>);</span><br><span class="line">        _reconnectTimer?.cancel();</span><br><span class="line">        _reconnectTimer = <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+最后附上WebSocketUtility完整的源码:<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="markdown">/// WebSocket地址</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="built_in">String</span> _SOCKET_URL = <span class="string">'ws://192.168.3.123:8181/test'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="markdown">/// WebSocket状态</span></span></span><br><span class="line"><span class="keyword">enum</span> SocketStatus &#123;</span><br><span class="line">  socketStatusConnected, <span class="comment">// 已连接</span></span><br><span class="line">  socketStatusFailed, <span class="comment">// 失败</span></span><br><span class="line">  socketStatusClosed, <span class="comment">// 连接关闭</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WebSocketUtility</span> </span>&#123;</span><br><span class="line">  <span class="comment"><span class="markdown">/// 单例对象</span></span></span><br><span class="line">  <span class="keyword">static</span> WebSocketUtility? _socket;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 内部构造方法，可避免外部暴露构造函数，进行实例化</span></span></span><br><span class="line">  WebSocketUtility._internal();</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 获取单例内部方法</span></span></span><br><span class="line">  <span class="keyword">factory</span> WebSocketUtility() &#123;</span><br><span class="line">    <span class="comment">// 只能有一个实例</span></span><br><span class="line">    _socket ??= WebSocketUtility._internal();</span><br><span class="line">    <span class="keyword">return</span> _socket!;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  IOWebSocketChannel? _webSocket; <span class="comment">// WebSocket</span></span><br><span class="line">  SocketStatus? _socketStatus; <span class="comment">// socket状态</span></span><br><span class="line">  Timer? _heartBeat; <span class="comment">// 心跳定时器</span></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">int</span> _heartTimes = <span class="number">3000</span>; <span class="comment">// 心跳间隔(毫秒)</span></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">int</span> _reconnectMaxCount = <span class="number">60</span>; <span class="comment">// 重连次数，默认60次</span></span><br><span class="line">  <span class="built_in">int</span> _reconnectTimes = <span class="number">0</span>; <span class="comment">// 重连计数器</span></span><br><span class="line">  Timer? _reconnectTimer; <span class="comment">// 重连定时器</span></span><br><span class="line">  late <span class="built_in">Function</span> onError; <span class="comment">// 连接错误回调</span></span><br><span class="line">  late <span class="built_in">Function</span> onOpen; <span class="comment">// 连接开启回调</span></span><br><span class="line">  late <span class="built_in">Function</span> onMessage; <span class="comment">// 接收消息回调</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 初始化WebSocket</span></span></span><br><span class="line">  <span class="keyword">void</span> initWebSocket(</span><br><span class="line">      &#123;required <span class="built_in">Function</span> onOpen,</span><br><span class="line">      required <span class="built_in">Function</span> onMessage,</span><br><span class="line">      required <span class="built_in">Function</span> onError&#125;) &#123;</span><br><span class="line">    <span class="keyword">this</span>.onOpen = onOpen;</span><br><span class="line">    <span class="keyword">this</span>.onMessage = onMessage;</span><br><span class="line">    <span class="keyword">this</span>.onError = onError;</span><br><span class="line">    openSocket();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 开启WebSocket连接</span></span></span><br><span class="line">  <span class="keyword">void</span> openSocket() &#123;</span><br><span class="line">    closeSocket();</span><br><span class="line">    _webSocket = IOWebSocketChannel.connect(_SOCKET_URL);</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">'WebSocket连接成功: <span class="subst">$_SOCKET_URL</span>'</span>);</span><br><span class="line">    <span class="comment">// 连接成功，返回WebSocket实例</span></span><br><span class="line">    _socketStatus = SocketStatus.socketStatusConnected;</span><br><span class="line">    <span class="comment">// 连接成功，重置重连计数器</span></span><br><span class="line">    _reconnectTimes = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (_reconnectTimer != <span class="keyword">null</span>) &#123;</span><br><span class="line">      _reconnectTimer?.cancel();</span><br><span class="line">      _reconnectTimer = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    onOpen();</span><br><span class="line">    <span class="comment">// 接收消息</span></span><br><span class="line">    _webSocket?.stream.listen((data) =&gt; onMessage(data), onError: (e) &#123;</span><br><span class="line">      WebSocketChannelException ex = e;</span><br><span class="line">      _socketStatus = SocketStatus.socketStatusFailed;</span><br><span class="line">      onError(ex.message);</span><br><span class="line">      closeSocket();</span><br><span class="line">    &#125;, onDone: () &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">'closed'</span>);</span><br><span class="line">      reconnect();</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 初始化心跳</span></span></span><br><span class="line">  <span class="keyword">void</span> initHeartBeat() &#123;</span><br><span class="line">    destroyHeartBeat();</span><br><span class="line">    _heartBeat = Timer.periodic(<span class="built_in">Duration</span>(milliseconds: _heartTimes), (timer) &#123;</span><br><span class="line">      sendMessage(<span class="string">'&#123;"module": "HEART_CHECK", "message": "请求心跳"&#125;'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 销毁心跳</span></span></span><br><span class="line">  <span class="keyword">void</span> destroyHeartBeat() &#123;</span><br><span class="line">    <span class="keyword">if</span> (_heartBeat != <span class="keyword">null</span>) &#123;</span><br><span class="line">      _heartBeat?.cancel();</span><br><span class="line">      _heartBeat = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 关闭WebSocket</span></span></span><br><span class="line">  <span class="keyword">void</span> closeSocket() &#123;</span><br><span class="line">    <span class="keyword">if</span> (_webSocket != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">'WebSocket连接关闭'</span>);</span><br><span class="line">      _webSocket?.sink.close();</span><br><span class="line">      destroyHeartBeat();</span><br><span class="line">      _socketStatus = SocketStatus.socketStatusClosed;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 发送WebSocket消息</span></span></span><br><span class="line">  <span class="keyword">void</span> sendMessage(message) &#123;</span><br><span class="line">    <span class="keyword">if</span> (_webSocket != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">switch</span> (_socketStatus) &#123;</span><br><span class="line">        <span class="keyword">case</span> SocketStatus.socketStatusConnected:</span><br><span class="line">          <span class="built_in">print</span>(<span class="string">'发送中：'</span> + message);</span><br><span class="line">          _webSocket?.sink.add(message);</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SocketStatus.socketStatusClosed:</span><br><span class="line">          <span class="built_in">print</span>(<span class="string">'连接已关闭'</span>);</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SocketStatus.socketStatusFailed:</span><br><span class="line">          <span class="built_in">print</span>(<span class="string">'发送失败'</span>);</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment"><span class="markdown">/// 重连机制</span></span></span><br><span class="line">  <span class="keyword">void</span> reconnect() &#123;</span><br><span class="line">    <span class="keyword">if</span> (_reconnectTimes &lt; _reconnectMaxCount) &#123;</span><br><span class="line">      _reconnectTimes++;</span><br><span class="line">      _reconnectTimer =</span><br><span class="line">          Timer.periodic(<span class="built_in">Duration</span>(milliseconds: _heartTimes), (timer) &#123;</span><br><span class="line">        openSocket();</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (_reconnectTimer != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">'重连次数超过最大次数'</span>);</span><br><span class="line">        _reconnectTimer?.cancel();</span><br><span class="line">        _reconnectTimer = <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="在Widget中使用"><a href="#在Widget中使用" class="headerlink" title="在Widget中使用"></a>在Widget中使用</h2>在initState中初始化WebSocket并在连接后开启心跳发送任务，在消息接收中反序列化刷新页面数据<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SocketTestWidget</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> SocketTestWidget(&#123;Key? key&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  State&lt;SocketTestWidget&gt; createState() =&gt; _SocketTestWidgetState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_SocketTestWidgetState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">SocketTestWidget</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">dynamic</span> data;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> initState() &#123;</span><br><span class="line">    <span class="keyword">super</span>.initState();</span><br><span class="line">    WebSocketUtility().initWebSocket(onOpen: () &#123;</span><br><span class="line">      WebSocketUtility().initHeartBeat();</span><br><span class="line">    &#125;, onMessage: (data) &#123;</span><br><span class="line">      WsBaseBean wsBaseBean = WsBaseBean.fromJson(jsonDecode(data));</span><br><span class="line">      setState(() &#123;</span><br><span class="line">        <span class="keyword">this</span>.data = wsBaseBean.changeRate;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;, onError: (e) &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">"WebSocketUtility"</span> + e);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> dispose() &#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> implement dispose</span></span><br><span class="line">    <span class="keyword">super</span>.dispose();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Scaffold(</span><br><span class="line">      appBar: AppBar(</span><br><span class="line">        title: <span class="keyword">const</span> Text(<span class="string">"SocketTest"</span>),</span><br><span class="line">      ),</span><br><span class="line">      body: Center(</span><br><span class="line">        child: ListView(</span><br><span class="line">          children: [Text(<span class="string">'收到数据: <span class="subst">$&#123;data&#125;</span>'</span>)],</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+最后我们可以用python写个简单的服务端脚本测试一下<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">import</span> websockets</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line">websocket_users = set()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 接收客户端消息并处理</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">recv_user_msg</span><span class="params">(websocket)</span>:</span></span><br><span class="line"> <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">  recv_text = <span class="keyword">await</span> websocket.recv()</span><br><span class="line">  print(<span class="string">"recv_text:"</span>, recv_text)</span><br><span class="line">  changeRate = random.randint(<span class="number">2000</span>, <span class="number">3000</span>) + random.random()</span><br><span class="line">  lastTradedPrice = random.randint(<span class="number">1000</span>, <span class="number">2000</span>) + random.random()</span><br><span class="line">  volValue = random.randint(<span class="number">4000</span>, <span class="number">5000</span>) + random.random()</span><br><span class="line">  recv_text = &#123;<span class="string">'changeRate'</span> : changeRate, <span class="string">'lastTradedPrice'</span> : lastTradedPrice, <span class="string">'symbolCode'</span> : <span class="string">"BTC-USDT"</span>, <span class="string">'volValue'</span> : volValue&#125;</span><br><span class="line">  data = json.dumps(recv_text)</span><br><span class="line">  print(data)</span><br><span class="line">  response_text = data</span><br><span class="line">  print(<span class="string">"response_text:"</span>, <span class="string">f"Server return: <span class="subst">&#123;data&#125;</span>"</span>)</span><br><span class="line">  <span class="keyword">await</span> websocket.send(response_text)</span><br><span class="line">  time.sleep(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 服务器端主逻辑</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(websocket, path)</span>:</span></span><br><span class="line"> <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">  <span class="keyword">try</span>:</span><br><span class="line">   <span class="keyword">await</span> recv_user_msg(websocket)</span><br><span class="line">  <span class="keyword">except</span> websockets.ConnectionClosed:</span><br><span class="line">   print(<span class="string">"ConnectionClosed..."</span>, path) <span class="comment"># 链接断开</span></span><br><span class="line">   print(<span class="string">"websocket_users old:"</span>, websocket_users)</span><br><span class="line">   websocket_users.remove(websocket)</span><br><span class="line">   print(<span class="string">"websocket_users new:"</span>, websocket_users)</span><br><span class="line">   <span class="keyword">break</span></span><br><span class="line">  <span class="keyword">except</span> websockets.InvalidState:</span><br><span class="line">   print(<span class="string">"InvalidState..."</span>) <span class="comment"># 无效状态</span></span><br><span class="line">   <span class="keyword">break</span></span><br><span class="line">  <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">   print(<span class="string">"Exception:"</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line"> print(<span class="string">"192.168.3.123:8181 websocket..."</span>)</span><br><span class="line"> asyncio.get_event_loop().run_until_complete(websockets.serve(run, <span class="string">"192.168.3.123"</span>, <span class="number">8181</span>))</span><br><span class="line"> asyncio.get_event_loop().run_forever()</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Architecture/" rel="tag"># Architecture</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2022/09/17/FlutterMviGetX/" rel="next" title="MVI+GetX打造Flutter开发架构">
+                  <i class="fa fa-chevron-left"></i> MVI+GetX打造Flutter开发架构
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#http请求封装"><span class="nav-number">1.</span> <span class="nav-text">http请求封装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#封装数据传输Bean基础类"><span class="nav-number">1.1.</span> <span class="nav-text">封装数据传输Bean基础类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单例模式"><span class="nav-number">1.2.</span> <span class="nav-text">单例模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#声明baseUrl和全局Header"><span class="nav-number">1.3.</span> <span class="nav-text">声明baseUrl和全局Header</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化DioManager"><span class="nav-number">1.4.</span> <span class="nav-text">初始化DioManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#封装get和post请求"><span class="nav-number">1.5.</span> <span class="nav-text">封装get和post请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#错误码统一处理"><span class="nav-number">1.6.</span> <span class="nav-text">错误码统一处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WebSocket请求封装"><span class="nav-number">2.</span> <span class="nav-text">WebSocket请求封装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#封装数据传输Bean基础类-1"><span class="nav-number">2.1.</span> <span class="nav-text">封装数据传输Bean基础类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单例模式-1"><span class="nav-number">2.2.</span> <span class="nav-text">单例模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#声明Websocket地址和连接状态"><span class="nav-number">2.3.</span> <span class="nav-text">声明Websocket地址和连接状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#声明变量"><span class="nav-number">2.4.</span> <span class="nav-text">声明变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始连接"><span class="nav-number">2.5.</span> <span class="nav-text">开始连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#销毁心跳"><span class="nav-number">2.6.</span> <span class="nav-text">销毁心跳</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化并开启心跳"><span class="nav-number">2.7.</span> <span class="nav-text">初始化并开启心跳</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送WebSocket消息"><span class="nav-number">2.8.</span> <span class="nav-text">发送WebSocket消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重连机制"><span class="nav-number">2.9.</span> <span class="nav-text">重连机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在Widget中使用"><span class="nav-number">2.10.</span> <span class="nav-text">在Widget中使用</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: 'eae2a03a5281579b391173f37b344f35',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

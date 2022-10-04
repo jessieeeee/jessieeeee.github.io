@@ -235,6 +235,240 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/03/SimpleOne/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            
+            <a href="/2018/01/03/SimpleOne/" class="post-title-link" itemprop="url">SimpleOne-one一个高仿开源项目</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2018-01-03 20:03:19" itemprop="dateCreated datePublished" datetime="2018-01-03T20:03:19+08:00">2018-01-03</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-11-02 23:36:56" itemprop="dateModified" datetime="2018-11-02T23:36:56+08:00">2018-11-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ReactNative/" itemprop="url" rel="index">
+                    <span itemprop="name">ReactNative</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<p>随着混合开发越来越火，逐渐成为行业发展趋势，ReactNative也一直保持着快速更新的节奏，”learn once,write anywhere”这个宣传语一直吸引着我，公司最近也不忙了，一直想入坑的我终于找到了一个合适的时间点，很长一段时间没有更新博客了，因为在学习ReactNative这个框架，由于喜欢one一个的ui界面，做了这个开源项目，这是一个高仿韩寒one一个的开源项目，在此声明，本项目完全以学习为目的，不侵犯one一个的利益，遵守开源协议，所有接口全部来源于one一个android版4.3.4抓包获得，项目中使用的素材也是解压apk文件获得，不打算支持登录后的评论,  分享,  点赞操作,  原版是使用android原生实现的，本项目用ReactNative框架实现，还使用了ReactNative的第三方库，sdk接入是调用了原生android sdk模块，此项目目前只对android进行了适配，ios目前尚未适配，项目结构并非标准的ReactNative项目结构，而是android原生项目结构引入ReactNative框架的混合开发结构。我学习ReactNative不久，以前是做android原生开发的，如果有写的不好的地方，或者是你有更好的实现方式，希望一起学习讨论。</p>
+<hr>
+<p>先上目前的效果图：</p>
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone1.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone2.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone3.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone4.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone5.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone6.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone7.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone8.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone9.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone10.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone12.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone13.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone14.jpg" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone15.png" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone16.png" width="120" height="180" ></div>
+
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/simpleone17.png" width="120" height="180" ></div>
+<div style="clear:both;"></div>
+
+<h1 id="如何运行"><a href="#如何运行" class="headerlink" title="如何运行"></a>如何运行</h1><p>确保你的编译设备和运行设备在同一网络下,并且配置开发设置中的主机ip和端口号(Dev settings -&gt; Debug server host &amp; port for device)</p>
+<ol>
+<li>在命令行输入, react-native start</li>
+<li>选择你的运行设备, run app</li>
+</ol>
+<h1 id="api接口清单"><a href="#api接口清单" class="headerlink" title="api接口清单"></a>api接口清单</h1><p>这里对提取出的api接口做个记录，本人以学习为目的，希望读者也不要用于任何商业项目中，目前列出的接口是基于4.3.4的android版：</p>
+<ol>
+<li><p>one首页（第一页，date=0，更多页date=yyyy-MM-dd）</p>
+<p><code>http://v3.wufazhuce.com:8000/api/channel/one/{date}/0</code></p>
+</li>
+<li><p>专题列表（第一页，last_id=0，更多页last_id=上次请求结束的id）</p>
+<p><code>http://v3.wufazhuce.com:8000/api/banner/list/4?last_id={last_id}</code></p>
+</li>
+<li><p>横着的列表（所有人问所有人）</p>
+<p><code>http://v3.wufazhuce.com:8000/api/banner/list/5</code></p>
+</li>
+<li><p>近期热门作者</p>
+<p><code>http://v3.wufazhuce.com:8000/api/author/hot</code></p>
+</li>
+<li><p>one首页菜单跳转</p>
+<ul>
+<li><p>问答<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/question/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/question/htmlcontent/{content_id}</code></p>
+</li>
+<li><p>连载<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/serial/{content_id}/0</code><br><code>http://v3.wufazhuce.com:8000/api/serialcontent/htmlcontent/{content_id}</code></p>
+</li>
+<li><p>音乐<br><code>http://v3.wufazhuce.com:8000/api/music/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/music/{content_id}/0</code></p>
+</li>
+<li><p>电影<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/movie/{content_id}/0</code><br><code>http://v3.wufazhuce.com:8000/api/movie/htmlcontent/{content_id}</code></p>
+</li>
+<li><p>文章内容和作者<br><code>http://v3.wufazhuce.com:8000/api/essay/htmlcontent/{content_id}</code><br>文章评论<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/essay/{content_id}/0</code></p>
+</li>
+</ul>
+</li>
+<li><p>搜索模块分类跳转（category_id，0图文 3问答 1阅读 2连载 5影视 4音乐 8电台）</p>
+<p><code>http://v3.wufazhuce.com:8000/api/all/list/{category_id}</code></p>
+</li>
+<li><p>one首页和专题列表的item点击阅读跳转详情和获取评论</p>
+<ul>
+<li><p>问答<br><code>http://v3.wufazhuce.com:8000/api/question/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/question/{content_id}</code></p>
+</li>
+<li><p>连载<br><code>http://v3.wufazhuce.com:8000/api/serialcontent/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/serial/{content_id}/0</code></p>
+</li>
+<li><p>音乐<br><code>http://v3.wufazhuce.com:8000/api/music/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/music/{content_id}/0</code></p>
+</li>
+<li><p>电影<br><code>http://v3.wufazhuce.com:8000/api/movie/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/movie/{content_id}/0</code></p>
+</li>
+<li><p>文章内容和作者<br><code>http://v3.wufazhuce.com:8000/api/essay/htmlcontent/{content_id}</code></p>
+</li>
+<li><p>文章评论<br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/essay/{content_id}/0</code></p>
+</li>
+<li><p>电台<br><code>http://v3.wufazhuce.com:8000/api/radio/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/radio/{content_id}/0</code></p>
+</li>
+<li><p>专题<br><code>http://v3.wufazhuce.com:8000/api/topic/htmlcontent/{content_id}</code><br><code>http://v3.wufazhuce.com:8000/api/comment/praiseandtime/topic/{content_id}/0</code></p>
+</li>
+</ul>
+</li>
+<li><p>作者页<br><code>http://v3.wufazhuce.com:8000/api/author/works?page_num={page_num}&amp;author_id={author_id}&amp;version=4.3.4</code></p>
+</li>
+</ol>
+<h1 id="功能模块："><a href="#功能模块：" class="headerlink" title="功能模块："></a>功能模块：</h1><p>根据android 4.3.4整理：</p>
+<p>一级界面：</p>
+<p>欢迎界面，按星期几展示不同的欢迎界面</p>
+<p>one分页，也是首页，展示今日列表（插图，one-story, 问答，文章，影视，音乐，电台），折叠菜单，可翻页查看以前的列表，每翻一页，查看前一天的内容，列表头部可以下拉刷新。</p>
+<p>all分页，长列表展示，顶部banner，分类导航，专题列表（下拉到底部以后，可加载更多），列表头部可以下拉刷新。</p>
+<p>me分页，个人资料页，未登录时，为登录界面入口和设置入口</p>
+<p>二级界面：</p>
+<p>设置界面</p>
+<p>阅读界面</p>
+<p>登录界面</p>
+<p>分享界面</p>
+<p>搜索界面</p>
+<p>第三方平台分享，登录sdk对接</p>
+<h2 id="当前未完成部分："><a href="#当前未完成部分：" class="headerlink" title="当前未完成部分："></a>当前未完成部分：</h2><p>阅读界面js回调（包含音乐播放）夜间模式</p>
+<p>设置模块缓存</p>
+<p>阅读界面交互动画</p>
+<h1 id="目前用到的技术："><a href="#目前用到的技术：" class="headerlink" title="目前用到的技术："></a>目前用到的技术：</h1><p>由于我最初学习的时候资料是用ES5进行编写的，这是我自学ReactNative后的第一个项目，所以本项目ES5和ES6混用，我知道这样不是很好，有时间了会全部使用ES6</p>
+<p>react-native对原生组件进行了封装。</p>
+<ol>
+<li>基本控件的使用 View，Text，Image，ScrollView，ListView，WebView，Clipboard，Platform，TouchableOpacity，ActivityIndicator，StatusBar，SliderBar。</li>
+<li>动画的调用，Animated，Easing</li>
+<li>计时器的使用，<del>react-timer-mixin</del> 改为ES6语法，该模块移除</li>
+<li>react-native调用原生模块（原生toast，调android第三方分享sdk）</li>
+<li>底部导航栏TabNavigator，页面导航Navigator</li>
+<li>子组件的封装，调用以及回调</li>
+<li>父组件和子组件之间的参数传递</li>
+<li>页面导航跳转时的参数传递，以及回调</li>
+<li>下拉刷新，第三方react-native控件的引入( react-native-pull )，并进行部分修改</li>
+<li>自定义折叠控件（one分页中的菜单）实现折叠动画</li>
+<li>自定义banner控件，实现all分页中的广告栏展示</li>
+<li>自定义加载更多控件，监听ScrollView的滑动，实现加载更多</li>
+<li>自定义阅读界面loading时的帧动画展示</li>
+<li>半透明界面，悬浮窗实现，自定义单选对话框实现</li>
+<li>相册，拍照实现，react-native第三方库接入</li>
+<li>调用基于Android原生封装的ui控件</li>
+<li>在Android原生项目的基础上引入react-native框架进行混合开发</li>
+<li>音乐专辑封面旋转动画（解决动画循环播放中的暂停与播放事件），通过直接修改属性setNativeProps实现帧动画提高性能</li>
+<li>加入mobx实现多界面同时刷新（2018.5.2更新）</li>
+<li>利用高阶组件封装base组件，实现组件的公共逻辑（2018.5.2更新）</li>
+<li>实现one分页标题(日期数字)切换动画 (2018.6.28更新)</li>
+</ol>
+<p>这个项目让初学者的我受益良多，现在的react-native第三方框架还不是很多，很多时候要自定义，而且在Android上的坑还是有很多，不过react-native的更新速度也是相当快的。后面有时间会陆续追加一些此项目中自定义部分的详细技术文章。<br>最近由于公司的项目需求，入坑了微信小程序，年前忙项目进度，估计短期内没有时间更新这个项目了，有时间会上传目前的动画效果图。</p>
+<p>此项目的github地址<a href="https://github.com/jessieeeee/SimpleOne" target="_blank" rel="noopener">传送门</a>，欢迎一起交流和学习。</p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+    
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/01/RxJavaStudy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1796,218 +2030,6 @@
   
 
     
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/07/AOP-Start/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jessie Kate">
-      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JessieK's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            
-            <a href="/2017/09/07/AOP-Start/" class="post-title-link" itemprop="url">Android AOP 学习入门</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2017-09-07 21:25:06" itemprop="dateCreated datePublished" datetime="2017-09-07T21:25:06+08:00">2017-09-07</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2018-10-30 09:02:37" itemprop="dateModified" datetime="2018-10-30T09:02:37+08:00">2018-10-30</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <hr>
-<p>最近听说朋友面试被问到关于AOP的一些问题，我平时也没有接触到，google一下，发现AOP功能确实强大。AOP全称Aspect Oriented Programming，也就是面向切面编程，与我们平时用的OOP面向对象编程不同的是，针对同一类问题统一处理。在android中主要应用于日志埋点、性能监控、动态权限控制、代码调试，可以在非入侵项目源代码的条件下，完美的实现以上功能。将它应用于大项目中，既能达到解耦的效果，又能提高开发效率。发现网上并没有很系统的入门文章，在此做一个简单的学习记录。</p>
-<hr>
-<p>目前android上应用的比较多的AOP框架是AspectJ</p>
-<h1 id="android-studio-集成"><a href="#android-studio-集成" class="headerlink" title="android studio 集成"></a>android studio 集成</h1><p>在项目根目录的build.gradle中增加依赖：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        ...</span><br><span class="line">        classpath <span class="string">'com.hujiang.aspectjx:gradle-android-plugin-aspectjx:1.0.8'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在主项目的build.gradle中增加AspectJ的依赖，并添加模块：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile &apos;org.aspectj:aspectjrt:1.8.9&apos;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;android-aspectjx&apos;</span><br></pre></td></tr></table></figure>
-
-<h1 id="踩坑提醒"><a href="#踩坑提醒" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h1><p>在编译的时候，遇到了一个坑，<code>xxx can&#39;t determine superclass of missing type xxxxx</code>这样的错误，可能是与你的某个库冲突了，这时需加上</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">aspectjx &#123;</span><br><span class="line">    excludeJarFilter <span class="string">'xxx'</span>  <span class="comment">//xxx为会产生冲突的库名 </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>你可能还会遇到这个坑<code>Error:Execution failed for task &#39;:app:transformClassesWithExtractJarsForDebug&#39;. &gt; error</code></p>
-<p>据说这个是Instant Run 的一个Bug，设置里关闭Instant Run功能解决。</p>
-<p>如果发现灵异的缓存现象，以前插入的代码删除了还是被插入，删除App后重装就正常了。。。。。</p>
-<h1 id="AspectJ术语"><a href="#AspectJ术语" class="headerlink" title="AspectJ术语"></a>AspectJ术语</h1><ul>
-<li>JoinPoints：代码可插入的点，比如一个方法的调用处或者方法内部。</li>
-<li>Pointcuts：切点，用来描述 JoinPoints 注入点的一段表达式。</li>
-<li>Aspect：切面，Pointcuts和 Advice 合在一起称作 Aspect。</li>
-<li>Advice：相关处理，常见的有 Before、After、Around 等，表示代码执行前、执行后、替换目标代码，也就是在 Pointcut 处插入代码。</li>
-</ul>
-<h1 id="常见用法"><a href="#常见用法" class="headerlink" title="常见用法"></a>常见用法</h1><h2 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h2><p>具体代码如下：</p>
-<h3 id="首先在主Activity中调用测试方法"><a href="#首先在主Activity中调用测试方法" class="headerlink" title="首先在主Activity中调用测试方法"></a>首先在主Activity中调用测试方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"基础用法测试"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        testBeforeAndAfter();</span><br><span class="line">        testAround();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">testBeforeAndAfter</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Log.d(TAG, <span class="string">"testBeforeAndAfter: 原本需执行的代码"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">testAround</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Log.d(TAG, <span class="string">"testAround: 原本需执行的代码"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>新建一个切面类BaseAspect，用于基本用法测试</p>
-<h3 id="Aspect注解切面类名"><a href="#Aspect注解切面类名" class="headerlink" title="@Aspect注解切面类名"></a>@Aspect注解切面类名</h3><p>这一步很重要，不然AspectJ找不到Aspect切面，也找不到Advice的相关处理<br>@Before 在插入点之前插入<br>@After 在插入点之后插入</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseAspect</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"基础用法测试"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(* com.jessie.aspectjdemo.MainActivity.testBeforeAndAfter(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">activityOnMethodBefore</span><span class="params">(JoinPoint joinPoint)</span></span>&#123;</span><br><span class="line">        String key = joinPoint.getSignature().toString();</span><br><span class="line">        Log.d(TAG, <span class="string">"activityOnMethodBefore: 调用方法路径"</span> + key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@After</span>(<span class="string">"execution(* com.jessie.aspectjdemo.MainActivity.testBeforeAndAfter(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">activityOnMethodAfter</span><span class="params">(JoinPoint joinPoint)</span></span>&#123;</span><br><span class="line">        String key = joinPoint.getSignature().toString();</span><br><span class="line">        Log.d(TAG, <span class="string">"activityOnMethodAfter: 调用方法路径"</span> + key);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Around</span>(<span class="string">"execution(* com.jessie.aspectjdemo.MainActivity.testAround(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">activityOnMethodAround</span><span class="params">(ProceedingJoinPoint proceedingJoinPoint)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        String key = proceedingJoinPoint.getSignature().toString();</span><br><span class="line"></span><br><span class="line">        Log.d(TAG,<span class="string">"tivityOnMethodAroundFirst:在"</span> + key + <span class="string">"方法之前调用 "</span>);</span><br><span class="line">        proceedingJoinPoint.proceed();</span><br><span class="line">        Log.d(TAG, <span class="string">"activityOnMethodAroundSecond:在"</span> + key+<span class="string">"方法之后调用 "</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="注解括号内的表达式说明"><a href="#注解括号内的表达式说明" class="headerlink" title="注解括号内的表达式说明"></a>注解括号内的表达式说明</h3><p>第一个<code>*</code>表示返回值。</p>
-<p>第二个<code>*</code>表示返回值为任意类型。</p>
-<p>后面如<code>com.jessie.aspectjdemo.MainActivity.testBeforeAndAfter(..)</code>方法的全路径。</p>
-<p>其中可以用<code>*</code>来进行通配，几个<code>*</code>没区别。如<code>android.app.Activity.on**(..)</code></p>
-<p>可以通过『&amp;&amp;、||、!』来进行条件组合。<code>(..)</code>代表这个方法的参数，可以指定类型，或者<code>(..)</code>这样来代表任意类型、任意个数的参数。</p>
-<p>如果发现没有回调（插入失败是没有错误提示的。。。）说明方法匹配失败，仔细检查方法的全路径，当<code>()</code>内参数为空时应填写<code>(..)</code>来进行匹配。</p>
-<table>
-<thead>
-<tr>
-<th>路径</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>aaa.bbb.ccc</td>
-<td>全路径</td>
-</tr>
-<tr>
-<td>aaa.*.ccc</td>
-<td>匹配aaa包下的任何“一级子包”下的ccc类</td>
-</tr>
-<tr>
-<td>aaa.*</td>
-<td>匹配aaa包及任何子包下的任何类</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>(..)</td>
-<td>表示匹配接受任意个参数的方法</td>
-</tr>
-<tr>
-<td>(..,java.lang.Integer)</td>
-<td>表示匹配接受java.lang.Integer类型的参数结束，且其前边可以接受有任意个参数的方法</td>
-</tr>
-<tr>
-<td>(java.lang.Integer,..)</td>
-<td>表示匹配接受java.lang.Integer类型的参数开始，且其后边可以接受任意个参数的方法</td>
-</tr>
-<tr>
-<td>(*,java.lang.Integer)</td>
-<td>表示匹配接受java.lang.Integer类型的参数结束，且其前边接受有一个任意类型参数的方法</td>
-</tr>
-</tbody></table>
-<h3 id="获取插入点方法的所有参数"><a href="#获取插入点方法的所有参数" class="headerlink" title="获取插入点方法的所有参数"></a>获取插入点方法的所有参数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">joinpoint.getArgs();//参数列表</span><br><span class="line">joinpoint.getTarget().getClass().getName();//类全路径</span><br><span class="line">joinpoint.getSignature().getDeclaringTypeName();//接口全路径</span><br><span class="line">joinpoint.getSignature().getName();//调用的方法名</span><br></pre></td></tr></table></figure>
-
-
-<p>可以用<code>JoinPoint</code>或<code>ProceedingJoinPoint</code>。</p>
-<p>两者的区别：<br><code>JoinPoint</code>是父类，提供获取拦截方法的信息的功能，如所有参数<code>joinpoint.getArgs()</code><br><code>ProceedingJoinPoint</code>是子类，只能用在<code>@Around</code>中，除了提供<code>JoinPoint</code>的所有功能外，还能提供方法的运行<code>proceed()</code>和<code>proceed(args)</code>功能。</p>
-<p><img src="/images/AOP-Started.png" alt="效果图"></p>
-<h2 id="自定义Pointcuts"><a href="#自定义Pointcuts" class="headerlink" title="自定义Pointcuts"></a>自定义Pointcuts</h2><p>先新建一个自定义切点类，用@Retention，@Target注解类名</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.CLASS) <span class="comment">//声明注解类</span></span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.CONSTRUCTOR, ElementType.METHOD&#125;) <span class="comment">//作用于构造方法和方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyPointcuts &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在主Activity中定义测试方法，都用自定义切点@MyPointcuts注解</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MyPointcuts</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMyPointcuts1</span><span class="params">(View view)</span></span>&#123;</span><br><span class="line">    Log.d(MY_POINTCUTS_TAG, <span class="string">"testMyPointcuts: 测试自定义切点1"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@MyPointcuts</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMyPointcuts2</span><span class="params">(View view)</span></span>&#123;</span><br><span class="line">    Log.d(MY_POINTCUTS_TAG, <span class="string">"testMyPointcuts: 测试自定义切点2"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@MyPointcuts</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMyPointcuts3</span><span class="params">(View view)</span></span>&#123;</span><br><span class="line">    Log.d(MY_POINTCUTS_TAG, <span class="string">"testMyPointcuts: 测试自定义切点3"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过三个按钮分别调用这3个方法</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:gravity</span>=<span class="string">"center"</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">android.support.v7.widget.AppCompatButton</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"测试自定义切点1"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:onClick</span>=<span class="string">"testMyPointcuts1"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">android.support.v7.widget.AppCompatButton</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"测试自定义切点2"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:onClick</span>=<span class="string">"testMyPointcuts2"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">android.support.v7.widget.AppCompatButton</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"测试自定义切点3"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:onClick</span>=<span class="string">"testMyPointcuts3"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>新建自定义切点用法的切面类MyPointcutsAspect，记得@Aspect注解类名</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPointcutsAspect</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String MY_POINTCUTS_TAG = <span class="string">"自定义切点用法测试"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(@com.jessie.aspectjdemo.MyPointcuts * *(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myPointcutsMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Around</span>(<span class="string">"myPointcutsMethod()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMyPointcutsMethodAround</span><span class="params">(ProceedingJoinPoint proceedingJoinPoint)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        String key = proceedingJoinPoint.getSignature().toString();</span><br><span class="line">        Log.d(MY_POINTCUTS_TAG, <span class="string">"方法调用之前插入: "</span> + key);</span><br><span class="line">        proceedingJoinPoint.proceed();</span><br><span class="line">        Log.d(MY_POINTCUTS_TAG, <span class="string">"方法调用之后插入: "</span> + key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>所有被自定义切点@MyPointcuts注解的方法都会插入代码，实现了插入多个切点的效果。</p>
-<p>效果gif如下：</p>
-<p><img src="/images/AOP-Started1.gif" alt="效果gif"></p>
-<h2 id="execution与call的区别"><a href="#execution与call的区别" class="headerlink" title="execution与call的区别"></a>execution与call的区别</h2><p>除了execution表达式外常用到的还有call表达式，它们之间的区别是用execution插入的代码是调用在被插入的方法内，用call插入的代码是调用在被插入的方法外。</p>
-<h2 id="withincode组合"><a href="#withincode组合" class="headerlink" title="withincode组合"></a>withincode组合</h2><p>通过withincode组合可实现代码的精准插入，当两个方法同时调用一个公共方法时，可以选定只在其中一个方法调用公共方法时插入。</p>
-<p>在主Activity中定义两个测试方法和一个公共方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testWithcode1</span><span class="params">(View view)</span></span>&#123;</span><br><span class="line">    testComment();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testWithcode2</span><span class="params">(View view)</span></span>&#123;</span><br><span class="line">    testComment();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">testComment</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Log.d(WITH_CODE, <span class="string">"testComment: 公共方法执行的代码"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过布局文件的两个按钮分别调用</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">android.support.v7.widget.AppCompatButton</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"测试精准插入1"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:onClick</span>=<span class="string">"testWithcode1"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">android.support.v7.widget.AppCompatButton</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"测试精准插入2"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:onClick</span>=<span class="string">"testWithcode2"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>新建精确插入代码用法的切面类WithcodeAspect，记得@Aspect注解类名</p>
-<p>我们让只有testWithcode2调用公共方法时才插入代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WithcodeAspect</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String WITH_CODE = <span class="string">"精确插入测试"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在testWithcode2()方法内插入</span></span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"withincode(* com.jessie.aspectjdemo.MainActivity.testWithcode2(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testWithcode2Method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用testComment()方法的时候插入</span></span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"call(* com.jessie.aspectjdemo.MainActivity.testComment(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testCommentMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 同时满足以上条件，在testWithcode2()方法内调用testComment()方法的时候才插入</span></span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"testWithcode2Method() &amp;&amp; testCommentMethod()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testWithcode2MethodOnlyInvoke</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@After</span>(<span class="string">"testWithcode2MethodOnlyInvoke()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeWithcode2MethodOnlyInvoke</span><span class="params">(JoinPoint joinPoint)</span> </span>&#123;</span><br><span class="line">        String key = joinPoint.getSignature().toString();</span><br><span class="line">        Log.d(WITH_CODE, <span class="string">"beforeWithcode2MethodOnlyInvoke: "</span> + key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>效果gif如下：</p>
-<p><img src="/images/AOP-Started2.gif" alt="效果gif"></p>
-<p>可见第一个方法调用时没有被插入代码，第二个方法被调用时插入了代码，我们实现了精准插入。</p>
-<p>demo已打包上传，想要查看代码的同学，点这里<a href="https://github.com/jessieeeee/AspectJDemo" target="_blank" rel="noopener">传送门</a></p>
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-    
   </div>
 
   
@@ -2057,7 +2079,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-count">60</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
