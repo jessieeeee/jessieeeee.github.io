@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="关于优化UI层的代码设计，从MVC，MVP，MVVM再到MVI，这四个模式围绕如何管理UI问题采用的都是“关注点分离”，实现细节稍有不同，但最终目的仍是解耦，提高维护性和可读性，从架构层面明确职责划分，约束开发者写出漂亮的代码，这里先回顾一下Android UI架构的演进过程与自己的一些思考并详细记录MVI的具体实现以及解决的相关痛点问题，欢迎一起学习讨论～ UI架构演进MVCAndroid的默认">
+<meta name="keywords" content="Architecture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android UI架构MVI">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2022&#x2F;11&#x2F;07&#x2F;MVI&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="关于优化UI层的代码设计，从MVC，MVP，MVVM再到MVI，这四个模式围绕如何管理UI问题采用的都是“关注点分离”，实现细节稍有不同，但最终目的仍是解耦，提高维护性和可读性，从架构层面明确职责划分，约束开发者写出漂亮的代码，这里先回顾一下Android UI架构的演进过程与自己的一些思考并详细记录MVI的具体实现以及解决的相关痛点问题，欢迎一起学习讨论～ UI架构演进MVCAndroid的默认">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;mvc.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;mvp.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;mvvm.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;mvi.png">
+<meta property="og:updated_time" content="2022-10-18T09:46:14.548Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;mvc.png">
+  <link rel="canonical" href="http://yoursite.com/2022/11/07/MVI/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Android UI架构MVI | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/11/07/MVI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            Android UI架构MVI
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2022-11-07 19:58:44" itemprop="dateCreated datePublished" datetime="2022-11-07T19:58:44+08:00">2022-11-07</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-18 17:46:14" itemprop="dateModified" datetime="2022-10-18T17:46:14+08:00">2022-10-18</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于优化UI层的代码设计，从MVC，MVP，MVVM再到MVI，这四个模式围绕如何管理UI问题采用的都是“关注点分离”，实现细节稍有不同，但最终目的仍是解耦，提高维护性和可读性，从架构层面明确职责划分，约束开发者写出漂亮的代码，这里先回顾一下Android UI架构的演进过程与自己的一些思考并详细记录MVI的具体实现以及解决的相关痛点问题，欢迎一起学习讨论～</p>
+<h1 id="UI架构演进"><a href="#UI架构演进" class="headerlink" title="UI架构演进"></a>UI架构演进</h1><h2 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h2><p>Android的默认设计，最原始的UI架构，拆分为View，Model，Controller<br>View：布局xml文件<br>Model：管理业务数据逻辑，网络请求，数据库处理<br>Controller： 在Activity处理表现层逻辑</p>
+<p><img src="/images/mvc.png" alt="效果图"></p>
+<ul>
+<li>存在问题<br>Activity臃肿，本身不可避免的要处理UI和用户交互，又要处理表现层逻辑，职责划分不清晰，分离程度不够</li>
+</ul>
+<h2 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h2><p>为了减轻Activity的负担，进化到了MVP架构，拆分为View，Model，Presenter<br>View：Activity和布局xml文件<br>Model：管理业务数据逻辑，网络请求，数据库处理，职责不变<br>Presenter：分担Activity一部分工作，处理表现层逻辑，其中View和Presenter会定义协议接口Contract，约定View调Presenter发送指令的接口方法和Presenter调callback返回结果给View的接口方法</p>
+<p><img src="/images/mvp.png" alt="效果图"></p>
+<ul>
+<li>存在问题</li>
+<li>协议接口Contract膨胀<br>当交互负责时会定义很多的发送指令和callback回调接口方法，不好维护</li>
+<li>内存泄漏<br>生命周期无法绑定，Presenter持有View层的引用，当View层被关闭销毁时Model层有耗时操作存在内存泄漏的风险，当然可以在onDestory的生命周期中释放Presenter并采用弱引用的方式，但处理起来比较繁琐</li>
+<li>双向依赖<br>View层有变动时Presenter也需要做出相应的调整，在实际开发中View层是容易变动的，一定程度上影响开发效率</li>
+</ul>
+<h2 id="MVVM"><a href="#MVVM" class="headerlink" title="MVVM"></a>MVVM</h2><p>为了解决以上的三个问题，进化到MVVM的架构，把Presenter改为ViewModel<br>View：Activity和布局xml文件<br>Model：管理业务数据逻辑，网络请求，数据库处理，职责不变<br>ViewModel：存储UI状态，处理表现层逻辑，将数据返回给观察者更新UI，这里View和Presenter的双向依赖变为View向ViewModel发指令，但ViewModel不直接回调返回结果而是通过观察者模式利用LiveData监听数据变化，返回给相应的观察者更新UI，解决了生命周期感知问题，同时也解决了手机旋转等配置变更数据丢失问题</p>
+<p><img src="/images/mvvm.png" alt="效果图"></p>
+<ul>
+<li>存在问题</li>
+<li>多数据流<br>View与ViewModel的交互分散，不易于追踪</li>
+<li>LiveData膨胀<br>复杂页面交互需要定义多个LiveData，模糊了状态和事件的界限，粘性机制可能会导致一些问题，用在UI状态时如横竖屏切换时会重新执行一次observe会再次收到一个事件，对于UI来说只需关心最终状态，多次postValue可能会丢失数据也可能导致一些问题，用在事件发送时可能只执行第二个事件，对于事件来说希望每条事件都能被执行</li>
+</ul>
+<h1 id="MVI"><a href="#MVI" class="headerlink" title="MVI"></a>MVI</h1><h2 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h2><p>把View和ViewModel之间的多数据流改为基于ViewState和Intent的单数据流替换LiveData<br>View：Activity和布局xml文件<br>Model：管理业务数据逻辑，网络请求，数据库处理，职责不变<br>Intent：操作事件，将UI层的操作事件和携带的数据传到Model<br>ViewState：数据类，包含页面状态和对应的数据<br>ViewModel：存储UI状态，处理表现层逻辑，通过ViewState设置给UI</p>
+<p><img src="/images/mvi.png" alt="效果图"></p>
+<h2 id="解决痛点"><a href="#解决痛点" class="headerlink" title="解决痛点"></a>解决痛点</h2><ul>
+<li>单一数据流便于追踪问题</li>
+<li>清晰的划分状态和事件的界限，避免LiveData滥用导致的问题<h2 id="MVI封装流程"><a href="#MVI封装流程" class="headerlink" title="MVI封装流程"></a>MVI封装流程</h2></li>
+</ul>
+<h3 id="声明State和Intent接口"><a href="#声明State和Intent接口" class="headerlink" title="声明State和Intent接口"></a>声明State和Intent接口</h3><p>所有的业务层UiState都需要实现IState接口，UiIntent都需要实现IIntent接口</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IState</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IIntent</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="声明业务层ViewModel基类接口"><a href="#声明业务层ViewModel基类接口" class="headerlink" title="声明业务层ViewModel基类接口"></a>声明业务层ViewModel基类接口</h3><p>业务层ViewModel基类需要初始化stateFlow和intentFlow</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IStateViewModel</span>&lt;<span class="type">I: IIntent, S: IState</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">val</span> stateFlow: Flow&lt;S&gt;</span><br><span class="line">    <span class="keyword">val</span> intentFlow: Flow&lt;I&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="封装View层生命周期事件"><a href="#封装View层生命周期事件" class="headerlink" title="封装View层生命周期事件"></a>封装View层生命周期事件</h3><p>初始化默认为IDLE空闲状态</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="class"><span class="keyword">class</span> <span class="title">WidgetLifeEvent</span> </span>&#123;</span><br><span class="line">    IDLE, <span class="comment">// 空闲</span></span><br><span class="line">    ON_SHOW, <span class="comment">// 显示</span></span><br><span class="line">    ON_HIDE, <span class="comment">// 隐藏</span></span><br><span class="line">    ON_DESTROY <span class="comment">// 销毁</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="封装观察者接口"><a href="#封装观察者接口" class="headerlink" title="封装观察者接口"></a>封装观察者接口</h3><p>观察者可通过回调监测到生命周期变化</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">WidgetLifecycleObserver</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onShow</span><span class="params">()</span></span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onHide</span><span class="params">()</span></span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onDestroy</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="生命周期观察者管理类"><a href="#生命周期观察者管理类" class="headerlink" title="生命周期观察者管理类"></a>生命周期观察者管理类</h3><ul>
+<li>生命周期观察者被存储到一个列表中，当前的生命周期默认为IDLE</li>
+<li>onShow/onHide/onDestroy事件会更新当前的生命周期状态，遍历所有的观察者调对应的接口方法</li>
+<li>onDestroy时会清空列表所有的观察者<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetLifecycle</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> currentWidgetLifeEvent: WidgetLifeEvent = WidgetLifeEvent.IDLE <span class="comment">// 当前的生命周期</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> widgetLifeList = mutableListOf&lt;WidgetLifecycleObserver&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 添加生命周期观察者</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">addWidgetLife</span><span class="params">(widgetLifecycleObserver: <span class="type">WidgetLifecycleObserver</span>)</span></span>&#123;</span><br><span class="line">        synchronized(widgetLifeList)&#123;</span><br><span class="line">            <span class="keyword">if</span> (widgetLifecycleObserver !<span class="keyword">in</span> widgetLifeList)&#123;</span><br><span class="line">                widgetLifeList.add(widgetLifecycleObserver)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 移除生命周期观察者</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">removeWidgetLife</span><span class="params">(widgetLifecycleObserver: <span class="type">WidgetLifecycleObserver</span>)</span></span>&#123;</span><br><span class="line">        synchronized(widgetLifeList)&#123;</span><br><span class="line">            widgetLifeList.remove(widgetLifecycleObserver)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 调所有观察者的onShow</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onShow</span><span class="params">()</span></span>&#123;</span><br><span class="line">        synchronized(widgetLifeList)&#123;</span><br><span class="line">            currentWidgetLifeEvent = WidgetLifeEvent.ON_SHOW</span><br><span class="line">            widgetLifeList.onEach &#123;</span><br><span class="line">                kotlin.runCatching &#123;</span><br><span class="line">                    it.onShow()</span><br><span class="line">                &#125;.onFailure &#123;</span><br><span class="line">                    <span class="string">"WidgetLifecycleObserver onShow异常"</span>.logD()</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 调所有观察者的onHide</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onHide</span><span class="params">()</span></span>&#123;</span><br><span class="line">        synchronized(widgetLifeList)&#123;</span><br><span class="line">            currentWidgetLifeEvent = WidgetLifeEvent.ON_HIDE</span><br><span class="line">            widgetLifeList.onEach &#123;</span><br><span class="line">                kotlin.runCatching &#123;</span><br><span class="line">                    it.onHide()</span><br><span class="line">                &#125;.onFailure &#123;</span><br><span class="line">                    <span class="string">"WidgetLifecycleObserver onHide异常"</span>.logD()</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 调所有观察者的onDestory</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onDestroy</span><span class="params">()</span></span>&#123;</span><br><span class="line">        synchronized(widgetLifeList)&#123;</span><br><span class="line">            currentWidgetLifeEvent = WidgetLifeEvent.ON_DESTROY</span><br><span class="line">            widgetLifeList.forEach &#123;</span><br><span class="line">                kotlin.runCatching &#123;</span><br><span class="line">                    it.onDestroy()</span><br><span class="line">                &#125;.onFailure &#123;</span><br><span class="line">                    <span class="string">"WidgetLifecycleObserver onDestroy异常"</span>.logD()</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            widgetLifeList.clear()</span><br><span class="line">            <span class="string">"widgetLifeList clear"</span>.logD()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="暴露生命周期观察者管理对象"><a href="#暴露生命周期观察者管理对象" class="headerlink" title="暴露生命周期观察者管理对象"></a>暴露生命周期观察者管理对象</h3>实现了WidgetLifecycleOwner接口的类会提供命周期观察者管理对象<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">WidgetLifecycleOwner</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">getWidgetLifecycle</span><span class="params">()</span></span>: WidgetLifecycle</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="封装BaseViewModel"><a href="#封装BaseViewModel" class="headerlink" title="封装BaseViewModel"></a>封装BaseViewModel</h3>继承ViewModel的同时实现了WidgetLifecycleOwner接口，提供生命周期观察者管理对象，BaseStateFragment通过channel分发生命周期变化事件给BaseViewModel，BaseViewModel再把对应的事件分发给所有的观察者<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseViewModel</span> : <span class="type">ViewModel</span></span>(), WidgetLifecycleOwner&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> widgetLifecycle = WidgetLifecycle() <span class="comment">// 生命周期观察者管理对象</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> lifeEventChannel: Channel&lt;WidgetLifeEvent&gt; = Channel()</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> lifecycleFlow: Flow&lt;WidgetLifeEvent&gt; = lifeEventChannel.consumeAsFlow()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">getWidgetLifecycle</span><span class="params">()</span></span>: WidgetLifecycle &#123;</span><br><span class="line">        <span class="keyword">return</span> widgetLifecycle</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">launch</span><span class="params">(callback: <span class="type">suspend</span> () -&gt; <span class="type">Unit</span>)</span></span>&#123;</span><br><span class="line">        viewModelScope.launch &#123;</span><br><span class="line">            callback.invoke()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">init</span> &#123;</span><br><span class="line">        viewModelScope.launch &#123;</span><br><span class="line">            lifecycleFlow.collect&#123;</span><br><span class="line">                <span class="keyword">if</span> (it == WidgetLifeEvent.ON_SHOW)&#123;</span><br><span class="line">                    onShow()</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (it == WidgetLifeEvent.ON_HIDE)&#123;</span><br><span class="line">                    onHide()</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 发送生命周期事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">sendLifeEvent</span><span class="params">(widgetLifeEvent: <span class="type">WidgetLifeEvent</span>)</span></span>&#123;</span><br><span class="line">        launch &#123;</span><br><span class="line">            lifeEventChannel.send(widgetLifeEvent)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onShow</span><span class="params">()</span></span>&#123;</span><br><span class="line">        widgetLifecycle.onShow()</span><br><span class="line">        <span class="string">"onShow"</span>.logD()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onHide</span><span class="params">()</span></span>&#123;</span><br><span class="line">        widgetLifecycle.onHide()</span><br><span class="line">        <span class="string">"onHide"</span>.logD()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCleared</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCleared()</span><br><span class="line">        widgetLifecycle.onDestroy()</span><br><span class="line">        <span class="string">"onCleared"</span>.logD()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="封装加载视图和toast事件"><a href="#封装加载视图和toast事件" class="headerlink" title="封装加载视图和toast事件"></a>封装加载视图和toast事件</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sealed</span> <span class="class"><span class="keyword">class</span> <span class="title">SingleEvent</span> </span>&#123;</span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">val</span> LOADING_TYPE_DIALOG = <span class="number">1</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">val</span> LOADING_TYPE_VIEW = <span class="number">2</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">object</span> HideLoadingDialog: SingleEvent()</span><br><span class="line">    <span class="keyword">object</span> ShowLoadingDialog: SingleEvent()</span><br><span class="line">    <span class="keyword">object</span> ShowLoadingView: SingleEvent()</span><br><span class="line">    <span class="keyword">object</span> ShowContentView: SingleEvent()</span><br><span class="line">    <span class="keyword">object</span> HideSwipeLayout: SingleEvent()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">ShowToast</span></span>(<span class="keyword">val</span> msg: String): SingleEvent()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="封装BaseStateViewModel"><a href="#封装BaseStateViewModel" class="headerlink" title="封装BaseStateViewModel"></a>封装BaseStateViewModel</h3></li>
+<li>继承BaseViewModel，实现IStateViewModel接口</li>
+<li>需要传入意图和视图状态的具体类型</li>
+<li>初始化intentFlow和stateFlow，intentFlow通过channel转换实现，stateFlow需要子类返回具体状态类，初始化状态对象再初始化StateFlow实现</li>
+<li>加载视图和toast事件通过singleEventChannel发送，在BaseStateFragment中绑定事件并处理视图展示逻辑</li>
+<li>更新State时刷新stateFlow的value，比较当前stateFlow的value是否和需要更新的State一致，如果一致则不会发送事件，因为StateFlow具有数据防抖功能</li>
+<li>根据ViewModel的scope封装子线程切换和flow的子线程切换方法</li>
+<li>声明dispatchIntentOnIO抽象方法，在子线程中分发意图事件并处理，不阻塞主线程，避免UI卡顿</li>
+<li>封装加载状态展示和自动隐藏的方法，通过singleEventChannel发送相应的加载视图事件</li>
+<li>封装checkIntent优化switch判断类型逻辑便于链式回调</li>
+<li>初始化代码块中绑定intentFlow切换到子线程分发事件</li>
+<li>dispatchIntentOnIO中的异常在needCatchException为true且release包下会被catch住<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseStateViewModel</span>&lt;<span class="type">I: IIntent, S: IState</span>&gt;: <span class="type">BaseViewModel</span></span>(), IStateViewModel&lt;I,S&gt; &#123;</span><br><span class="line">    <span class="comment">// Channel发送Intent</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> intentChannel = Channel&lt;I&gt; (Channel.UNLIMITED)</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">override</span> <span class="keyword">val</span> intentFlow: Flow&lt;I&gt;</span><br><span class="line">        <span class="keyword">get</span>() = intentChannel.consumeAsFlow()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">val</span> stateClass: KClass&lt;S&gt; <span class="comment">// 状态类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="keyword">val</span> needCatchException = <span class="literal">false</span> <span class="comment">// 是否需要try/catch</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// stateflow发送state</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> initState = createInitState() <span class="comment">// 状态对象初始化</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mutableStatedFlow = MutableStateFlow(initState) <span class="comment">// stateFlow初始化</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 可变stateflow转成只读流</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">val</span> stateFlow: Flow&lt;S&gt;</span><br><span class="line">        <span class="keyword">get</span>() = mutableStatedFlow.asStateFlow()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> singleEventChannel = Channel&lt;SingleEvent&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">val</span> tag: String <span class="keyword">get</span>() = javaClass.name</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * SingleEvent flow</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">val</span> singleEvent <span class="keyword">get</span>() = singleEventChannel.consumeAsFlow()</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 发送intent</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">sendIntent</span><span class="params">(intent: <span class="type">I</span>)</span></span>&#123;</span><br><span class="line">        viewModelScope.launch &#123;</span><br><span class="line">            intentChannel.send(intent)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取当前state对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">val</span> state: S <span class="keyword">get</span>() = mutableStatedFlow.value</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Synchronized</span></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">emitState</span><span class="params">(state: <span class="type">S</span>)</span></span>&#123;</span><br><span class="line">        (<span class="keyword">if</span> (state == <span class="keyword">this</span>.state) <span class="string">"界面不会刷新"</span> <span class="keyword">else</span> <span class="string">"界面【会刷新】"</span>).apply &#123;</span><br><span class="line">            <span class="string">"<span class="variable">$tag</span> -&gt; 发送状态 -&gt; <span class="subst">$&#123;state.javaClass.name&#125;</span> <span class="variable">$this</span>"</span>.logD()</span><br><span class="line">            <span class="keyword">if</span> (isDebug())&#123;</span><br><span class="line">                <span class="string">"<span class="variable">$tag</span>-&gt;发送状态数据-&gt;<span class="variable">$this</span>  旧数据:<span class="subst">$&#123;this@BaseStateViewModel.state&#125;</span> 新数据:<span class="subst">$&#123;state&#125;</span>"</span>.logD()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        mutableStatedFlow.value = state</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 更新state</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">updateState</span><span class="params">(reducer: <span class="type">S</span>.() -&gt; <span class="type">S</span>)</span></span>&#123;</span><br><span class="line">        emitState(state.reducer())</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 开启子线程执行</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">launchOnIO</span><span class="params">(callback: <span class="type">suspend</span> () -&gt; <span class="type">Unit</span>)</span></span>: Job&#123;</span><br><span class="line">        <span class="keyword">return</span> viewModelScope.launch(Dispatchers.IO) &#123; callback.invoke() &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * flow切换子线程执行</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> Flow<span class="type">&lt;T&gt;</span>.<span class="title">collectOnIO</span><span class="params">(block: <span class="type">suspend</span> <span class="type">CoroutineScope</span>.(<span class="type">T</span>) -&gt; <span class="type">Unit</span>)</span></span>&#123;</span><br><span class="line">        viewModelScope.launch(Dispatchers.IO)&#123;</span><br><span class="line">            <span class="keyword">this</span><span class="symbol">@collectOnIO</span>.onEach &#123;</span><br><span class="line">                block.invoke(<span class="keyword">this</span>, it)</span><br><span class="line">            &#125;.launchIn(<span class="keyword">this</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 在IO协程分发Intent，这个方法只会在IO协程里面执行</span></span><br><span class="line"><span class="comment">     * 非阻塞的，不影响其他intent</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatchIntentOnIO</span><span class="params">(intent: <span class="type">I</span>)</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化默认状态，子类可以实现自己的默认状态，比如读取缓存之类的</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">createInitState</span><span class="params">()</span></span>: S&#123;</span><br><span class="line">        <span class="keyword">return</span> stateClass.createInstance()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 发送一个单一事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">sendSingleEvent</span><span class="params">(singleEvent: <span class="type">SingleEvent</span>)</span></span>&#123;</span><br><span class="line">        launch &#123;</span><br><span class="line">            singleEventChannel.send(singleEvent)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">showLoadingDialog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        sendSingleEvent(SingleEvent.ShowLoadingDialog)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">hideLoadingDialog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        sendSingleEvent(SingleEvent.HideLoadingDialog)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">showLoadingView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        sendSingleEvent(SingleEvent.ShowLoadingView)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">showContentView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        sendSingleEvent(SingleEvent.ShowContentView)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">showToast</span><span class="params">(msg: <span class="type">String</span>)</span></span>&#123;</span><br><span class="line">        sendSingleEvent(SingleEvent.ShowToast(msg))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 显示加载状态</span></span><br><span class="line"><span class="comment">     *  <span class="doctag">@param</span> type 加载状态类型 对话框 加载View</span></span><br><span class="line"><span class="comment">     *  <span class="doctag">@param</span> needAutoHide 是否需要自动触发隐藏</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> Flow<span class="type">&lt;T&gt;</span>.<span class="title">startLoading</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        type: <span class="type">Int</span> = SingleEvent.LOADING_TYPE_DIALOG,</span></span></span><br><span class="line"><span class="function"><span class="params">        needAutoHide: <span class="type">Boolean</span> = <span class="literal">true</span></span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span>: Flow&lt;T&gt;&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.onStart &#123;</span><br><span class="line">            <span class="keyword">if</span> (type == SingleEvent.LOADING_TYPE_DIALOG)&#123;</span><br><span class="line">                singleEventChannel.send(SingleEvent.ShowLoadingDialog)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                singleEventChannel.send(SingleEvent.ShowLoadingView)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;.onCompletion &#123;</span><br><span class="line">            <span class="keyword">if</span> (needAutoHide)&#123;</span><br><span class="line">                <span class="keyword">if</span> (type == SingleEvent.LOADING_TYPE_DIALOG)&#123;</span><br><span class="line">                    singleEventChannel.send(SingleEvent.HideLoadingDialog)</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    singleEventChannel.send(SingleEvent.ShowContentView)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加载对话框</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> Flow<span class="type">&lt;T&gt;</span>.<span class="title">startLoadingDialog</span><span class="params">()</span></span>: Flow&lt;T&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> startLoading(SingleEvent.LOADING_TYPE_DIALOG)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> Flow<span class="type">&lt;T&gt;</span>.<span class="title">startLoadingView</span><span class="params">()</span></span>: Flow&lt;T&gt;&#123;</span><br><span class="line">        <span class="keyword">return</span> startLoading(SingleEvent.LOADING_TYPE_VIEW)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> Flow<span class="type">&lt;T&gt;</span>.<span class="title">startLoadingViewWithCondition</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        needShowLoadingView: <span class="type">Boolean</span> = <span class="literal">true</span></span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span>: Flow&lt;T&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">if</span> (needShowLoadingView) startLoading(SingleEvent.LOADING_TYPE_VIEW) <span class="keyword">else</span> <span class="keyword">this</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> Flow<span class="type">&lt;T&gt;</span>.<span class="title">startLoadingByCondition</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        needShowLoading: <span class="type">Boolean</span> = <span class="literal">true</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">        type: <span class="type">Int</span> = SingleEvent.LOADING_TYPE_VIEW</span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span>: Flow&lt;T&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">if</span> (needShowLoading) startLoading(type) <span class="keyword">else</span> <span class="keyword">this</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断Intent类型，如果是该类型就回调</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> T</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> block</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@receiver</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T: IIntent&gt;</span> IIntent.<span class="title">checkIntent</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        block: (<span class="type">T</span>) -&gt; <span class="type">Unit</span></span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span>: IIntent&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span> <span class="keyword">is</span> T)&#123;</span><br><span class="line">            block.invoke(<span class="keyword">this</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">init</span> &#123;</span><br><span class="line">        collectIntent()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异步订阅Intent，所有的intent的执行都是在IO协程里面执行</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">collectIntent</span><span class="params">()</span></span> &#123;</span><br><span class="line">        intentFlow.collectOnIO &#123;</span><br><span class="line">            <span class="keyword">val</span> intent = it</span><br><span class="line">            <span class="keyword">val</span> intentName = intent.javaClass.name</span><br><span class="line">            <span class="string">"<span class="variable">$tag</span>-&gt;分发Intent-&gt;<span class="variable">$intentName</span>"</span>.logD()</span><br><span class="line">            <span class="string">"<span class="variable">$tag</span>-&gt;分发Intent详细数据-&gt;<span class="variable">$it</span>"</span>.logD()</span><br><span class="line"></span><br><span class="line">             callbackByCondition &#123;</span><br><span class="line">                 launch &#123;</span><br><span class="line">                     dispatchIntentOnIO(it)</span><br><span class="line">                     <span class="string">"异步分发Intent完成-&gt;<span class="variable">$intentName</span>"</span>.logD()</span><br><span class="line">                 &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">isRelease</span><span class="params">()</span></span>: <span class="built_in">Boolean</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !BuildConfig.DEBUG</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">isDebug</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> BuildConfig.DEBUG</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * release环境下，needCatchException=true会捕获所有intent异常</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> block</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@receiver</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">callbackByCondition</span><span class="params">(block: <span class="type">suspend</span> () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (needCatchException &amp;&amp; isRelease()) &#123;</span><br><span class="line">            kotlin.runCatching &#123;</span><br><span class="line">                block.invoke()</span><br><span class="line">            &#125;.onFailure &#123;</span><br><span class="line">                <span class="string">"callbackByCondition异常"</span>.logD()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            block.invoke()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="封装BaseFragment"><a href="#封装BaseFragment" class="headerlink" title="封装BaseFragment"></a>封装BaseFragment</h3></li>
+<li>对加载视图进行封装，把包含layout的content视图包裹在加载视图中</li>
+<li>提供显示空视图，错误视图，内容视图，弹出toast，展示加载弹窗和隐藏加载弹窗的方法<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseFragment</span> : <span class="type">Fragment</span></span>() &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> loadingView: WrapperLoadingView? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> loadingDialogFragment: LoadingDialogFragment? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">open</span> <span class="keyword">var</span> needLoadingView = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取layout资源</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@LayoutRes</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="function"><span class="keyword">fun</span> <span class="title">getLayout</span><span class="params">()</span></span>: <span class="built_in">Int</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化加载弹窗和加载视图</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreateView</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        inflater: <span class="type">LayoutInflater</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">        container: <span class="type">ViewGroup</span>?,</span></span></span><br><span class="line"><span class="function"><span class="params">        savedInstanceState: <span class="type">Bundle</span>?</span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span>: View? &#123;</span><br><span class="line">        <span class="keyword">if</span> (loadingDialogFragment == <span class="literal">null</span>) &#123;</span><br><span class="line">            loadingDialogFragment = LoadingDialogFragment()</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">if</span> (needLoadingView) &#123;</span><br><span class="line">            <span class="keyword">if</span> (loadingView == <span class="literal">null</span>) &#123;</span><br><span class="line">                loadingView = WrapperLoadingView(</span><br><span class="line">                    inflater.context,</span><br><span class="line">                    inflater.inflate(getLayout(), container, <span class="literal">false</span>)</span><br><span class="line">                )</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                (loadingView?.parent <span class="keyword">as</span>? ViewGroup)?.removeView(loadingView)</span><br><span class="line">            &#125;</span><br><span class="line">            loadingView</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            inflater.inflate(getLayout(), container, <span class="literal">false</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showContentView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        loadingView?.showContent()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showLoadingView</span><span class="params">(<span class="meta">@ColorInt</span> color: <span class="type">Int</span> = Color.TRANSPARENT)</span></span>&#123;</span><br><span class="line">        loadingView?.showLoading(Gravity.CENTER, color)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showLoadingDialog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        loadingDialogFragment?.show(childFragmentManager,<span class="string">"loading_dialog"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">hideLoadingDialog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        loadingDialogFragment?.dismiss()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showEmptyView</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        tips: <span class="type">Int</span> = R.string.no_more_data,</span></span></span><br><span class="line"><span class="function"><span class="params">        icon: <span class="type">Int</span> = R.mipmap.icon_empty_default,</span></span></span><br><span class="line"><span class="function"><span class="params">        click: <span class="type">View</span>.<span class="type">OnClickListener</span>? = <span class="literal">null</span></span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span> &#123;</span><br><span class="line">        loadingView?.showEmpty(tips, icon, click)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showEmptyView</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        tips: <span class="type">String</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">        icon: <span class="type">Int</span> = R.mipmap.icon_empty_default,</span></span></span><br><span class="line"><span class="function"><span class="params">        click: <span class="type">View</span>.<span class="type">OnClickListener</span>? = <span class="literal">null</span></span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span> &#123;</span><br><span class="line">        loadingView?.showEmpty(tips, icon, click)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showFailView</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        tips: <span class="type">Int</span> = R.string.load_failed_click_retry,</span></span></span><br><span class="line"><span class="function"><span class="params">        icon: <span class="type">Int</span> = R.mipmap.icon_error_retry,</span></span></span><br><span class="line"><span class="function"><span class="params">        click: <span class="type">View</span>.<span class="type">OnClickListener</span>? = <span class="literal">null</span></span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span> &#123;</span><br><span class="line">        loadingView?.showEmpty(tips, icon, click)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showFailView</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        tips: <span class="type">String</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">        icon: <span class="type">Int</span> = R.mipmap.icon_empty_default,</span></span></span><br><span class="line"><span class="function"><span class="params">        click: <span class="type">View</span>.<span class="type">OnClickListener</span>? = <span class="literal">null</span></span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span> &#123;</span><br><span class="line">        loadingView?.showEmpty(tips, icon, click)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showErrorView</span><span class="params">(tips: <span class="type">String</span>, click: <span class="type">View</span>.<span class="type">OnClickListener</span>? = <span class="literal">null</span>)</span></span> &#123;</span><br><span class="line">        loadingView?.showError(tips, click)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showErrorView</span><span class="params">(tips: <span class="type">String</span>, color: <span class="type">Int</span>, click: <span class="type">View</span>.<span class="type">OnClickListener</span>? = <span class="literal">null</span>)</span></span> &#123;</span><br><span class="line">        loadingView?.showError(tips, color, click)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showToast</span><span class="params">(errorMsg: <span class="type">String</span>?)</span></span> &#123;</span><br><span class="line">        ToastUtils.showShort(errorMsg)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">getViewProvider</span><span class="params">()</span></span>: View &#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">if</span> (needLoadingView)&#123;</span><br><span class="line">           (view <span class="keyword">as</span> WrapperLoadingView).contentView</span><br><span class="line">       &#125; <span class="keyword">else</span> requireView()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="封装BaseStateFragment"><a href="#封装BaseStateFragment" class="headerlink" title="封装BaseStateFragment"></a>封装BaseStateFragment</h3></li>
+<li>继承BaseFragment，子类需要传入具体的意图类型，视图状态类型，绑定的ViewModel的类型</li>
+<li>懒初始化ViewModelProvider的Factory，暴露出方法给子类重写默认返回空，暴露出方法给子类返回具体的ViewModel的Class对象</li>
+<li>暴露绑定state和初始化View的方法，在onViewCreated中调用</li>
+<li>绑定singleEventChannel并处理对应的UI事件</li>
+<li>在onResume和onPause中发送对应的生命周期事件给生命周期观察者</li>
+<li>stateFlow绑定具体的state属性，在生命周期started后回调变更后的state，distinctUntilChanged避免多次不必要的刷新<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseStateFragment</span>&lt;<span class="type">I : IIntent, S : IState, VM : BaseStateViewModel&lt;I, S</span>&gt;&gt; :<span class="type"></span></span></span><br><span class="line">    BaseFragment() &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> vmFactory: ViewModelProvider.Factory? <span class="keyword">by</span> lazy &#123; getViewModelFactory() &#125;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">val</span> viewModelClass: KClass&lt;VM&gt;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 如果ViewModelProvider.Factory不为空则用它初始化否则直接初始化</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> viewModel: VM <span class="keyword">by</span> lazy &#123;</span><br><span class="line">        vmFactory?.run &#123;</span><br><span class="line">            ViewModelProvider(<span class="keyword">this</span><span class="symbol">@BaseStateFragment</span>, <span class="keyword">this</span>)[viewModelClass.java]</span><br><span class="line">        &#125; ?: ViewModelProvider(<span class="keyword">this</span><span class="symbol">@BaseStateFragment</span>)[viewModelClass.java]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * ViewModelProvider.Factory，如果需要可以自行实现</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">getViewModelFactory</span><span class="params">()</span></span>: ViewModelProvider.Factory? &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * fragment布局创建完成</span></span><br><span class="line"><span class="comment">     * 绑定state</span></span><br><span class="line"><span class="comment">     * 绑定SingleEvent并处理</span></span><br><span class="line"><span class="comment">     * 初始化View</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onViewCreated</span><span class="params">(view: <span class="type">View</span>, savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onViewCreated(view, savedInstanceState)</span><br><span class="line">        bindState()</span><br><span class="line">        handleSingleEvent(<span class="keyword">this</span>)</span><br><span class="line">        initView()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">bindState</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">initView</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onResume</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onResume()</span><br><span class="line">        viewModel.sendLifeEvent(WidgetLifeEvent.ON_SHOW)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onPause</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onPause()</span><br><span class="line">        viewModel.sendLifeEvent(WidgetLifeEvent.ON_HIDE)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 分发singleEvent</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatchSingleEvent</span><span class="params">(singleEvent: <span class="type">SingleEvent</span>)</span></span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 绑定singleEvent并处理</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">handleSingleEvent</span><span class="params">(lifecycleOwner: <span class="type">LifecycleOwner</span>)</span></span>&#123;</span><br><span class="line">        viewModel.singleEvent.collectWhenStart(lifecycleOwner)&#123;</span><br><span class="line">            <span class="string">"handleSingleEvent-&gt;<span class="variable">$it</span>"</span>.logD()</span><br><span class="line">            <span class="keyword">when</span>(it) &#123;</span><br><span class="line">                <span class="keyword">is</span> SingleEvent.HideLoadingDialog -&gt; &#123;</span><br><span class="line">                    hideMviLoadingDialog()</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">is</span> SingleEvent.ShowLoadingDialog -&gt; &#123;</span><br><span class="line">                    showMviLoadingDialog()</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">is</span> SingleEvent.ShowContentView -&gt; &#123;</span><br><span class="line">                    showMviContentView()</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">is</span> SingleEvent.ShowLoadingView -&gt; &#123;</span><br><span class="line">                    showMviLoadingView()</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">is</span> SingleEvent.ShowToast -&gt; &#123;</span><br><span class="line">                    showMviToast(it.msg)</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> -&gt; &#123;</span><br><span class="line">                    dispatchSingleEvent(it)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">showMviContentView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="string">"showMviContentView"</span>.logD()</span><br><span class="line">        showContentView()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">showMviLoadingView</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="string">"showMviLoadingView"</span>.logD()</span><br><span class="line">        showLoadingView()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">showMviLoadingDialog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="string">"showMviLoadingDialog"</span>.logD()</span><br><span class="line">        showLoadingDialog()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">hideMviLoadingDialog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="string">"hideMviLoadingDialog"</span>.logD()</span><br><span class="line">        hideLoadingDialog()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">showMviToast</span><span class="params">(toast: <span class="type">String</span>)</span></span>&#123;</span><br><span class="line">        <span class="string">"showMviToast:<span class="variable">$toast</span>"</span>.logD()</span><br><span class="line">        showToast(toast)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * state刷新绑定</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;A&gt;</span> <span class="title">bindPropertyState</span><span class="params">(kp: <span class="type">KProperty1</span>&lt;<span class="type">S</span>, A&gt;, action: <span class="type">suspend</span> (<span class="type">A</span>) -&gt; <span class="type">Unit</span>)</span></span>&#123;</span><br><span class="line">        viewModel.stateFlow.map &#123;</span><br><span class="line">                <span class="keyword">data</span> -&gt; kp.<span class="keyword">get</span>(<span class="keyword">data</span>)</span><br><span class="line">        &#125;.distinctUntilChanged()</span><br><span class="line">            .collectWhenStart(<span class="keyword">this</span>) &#123; a -&gt;</span><br><span class="line">                <span class="string">"<span class="subst">$&#123;this@BaseStateFragment&#125;</span> -&gt; UI收到局部状态 -&gt; <span class="subst">$&#123;kp.getter.property&#125;</span>"</span>.logD()</span><br><span class="line">                action.invoke(a)</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * state绑定扩展</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;A&gt;</span> KProperty1<span class="type">&lt;S, A&gt;</span>.<span class="title">bindState</span><span class="params">(action: <span class="type">suspend</span> (<span class="type">A</span>) -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">        bindPropertyState(<span class="keyword">this</span>, action)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回viewModel的state对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="title">getState</span><span class="params">()</span></span>: S&#123;</span><br><span class="line">        <span class="keyword">return</span> viewModel.state</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * intent发送扩展</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T: I&gt;</span> T.<span class="title">sendToIntent</span><span class="params">()</span></span> &#123;</span><br><span class="line">        viewModel.sendIntent(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="在业务场景中的使用"><a href="#在业务场景中的使用" class="headerlink" title="在业务场景中的使用"></a>在业务场景中的使用</h3><h4 id="定义登录接口"><a href="#定义登录接口" class="headerlink" title="定义登录接口"></a>定义登录接口</h4><ul>
+<li>这里是Flow + retrofit的风格<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">LoginApi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@POST(<span class="meta-string">"/user/login"</span>)</span></span><br><span class="line">    <span class="meta">@FormUrlEncoded</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">realLogin</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="meta">@Field(<span class="meta-string">"username"</span>)</span> code: <span class="type">String</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="meta">@Field(<span class="meta-string">"password"</span>)</span> token: <span class="type">String</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    )</span></span>: Flow&lt;LoginEntity?&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="登录Contract"><a href="#登录Contract" class="headerlink" title="登录Contract"></a>登录Contract</h4></li>
+<li>这里定义UiIntent和UIState</li>
+<li>UiIntent是一个密封类，每一个Intent都是内部的一个类，内部所有的类均继承UiIntent</li>
+<li>UiIntent是一个数据类，实现IState接口，每一个State都是内部的一个属性<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">LoginContract</span> </span>&#123;</span><br><span class="line">    <span class="keyword">sealed</span> <span class="class"><span class="keyword">class</span> <span class="title">UiIntent</span>: <span class="type">IIntent &#123;</span></span></span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">DealLogin</span></span>(<span class="keyword">val</span> username: String, <span class="keyword">val</span> password: String): UiIntent()</span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">CheckEnable</span></span>(<span class="keyword">val</span> username: String, <span class="keyword">val</span> password: String): UiIntent()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">UIState</span></span>(<span class="keyword">val</span> loginEntity: LoginEntity? = <span class="literal">null</span>,</span><br><span class="line">                       <span class="keyword">val</span> enable: <span class="built_in">Boolean</span>? = <span class="literal">null</span>): IState</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="登录接口数据Bean类"><a href="#登录接口数据Bean类" class="headerlink" title="登录接口数据Bean类"></a>登录接口数据Bean类</h4></li>
+<li>根据后端返回的数据结构封装Bean<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginEntity</span></span>(</span><br><span class="line">    <span class="keyword">val</span> admin: <span class="built_in">Boolean</span>? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> chapterTops: List&lt;Any&gt;? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> coinCount: <span class="built_in">Int</span>? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> collectIds: List&lt;<span class="built_in">Int</span>&gt;? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> email: String? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> icon: String? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> id: <span class="built_in">Int</span>? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> nickname: String? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> password: String? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> publicName: String? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> token: String? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> type: <span class="built_in">Int</span>? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> username: String? = <span class="literal">null</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="登录ViewModel"><a href="#登录ViewModel" class="headerlink" title="登录ViewModel"></a>登录ViewModel</h4></li>
+<li>扩展ViewModel可接收初始化参数，传入SavedStateHandle</li>
+<li>重写stateClass返回LoginContract的UIState的class对象</li>
+<li>懒加载初始化FlowApi，关于FlowApi的封装在后面的文章中会详细讨论</li>
+<li>dispatchIntentOnIO中根据当前的Intent类型去执行对应的表现层逻辑，这里值得注意的是由于是子线程执行，需要在设计时考虑线程安全的问题</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoginViewModel</span></span>(savedStateHandle: SavedStateHandle): BaseStateViewModel&lt;LoginContract.UiIntent, LoginContract.UIState&gt;() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">val</span> stateClass: KClass&lt;LoginContract.UIState&gt;</span><br><span class="line">        <span class="keyword">get</span>() = LoginContract.UIState::<span class="class"><span class="keyword">class</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> loginApi <span class="keyword">by</span> lazy &#123;</span><br><span class="line">        LoginApi::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>.<span class="title">createFlowApi</span></span>()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatchIntentOnIO</span><span class="params">(intent: <span class="type">LoginContract</span>.<span class="type">UiIntent</span>)</span></span> &#123;</span><br><span class="line">        intent.checkIntent&lt;LoginContract.UiIntent.CheckEnable&gt; &#123;</span><br><span class="line">            handleCheckEnable(it.username, it.password)</span><br><span class="line">        &#125;.checkIntent&lt;LoginContract.UiIntent.DealLogin&gt; &#123;</span><br><span class="line">            handleDealLogin(it.username, it.password)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">handleCheckEnable</span><span class="params">(username: <span class="type">String</span>, password: <span class="type">String</span>)</span></span> &#123;</span><br><span class="line">         updateState &#123;</span><br><span class="line">             copy(enable = username.isNotEmpty() &amp;&amp; password.isNotEmpty())</span><br><span class="line">         &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 处理登录请求</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">handleDealLogin</span><span class="params">(username: <span class="type">String</span>, password: <span class="type">String</span>)</span></span> &#123;</span><br><span class="line">        loginApi.realLogin(username, password).startLoading()</span><br><span class="line">            .onSuccess &#123;</span><br><span class="line">                updateState &#123; copy(loginEntity = it,) &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            .onFail &#123;</span><br><span class="line">                Log.d(<span class="string">"loginApi"</span>, it.message.toString())</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="登录界面"><a href="#登录界面" class="headerlink" title="登录界面"></a>登录界面</h4><ul>
+<li>这里就不放xml文件了，主要是展示Fragment和ViewModel之间的交互过程，ViewBinding的封装涉及到了属性代理，在后面的文章中会详细讨论</li>
+<li>重写getViewModelFactory方法，返回SavedStateViewModelFactory，可传递参数到ViewModel初始化</li>
+<li>initView中CheckEnable的逻辑和登录逻辑在ViewModel中实现，通过发送Intent事件到ViewModel走交互逻辑</li>
+<li>bindState中监听视图状态数据enable获取CheckEnable的结果刷新UI，监听loginEntity获取登录逻辑的数据结果反馈到UI<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoginFragment</span> :<span class="type"></span></span></span><br><span class="line">    BaseStateFragment&lt;LoginContract.UiIntent, LoginContract.UIState, LoginViewModel&gt;() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">val</span> viewModelClass: KClass&lt;LoginViewModel&gt;</span><br><span class="line">        <span class="keyword">get</span>() = LoginViewModel::<span class="class"><span class="keyword">class</span></span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> viewBinding <span class="keyword">by</span> viewBinding1(</span><br><span class="line">        FragmentLoginBinding::bind,</span><br><span class="line">        viewProvider =  &#123;</span><br><span class="line">            getViewProvider()</span><br><span class="line">        &#125;,</span><br><span class="line">        onViewDestroyed = &#123; _: FragmentLoginBinding -&gt;</span><br><span class="line">            <span class="comment">// reset view</span></span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">getLayout</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> R.layout.fragment_login</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">getViewModelFactory</span><span class="params">()</span></span>: ViewModelProvider.Factory &#123;</span><br><span class="line">        <span class="keyword">return</span> SavedStateViewModelFactory(</span><br><span class="line">            BaseApplication.<span class="keyword">get</span>(), <span class="keyword">this</span>,</span><br><span class="line">            arguments)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">initView</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.initView()</span><br><span class="line">        viewBinding.apply &#123;</span><br><span class="line">            etAccount.doAfterTextChanged &#123;</span><br><span class="line">                LoginContract.UiIntent.CheckEnable(it.toString(),</span><br><span class="line">                    viewBinding.passwordToggleView.editText.text.toString()).sendToIntent()</span><br><span class="line">            &#125;</span><br><span class="line">            passwordToggleView.editText.doAfterTextChanged &#123;</span><br><span class="line">                LoginContract.UiIntent.CheckEnable(viewBinding.etAccount.text.toString(),</span><br><span class="line">                    it.toString())</span><br><span class="line">                    .sendToIntent()</span><br><span class="line">            &#125;</span><br><span class="line">            tvLogin.clickWithTrigger &#123;</span><br><span class="line">               <span class="keyword">val</span> username = viewBinding.etAccount.text.toString()</span><br><span class="line">               <span class="keyword">val</span> password = viewBinding.passwordToggleView.editText.text.toString()</span><br><span class="line"></span><br><span class="line">               LoginContract.UiIntent.DealLogin(username, password).sendToIntent()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">bindState</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.bindState()</span><br><span class="line">        LoginContract.UIState::loginEntity.bindState &#123;</span><br><span class="line">            it?.let &#123;</span><br><span class="line">                Log.d(TAG, GsonUtils.toJson(it))</span><br><span class="line">                ToastUtils.showShort(<span class="string">"登录成功"</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        LoginContract.UIState::enable.bindState &#123;</span><br><span class="line">            it?.let &#123;</span><br><span class="line">                viewBinding.tvLogin.isEnabled = it</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Architecture/" rel="tag"># Architecture</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2022/10/15/FlowEventBus/" rel="next" title="封装FlowEventBus事件总线">
+                  <i class="fa fa-chevron-left"></i> 封装FlowEventBus事件总线
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UI架构演进"><span class="nav-number">1.</span> <span class="nav-text">UI架构演进</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MVC"><span class="nav-number">1.1.</span> <span class="nav-text">MVC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVP"><span class="nav-number">1.2.</span> <span class="nav-text">MVP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVVM"><span class="nav-number">1.3.</span> <span class="nav-text">MVVM</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MVI"><span class="nav-number">2.</span> <span class="nav-text">MVI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#是什么"><span class="nav-number">2.1.</span> <span class="nav-text">是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决痛点"><span class="nav-number">2.2.</span> <span class="nav-text">解决痛点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVI封装流程"><span class="nav-number">2.3.</span> <span class="nav-text">MVI封装流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#声明State和Intent接口"><span class="nav-number">2.3.1.</span> <span class="nav-text">声明State和Intent接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#声明业务层ViewModel基类接口"><span class="nav-number">2.3.2.</span> <span class="nav-text">声明业务层ViewModel基类接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装View层生命周期事件"><span class="nav-number">2.3.3.</span> <span class="nav-text">封装View层生命周期事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装观察者接口"><span class="nav-number">2.3.4.</span> <span class="nav-text">封装观察者接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生命周期观察者管理类"><span class="nav-number">2.3.5.</span> <span class="nav-text">生命周期观察者管理类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#暴露生命周期观察者管理对象"><span class="nav-number">2.3.6.</span> <span class="nav-text">暴露生命周期观察者管理对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装BaseViewModel"><span class="nav-number">2.3.7.</span> <span class="nav-text">封装BaseViewModel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装加载视图和toast事件"><span class="nav-number">2.3.8.</span> <span class="nav-text">封装加载视图和toast事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装BaseStateViewModel"><span class="nav-number">2.3.9.</span> <span class="nav-text">封装BaseStateViewModel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装BaseFragment"><span class="nav-number">2.3.10.</span> <span class="nav-text">封装BaseFragment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装BaseStateFragment"><span class="nav-number">2.3.11.</span> <span class="nav-text">封装BaseStateFragment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在业务场景中的使用"><span class="nav-number">2.3.12.</span> <span class="nav-text">在业务场景中的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义登录接口"><span class="nav-number">2.3.12.1.</span> <span class="nav-text">定义登录接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#登录Contract"><span class="nav-number">2.3.12.2.</span> <span class="nav-text">登录Contract</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#登录接口数据Bean类"><span class="nav-number">2.3.12.3.</span> <span class="nav-text">登录接口数据Bean类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#登录ViewModel"><span class="nav-number">2.3.12.4.</span> <span class="nav-text">登录ViewModel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#登录界面"><span class="nav-number">2.3.12.5.</span> <span class="nav-text">登录界面</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: 'b80b92ecc1a63beed1ca1c1235d2c21e',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

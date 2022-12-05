@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Kotlin是Android开发的趋势，协程是Kotlin必不可少的一部分，而Flow是协程的一部分，是类似RxJava的基于流的一种链式调用的异步响应式编程框架，可以说用kotlin开发Android是绕不开对Flow的学习和使用，关于组件间的通信，事件总线的实现方案有很多，如handler有内存泄漏问题，高耦合且不好维护，本地Broadcast和EventBus无法感知生命周期需要注册和反">
+<meta name="keywords" content="Architecture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="封装FlowEventBus事件总线">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2022&#x2F;10&#x2F;15&#x2F;FlowEventBus&#x2F;index.html">
+<meta property="og:site_name" content="JessieK&#39;s blog">
+<meta property="og:description" content="Kotlin是Android开发的趋势，协程是Kotlin必不可少的一部分，而Flow是协程的一部分，是类似RxJava的基于流的一种链式调用的异步响应式编程框架，可以说用kotlin开发Android是绕不开对Flow的学习和使用，关于组件间的通信，事件总线的实现方案有很多，如handler有内存泄漏问题，高耦合且不好维护，本地Broadcast和EventBus无法感知生命周期需要注册和反">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-10-05T15:50:03.733Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2022/10/15/FlowEventBus/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>封装FlowEventBus事件总线 | JessieK's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JessieK's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">My Technical sharing</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/10/15/FlowEventBus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jessie Kate">
+      <meta itemprop="description" content="程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JessieK's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            封装FlowEventBus事件总线
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2022-10-15 19:51:24" itemprop="dateCreated datePublished" datetime="2022-10-15T19:51:24+08:00">2022-10-15</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-05 23:50:03" itemprop="dateModified" datetime="2022-10-05T23:50:03+08:00">2022-10-05</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<ul>
+<li>Kotlin是Android开发的趋势，协程是Kotlin必不可少的一部分，而Flow是协程的一部分，是类似RxJava的基于流的一种链式调用的异步响应式编程框架，可以说用kotlin开发Android是绕不开对Flow的学习和使用，关于组件间的通信，事件总线的实现方案有很多，如handler有内存泄漏问题，高耦合且不好维护，本地Broadcast和EventBus无法感知生命周期需要注册和反注册，EventBus还要配置混淆，直接使用interface又不好维护，RxBus学习成本高还依赖RxJava，自从google推出LiveData后封装了LiveDataBus但是要解决粘性事件问题和onCreate/onStop/onDestroy收不到数据问题以及postValue丢值问题，而这些问题在Flow上是不用考虑的</li>
+<li>根据大部分业务需要，采用SharedFlow去封装EventBus是目前比较完美的事件总线解决方案，这里记录一下本次封装的详细过程，同时这次封装还解决了大部分事件总线的痛点，临时事件滥用维护难度大，事件名易重复，发送接收数据类型不一致导致数据转换错误，欢迎交流和讨论～</li>
+</ul>
+<hr>
+<h1 id="为什么采用SharedFlow"><a href="#为什么采用SharedFlow" class="headerlink" title="为什么采用SharedFlow"></a>为什么采用SharedFlow</h1><h2 id="官方推荐用Flow去替代Livedata"><a href="#官方推荐用Flow去替代Livedata" class="headerlink" title="官方推荐用Flow去替代Livedata"></a>官方推荐用Flow去替代Livedata</h2><p>从设计上我们可以看出SharedFlow是高配版的LiveData，理论上LiveData能做的它也可以</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">MutableSharedFlow</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    replay: <span class="type">Int</span> = <span class="number">0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    extraBufferCapacity: <span class="type">Int</span> = <span class="number">0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    onBufferOverflow: <span class="type">BufferOverflow</span> = BufferOverflow.SUSPEND</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>: MutableSharedFlow&lt;T&gt; &#123;</span><br><span class="line">    require(replay &gt;= <span class="number">0</span>) &#123; <span class="string">"replay cannot be negative, but was <span class="variable">$replay</span>"</span> &#125;</span><br><span class="line">    require(extraBufferCapacity &gt;= <span class="number">0</span>) &#123; <span class="string">"extraBufferCapacity cannot be negative, but was <span class="variable">$extraBufferCapacity</span>"</span> &#125;</span><br><span class="line">    require(replay &gt; <span class="number">0</span> || extraBufferCapacity &gt; <span class="number">0</span> || onBufferOverflow == BufferOverflow.SUSPEND) &#123;</span><br><span class="line">        <span class="string">"replay or extraBufferCapacity must be positive with non-default onBufferOverflow strategy <span class="variable">$onBufferOverflow</span>"</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">val</span> bufferCapacity0 = replay + extraBufferCapacity</span><br><span class="line">    <span class="keyword">val</span> bufferCapacity = <span class="keyword">if</span> (bufferCapacity0 &lt; <span class="number">0</span>) <span class="built_in">Int</span>.MAX_VALUE <span class="keyword">else</span> bufferCapacity0 <span class="comment">// coerce to MAX_VALUE on overflow</span></span><br><span class="line">    <span class="keyword">return</span> SharedFlowImpl(replay, bufferCapacity, onBufferOverflow)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>LiveData容量是1，SharedFlow容量支持0到多个</li>
+<li>LiveData无法应对背压问题，SharedFlow有缓存空间能应对背压问题</li>
+<li>LiveData固定重播1个数据，SharedFlow支持重播0个到多个数据</li>
+<li>LiveData只能在主线程订阅，SharedFlow支持在任意线程订阅<h2 id="适合大多数业务场景"><a href="#适合大多数业务场景" class="headerlink" title="适合大多数业务场景"></a>适合大多数业务场景</h2></li>
+<li>支持一对多，即一条消息支持多个订阅者</li>
+<li>具有时效性，过期的消息没有意义且不应该被延迟发送<br>对照SharedFlow本身是热流，支持多个订阅者，默认重播为0，容量为0，不会出现粘性事件，没有订阅直接丢弃</li>
+</ul>
+<h1 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h1><h2 id="定义FlowDataEvent"><a href="#定义FlowDataEvent" class="headerlink" title="定义FlowDataEvent"></a>定义FlowDataEvent</h2><ul>
+<li>定义EventBus发送的数据类FlowDataEvent，keyEvent为事件名称，data为发送的任意数据类型</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FlowDataEvent</span></span>(<span class="keyword">val</span> keyEvent: String, <span class="keyword">val</span> <span class="keyword">data</span>: Any): FlowEvent</span><br></pre></td></tr></table></figure>
+
+<h2 id="封装FlowEventBus"><a href="#封装FlowEventBus" class="headerlink" title="封装FlowEventBus"></a>封装FlowEventBus</h2><ul>
+<li>定义EventBus的CoroutineScope</li>
+<li>定义全局的SharedFlow</li>
+<li>SharedFlow转冷流与订阅者绑定，LifecycleOwner的扩展用于Fragment中订阅数据，生命周期与Fragment绑定，CoroutineScope的扩展用于ViewModel中订阅数据，生命周期与ViewModel绑定</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">object</span> FlowEventBus &#123;</span><br><span class="line">    <span class="comment">// flowEventBus对应的scope</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> flowEventBusScope = CoroutineScope(CoroutineName(<span class="string">"FlowEventBus"</span>))</span><br><span class="line">    <span class="comment">// flowEventBus使用全局SharedFlow</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mutableSharedFlow = MutableSharedFlow&lt;FlowDataEvent&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> flowEventBus: Flow&lt;FlowDataEvent&gt; <span class="keyword">get</span>() = mutableSharedFlow.asSharedFlow()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// SharedFlow绑定scope</span></span><br><span class="line">    <span class="keyword">init</span> &#123;</span><br><span class="line">        mutableSharedFlow.launchIn(flowEventBusScope)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 发送一个事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">sendEvent</span><span class="params">(event: <span class="type">FlowDataEvent</span>)</span></span> &#123;</span><br><span class="line">        flowEventBusScope.launch &#123;</span><br><span class="line">            mutableSharedFlow.emit(event)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 绑定LifecycleOwner返回FlowDataEvent</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> LifecycleOwner.<span class="title">collectDataEvent</span><span class="params">(action: <span class="type">suspend</span> (<span class="type">e</span>: <span class="type">FlowDataEvent</span>) -&gt; <span class="type">Unit</span>)</span></span>: Job &#123;</span><br><span class="line">        <span class="keyword">return</span> flowEventBus.collectWhenCreated(<span class="keyword">this</span>)&#123;</span><br><span class="line">            action.invoke(it)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 绑定Scope返回FlowDataEvent</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> CoroutineScope.<span class="title">collectDataEvent</span><span class="params">(action: <span class="type">suspend</span> (<span class="type">e</span>: <span class="type">FlowDataEvent</span>) -&gt; <span class="type">Unit</span>)</span></span>: Job &#123;</span><br><span class="line">        <span class="keyword">return</span> launch &#123;</span><br><span class="line">            flowEventBus.collect&#123;</span><br><span class="line">                action.invoke(it)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> Flow<span class="type">&lt;T&gt;</span>.<span class="title">collectWhenCreated</span><span class="params">(owner: <span class="type">LifecycleOwner</span>, action: <span class="type">suspend</span> (<span class="type">value</span>: <span class="type">T</span>) -&gt; <span class="type">Unit</span>)</span></span>: Job = owner.lifecycleScope.launch &#123;</span><br><span class="line">    owner.lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) &#123;</span><br><span class="line">        collect&#123;action.invoke(it)&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="对外调用扩展"><a href="#对外调用扩展" class="headerlink" title="对外调用扩展"></a>对外调用扩展</h2><ul>
+<li>根据事件名做一个String类型的扩展，LifecycleOwner和CoroutineScope适配Fragment/Activity和ViewModel场景的绑定订阅者，监听事件获取发送的数据</li>
+<li>根据需要发送的任意对象，传入事件名称构建一个FlowDataEvent对象并调用FlowEventBus发送<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定事件，生命周期为LifecycleOwner</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> String.<span class="title">bindFlowEvent</span><span class="params">(lifecycleOwner: <span class="type">LifecycleOwner</span>,  block: (<span class="type">T</span>) -&gt; <span class="type">Unit</span>)</span></span>&#123;</span><br><span class="line">    lifecycleOwner.collectDataEvent &#123;</span><br><span class="line">        <span class="keyword">if</span> (it.keyEvent == <span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">val</span> result = it.<span class="keyword">data</span> <span class="keyword">as</span>? T</span><br><span class="line">            result?.apply &#123;</span><br><span class="line">                block.invoke(<span class="keyword">this</span>)</span><br><span class="line">            &#125; ?: <span class="string">"lifecycleOwner bindFlowEvent convert T error"</span>.logD()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定事件，生命周期为CoroutineScope</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> String.<span class="title">bindFlowEvent</span><span class="params">(coroutineScope: <span class="type">CoroutineScope</span>, block: (<span class="type">T</span>) -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    coroutineScope.collectDataEvent &#123;</span><br><span class="line">        <span class="keyword">if</span> (it.keyEvent == <span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">val</span> result = it.<span class="keyword">data</span> <span class="keyword">as</span>? T</span><br><span class="line">            result?.apply &#123;</span><br><span class="line">                block.invoke(<span class="keyword">this</span>)</span><br><span class="line">            &#125; ?: <span class="string">"coroutineScope bindFlowEvent convert T error"</span>.logD()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建一个当前对象为data的并发送</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> Any.<span class="title">sendFlowEvent</span><span class="params">(key: <span class="type">String</span>)</span></span>&#123;</span><br><span class="line">    FlowEventBus.sendEvent(FlowDataEvent(key, <span class="keyword">this</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="解决痛点"><a href="#解决痛点" class="headerlink" title="解决痛点"></a>解决痛点</h1></li>
+<li>临时事件滥用<br>收敛到一个文件，只能根据预先定义好的事件发送和接收</li>
+<li>事件名易重复<br>采用object事件类的类名作为事件名保证唯一性</li>
+<li>发送接收数据类型不一致<br>抽象出一个泛型抽象类，传入泛型的具体类型为发送和接收的统一类型，保证发送接收数据类型一致</li>
+</ul>
+<h2 id="泛型抽象类"><a href="#泛型抽象类" class="headerlink" title="泛型抽象类"></a>泛型抽象类</h2><p>所有FlowEventBus需要发送的事件类都要继承这个抽象类，保证发送和接收数据类型一致</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">IEvent</span>&lt;<span class="type">T</span>&gt;  </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">sendEvent</span><span class="params">(t: <span class="type">T</span>)</span></span>&#123;</span><br><span class="line">        t?.sendFlowEvent(<span class="keyword">this</span>.javaClass.name)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">bindEvent</span><span class="params">(lifecycleOwner: <span class="type">LifecycleOwner</span>, block: (<span class="type">T</span>) -&gt; <span class="type">Unit</span>)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.javaClass.name.bindFlowEvent(lifecycleOwner, block)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">bindEvent</span><span class="params">(coroutineScope: <span class="type">CoroutineScope</span>, block: (<span class="type">T</span>) -&gt; <span class="type">Unit</span>)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.javaClass.name.bindFlowEvent(coroutineScope, block)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="定义FlowEventBus的事件类"><a href="#定义FlowEventBus的事件类" class="headerlink" title="定义FlowEventBus的事件类"></a>定义FlowEventBus的事件类</h2><p>所有的事件定义在一个文件中方便维护，避免临时事件，事件名重复问题</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">object</span> ClickItemEvent: IEvent&lt;BottomSheetDialogHelper.SelectEntity&gt;()</span><br><span class="line"></span><br><span class="line"><span class="keyword">object</span> TestEvent: IEvent&lt;String&gt;()</span><br></pre></td></tr></table></figure>
+
+<h2 id="业务场景中使用"><a href="#业务场景中使用" class="headerlink" title="业务场景中使用"></a>业务场景中使用</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 发送 </span></span><br><span class="line">ClickItemEvent.sendEvent(selectEntity)</span><br><span class="line">TestEvent.sendEvent(<span class="string">"Test"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接收</span></span><br><span class="line">ClickItemEvent.bindEvent(<span class="keyword">this</span>) &#123;</span><br><span class="line">  <span class="string">"<span class="subst">$&#123;it.toJson()&#125;</span>"</span>.logD()</span><br><span class="line">&#125;</span><br><span class="line">TestEvent.bindEvent(<span class="keyword">this</span>) &#123;</span><br><span class="line">  showToast(<span class="string">"<span class="variable">$it</span>"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Architecture/" rel="tag"># Architecture</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2022/10/03/Dio-IOWebSocketChannel/" rel="next" title="flutter封装网络层（http和WebSocket请求）">
+                  <i class="fa fa-chevron-left"></i> flutter封装网络层（http和WebSocket请求）
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2022/11/07/MVI/" rel="prev" title="Android UI架构MVI">
+                  Android UI架构MVI <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么采用SharedFlow"><span class="nav-number">1.</span> <span class="nav-text">为什么采用SharedFlow</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#官方推荐用Flow去替代Livedata"><span class="nav-number">1.1.</span> <span class="nav-text">官方推荐用Flow去替代Livedata</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适合大多数业务场景"><span class="nav-number">1.2.</span> <span class="nav-text">适合大多数业务场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#具体实现"><span class="nav-number">2.</span> <span class="nav-text">具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义FlowDataEvent"><span class="nav-number">2.1.</span> <span class="nav-text">定义FlowDataEvent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#封装FlowEventBus"><span class="nav-number">2.2.</span> <span class="nav-text">封装FlowEventBus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对外调用扩展"><span class="nav-number">2.3.</span> <span class="nav-text">对外调用扩展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决痛点"><span class="nav-number">3.</span> <span class="nav-text">解决痛点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#泛型抽象类"><span class="nav-number">3.1.</span> <span class="nav-text">泛型抽象类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义FlowEventBus的事件类"><span class="nav-number">3.2.</span> <span class="nav-text">定义FlowEventBus的事件类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#业务场景中使用"><span class="nav-number">3.3.</span> <span class="nav-text">业务场景中使用</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jessie Kate</p>
+  <div class="site-description" itemprop="description">程序的世界，比你牛逼的人更比你努力。<br /> hello，I'm an Android developer～ <br /> My hobbies tag &#58; <br /> - Coding  <br /> - Sports   <br /> - Game</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessie Kate</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'aedb4031c50b7b9201d6',
+      clientSecret: 'f77b152663ed74c8570f87e2483c2eb12cdd252c',
+      repo: 'jessieeeee.github.io',
+      owner: 'jessieeeee',
+      admin: ['jessieeeee'],
+      id: '28a0ebcb22d3945689f886d1295cda18',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>
